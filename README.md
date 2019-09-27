@@ -36,4 +36,5 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Update config.js with the client id, client secret, discord token, plex token, username, password, plex token, hostname and port of the plex server
 1. Run the following: node bot.js
+1. Keep it running for the bot to work
 1. Voila, you can now start to issue commands in your discord server and test out if the bot is working right
