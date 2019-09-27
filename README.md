@@ -26,7 +26,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Click on Bot under Settings on the left hand side
 1. Enter a username and copy the Token
 1. Check what permissions will be needed, all of the text permissions should be sufficient (522304)
-1. Open up the following URL, replacing the CLIENT_ID and permissions with your own values: https://discordapp.com/oauth2/authorize?&client_id=CLIENT_ID&scope=bot&permissions=522304
+1. Open up the following URL, replacing the CLIENT_ID and permissions with your own values: https://discordapp.com/oauth2/authorize?&client_id=CLIENT_ID&scope=bot&permissions=0
 1. On this Github page click on Clone or download -> Download ZIP
 1. Unzip the repository code somewhere on your machine
 1. Open up the windows CMD prompt and run as administrator  (or whatever you use to run code)
