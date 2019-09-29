@@ -3,6 +3,7 @@ var Discord = require('discord.io');
 var PlexAPI = require('plex-api');
 var logger = require('winston');
 var config = require('./config.js');
+//var axios = require('axios');
 
 // Configure logger settings
 /*
@@ -37,16 +38,6 @@ plex.query("/").then(function (result) {
     console.error("The Plex server appears to be down, go yell at Josh", err);
 });
 //console.log(plex);
-
-//Whenever a library is added, the number increments by 1, on my server:
-//Music is 1
-//Movies is 3
-//TV Shows is 4
-
-//C:\Program Files (x86)\Plex\Plex Media Server>"Plex Media Scanner.exe" --list
-//  3: Movies
-//  1: Music
-//  4: TV Shows
 
 // Ready the bot
 bot.on('ready', function (evt) {
@@ -92,6 +83,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             // Check if a given piece of media (film, television show, anime, or music) exists on the Plex server
             case 'search':
                 var query = "";
+                var noResults = true; //https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
 
                 if (args.length == 0) {
                     bot.sendMessage({
@@ -110,18 +102,73 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 // 1 - movie, 2 - show, 3 - season, 4 - episode, 5 - trailer, 6 - comic, 7 - person, 8 - artist,
                 // 9 - album, 10 - track, 11 - photo album, 12 - picture, 13 - photo, 14 - clip, 15 - playlist
 
-                // TODO: Restructure with callbacks
-                // Search movies
-                plex.query('/search/?type=1&query=' + query).then(function(res) {
+                /*
+                plex.query('/library/sections/3/all?genre=' + query).then(function(res) {
+                    console.log(query);
                     var results = res.MediaContainer.Metadata;
                     var resultSize = res.MediaContainer.size;
                     var searchOutput = "";
+
+                    console.log(res);
+
+                    if (resultSize >= 1) {
+                        searchOutput += "Films:" + "\n"
+                        for (var i = 0; i < resultSize; i++) {
+                            console.log(results[i]);
+                            searchOutput += results[i].title + "\n";
+                            console.log(results[i].Genre);
+                            console.log(results[i].Genre.length);
+                            for (var j = 0; j < results[i].Genre.length; j++) {
+                                if (results[i].Genre[j].tag)
+                                console.log(results[i].Genre[j].tag);
+                            }
+                        }
+                        searchOutput += "\u200b";
+                        if (noResults) {
+                            noResults = false;
+                        }
+                    }
+                    bot.sendMessage({
+                        to: channelID,
+                        message: searchOutput
+                    });
+                }, function (err) {
+                    bot.sendMessage({
+                        to: channelID,
+                        message: "An error has occurred, go yell at Derek"
+                    });
+                    console.log('An error occurred in search');
+                });
+                */
+
+                // TODO: Restructure with callbacks
+                // Search movies
+                plex.query("/search/?type=1&query=" + query).then(function(res) {
+                    var results = res.MediaContainer.Metadata;
+                    var resultSize = res.MediaContainer.size;
+                    var searchOutput = "";
+
+                    /*bot.sendMessage({
+                        to: channelID,
+                        message: "Films:\n"
+                    });*/
 
                     if (resultSize >= 1) {
                         searchOutput += "Films:" + "\n"
                         for (var i = 0; i < resultSize; i++) {
                             //console.log(results[i]);
                             searchOutput += results[i].title + "\n";
+                            //console.log(results[i].Genre);
+                            //console.log(results[i].Genre.length);
+                            //for (var j = 0; j < results[i].Genre.length; j++) {
+                                //if (results[i].Genre[j].tag) {
+                                //    console.log(results[i].Genre[j].tag);
+                                //}
+                            //}
+                        }
+                        searchOutput += "\u200b";
+                        if (noResults) {
+                            noResults = false;
                         }
                     }
                     bot.sendMessage({
@@ -137,7 +184,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 });
 
                 // Search shows
-                plex.query('/search/?type=2&query=' + query).then(function(res) {
+                plex.query("/search/?type=2&query=" + query).then(function(res) {
                     var results = res.MediaContainer.Metadata;
                     var resultSize = res.MediaContainer.size;
                     var searchOutput = "";
@@ -147,6 +194,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         for (var i = 0; i < resultSize; i++) {
                             //console.log(results[i]);
                             searchOutput += results[i].title + "\n";
+                        }
+                        searchOutput += "\u200b";
+                        if (noResults) {
+                            noResults = false;
                         }
                     }
                     bot.sendMessage({
@@ -162,16 +213,25 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 });
 
                 // Search albums
-                plex.query('/search/?type=9&query=' + query).then(function(res) {
+                plex.query("/search/?type=9&query=" + query).then(function(res) {
                     var results = res.MediaContainer.Metadata;
                     var resultSize = res.MediaContainer.size;
                     var searchOutput = "";
+
+                    /*bot.sendMessage({
+                        to: channelID,
+                        message: "Albums:\n"
+                    });*/
 
                     if (resultSize >= 1) {
                         searchOutput += "Albums:" + "\n"
                         for (var i = 0; i < resultSize; i++) {
                             //console.log(results[i]);
                             searchOutput += results[i].title + "\n";
+                        }
+                        searchOutput += "\u200b";
+                        if (noResults) {
+                            noResults = false;
                         }
                     }
                     bot.sendMessage({
@@ -185,6 +245,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     });
                     console.log('An error occurred in search');
                 });
+
                 console.log('Command executed: search');
                 break;
             // Pull a Youtube link from a seed file (random video or index)
@@ -254,47 +315,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 });
                 logger.info('Command executed: schwifty');
                 break;
-            //return movie titles
-            case 'movietitles':
-                plex.query("/library/sections/3/all").then(function (result) {
-                    //console.log( result.MediaContainer );
-                    const {
-                        Metadata
-                    } = result.MediaContainer;
-
-                    // Metadata.map(item => {
-                    //     console.log(item)
-                    //     console.log('---------------------------------')
-                    // });
-
-                    console.log(Metadata);
-                    //console.log(Metadata[0].title);
-                    //console.log(Metadata[0].Media[0]);
-                    bot.sendMessage({
-                        to: channelID,
-                        message: Metadata[0].title
-                    });
-
-                }, function (err) {
-                    console.error("An error has occurred, go yell at Derek", err);
-                });
-                console.log('Command executed: movietitles');
-                break;
-            // Check the release date (theatrical or DVD release) of a given piece of media
-            case 'releasedate':
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'releasedate'
-                });
-                console.log('Command executed: releasedate');
-                break;
-            //https://gist.github.com/Godimas/ae8e7c7cbd6236622c777d6bcb7a6748
-            // Youtube video webhooks - post Dunkey, etc videos to channel in Discord
-            // imgur playlist - latest imgur link and greatesthits from sol - https://api.imgur.com/
-            // Minigame (lolis)
-            // Build up a to-do list of things to watch or do - Set up Mongo
-            // Onmbi plex asks command
-            // Bot joins audio and plays Rick clips or YouTube clips
+            // Default response
             default:
                 bot.sendMessage({
                     to: channelID,
