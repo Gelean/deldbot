@@ -10,12 +10,13 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and uses the plex-api library
 * Check if the Plex server is up
 * Search for entries in the Plex server
 
-## Software and Libraries
+## Software, Libraries, and APIs
 
 * [NodeJS 10.x+](https://nodejs.org/en/download/)
 * [Plex-Api 5.2.5+](https://www.npmjs.com/package/plex-api/)
 * [Discord.io 2.5.3+](https://izy521.gitbooks.io/discord-io/content/)
 * [Discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io)
+* [OMDb API](https://www.omdbapi.com/)
 
 ## Installation & Configuration
 
