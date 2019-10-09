@@ -37,7 +37,8 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Run the following: npm install discord.io winston plex-api –save
 1. Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
-1. Update config.js with the client id, client secret, discord token, plex token, username, password, plex token, hostname and port of the plex server
+1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
+1. Update config.js with the client id, client secret, discord token, plex id, plex token, username, password, plex token, plex server hostname, plex server port, and omdb api key. Some of these are optional depending on what functionality you want to use.
 1. Run the following: node bot.js
 1. Keep it running for the bot to work
 1. Voila, you can now start to issue commands in your discord server and test out if the bot is working right
