@@ -5,7 +5,9 @@ module.exports = {
   'botToken'     : 'BOT_TOKEN',
   'hostname'     : 'PLEX_IP',
   'port'         : 'PLEX_PORT',
+  'plexId'       : 'PLEX_ID',
   'plexUsername' : 'PLEX_USERNAME',
   'plexPassword' : 'PLEX_PASSWORD',
   'plexToken'    : 'PLEX_TOKEN',
+  'omdbKey'      : 'OMDB_KEY'
 };
