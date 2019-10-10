@@ -1,9 +1,30 @@
 var fs = require('fs');
+var http = require('http');
+var https = require('https');
+var dns = require('dns');
 var Discord = require('discord.io');
 var PlexAPI = require('plex-api');
 var logger = require('winston');
 var config = require('./config.js');
-//var axios = require('axios');
+
+/*TODO
+0. Add functionality to search by genre (ex: horror, thriller) or year (1990, 1991)
+1. Make search work just for films (f), shows (s), or albums (a)
+2. Return "no results found idiot"
+4. Investigate making search results Plex links
+5. Ombi integration for requests
+6. Check drobo disk space (http://drobo-utils.sourceforge.net/ ?)
+7. Pull images/memes from playlist or Imgur
+8. Minigame (lolis)
+9. Bot joins audio and plays Rick clips or YouTube clips
+10. Build up a to-do list of things to watch or do - Set up Mongo
+11. madamada voice chat when someone enters
+deldbucks (schrutebucks)
+
+!search weaboo movies
+!search suicide
+!search sudoku seppuku
+*/
 
 // Configure logger settings
 /*
@@ -59,7 +80,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             case 'help':
                 bot.sendMessage({
                     to: channelID,
-                    message: 'Valid commands: !help, !serverstatus, !search, !playlist, !schwifty'
+                    message: 'Valid commands: !help, !serverstatus, !search, !playlist, !schwifty, !releasedate, !8ball'
                 });
                 logger.info('Command executed: help');
                 break;
@@ -83,7 +104,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             // Check if a given piece of media (film, television show, anime, or music) exists on the Plex server
             case 'search':
                 var query = "";
-                var noResults = true; //https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
+                var noResults = true;
 
                 if (args.length == 0) {
                     bot.sendMessage({
@@ -91,16 +112,28 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         message: "No search term specified, please use: !search <query> to search for albums, movies, and shows on the Plex server"
                     });
                     break;
-                } else{
+                } else {
                     for (var i = 0; i < args.length; i++) {
                       query += args[i] + " ";
                     }
                     console.log("Query: " + query);
                 }
 
+                if (query === "derek's book" || query === "Derek's book") {
+                     bot.sendMessage({
+                        to: userID,
+                        message: "Fuck you"
+                    });
+                    console.log('Command executed: search');
+                    break;
+                }
+
                 // List of query types: https://github.com/Arcanemagus/plex-api/wiki/MediaTypes
                 // 1 - movie, 2 - show, 3 - season, 4 - episode, 5 - trailer, 6 - comic, 7 - person, 8 - artist,
                 // 9 - album, 10 - track, 11 - photo album, 12 - picture, 13 - photo, 14 - clip, 15 - playlist
+
+                //https://blog.cloudboost.io/execute-asynchronous-tasks-in-series-942b74697f9c?gi=28073aa910e6
+                //https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
 
                 /*
                 plex.query('/library/sections/3/all?genre=' + query).then(function(res) {
@@ -140,6 +173,23 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     console.log('An error occurred in search');
                 });
                 */
+
+                /*var film = {
+                    'title': results[i].title,
+                    'url': 'https://app.plex.tv/desktop#!/server/dac55db844ca7b42e719206517f3623ced586cad/details?key=%2Flibrary%2Fmetadata%2F'
+                        + results[i].ratingKey + '&context=library%3Acontent.library',
+                    'color': 15048717,
+                    'footer': {
+                        'icon_url': 'https://dl2.macupdate.com/images/icons256/42311.png',
+                        'text': 'Plex'
+                    }
+                    //'thumbnail': {
+                    //      url: 'https://app.plex.tv/desktop#!/server/dac55db844ca7b42e719206517f3623ced586cad/
+                };
+                bot.sendMessage({
+                    to: channelID,
+                    embed: film
+                });*/
 
                 // TODO: Restructure with callbacks
                 // Search movies
@@ -248,6 +298,15 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
                 console.log('Command executed: search');
                 break;
+            // Genre search
+            //case 'searchgenre':
+            //plex.query("/library/sections/3/all").then(function (result) {
+            //console.log( result.MediaContainer );
+            //const {
+            //    Metadata
+            //        } = result.MediaContainer;
+            // Return release date of film
+            //break;
             // Pull a Youtube link from a seed file (random video or index)
             case 'playlist':
                 var youtubeLink = "";
@@ -313,8 +372,227 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     to: channelID,
                     message: 'https://www.youtube.com/watch?v=m3RUYMGD9-o'
                 });
-                logger.info('Command executed: schwifty');
+                console.log('Command executed: schwifty');
                 break;
+            // Check OMDb for film and show information
+            case 'releasedate': 
+                var query = '';
+                var year = '';
+                var useYear = false;
+                for (var i = 0; i < args.length; i++) {
+                    // If the search has more than one term and the last argument is numeric, assume it is the year
+                    var argInt = parseInt(args[i], 10);
+                    if ((i + 1) == args.length && args.length > 1 && !isNaN(argInt) && argInt > 1888) {
+                        year = args[i];
+                        useYear = true;
+                    } else {
+                        query += args[i] + "+";
+                    }
+                }
+                // Remove the last + from the query
+                query = query.substring(0, query.length - 1);
+                console.log("Query: " + query);
+
+                if (query == '') {
+                    bot.sendMessage({
+                        to: channelID,
+                        message: "Supply a movie or show name idiot"
+                    });
+                    console.log('Command executed: releasedate');
+                    break;
+                }
+
+                if (!useYear) {
+                    http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&t=' + query, (resp) => {
+                        let data = '';
+                        var movieData = '';
+                        var searchOutput = '';
+
+                        resp.on('data', (chunk) => {
+                            data += chunk;
+                        });
+
+                        resp.on('end', () => {
+                            movieData = JSON.parse(data);
+                            console.log(movieData);
+
+                            if (movieData.Response == "False") {
+                                bot.sendMessage({
+                                    to: channelID,
+                                    message: "No movie or show found, please refine your search and consider including a year"
+                                });
+                            } else{
+                                bot.sendMessage({
+                                    to: channelID,
+                                    message: movieData.Title + " (" + movieData.Year + "): " + movieData.Released
+                                });
+                            }
+                            console.log('Command executed: releasedate');
+                        });
+
+                    }).on("error", (err) => {
+                        console.log("Error: " + err.message);
+                        console.log('Command executed: releasedate');
+                    });
+                } else {
+                    http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&t=' + query + '&y=' + year, (resp) => {
+                        let data = '';
+                        var movieData = '';
+                        var searchOutput = '';
+
+                        resp.on('data', (chunk) => {
+                            data += chunk;
+                        });
+
+                        resp.on('end', () => {
+                            movieData = JSON.parse(data);
+                            console.log(movieData);
+
+                            if (movieData.Response == "False") {
+                                bot.sendMessage({
+                                    to: channelID,
+                                    message: "No movie or show found, please refine your search and consider including a year"
+                                });
+                            } else{
+                                bot.sendMessage({
+                                    to: channelID,
+                                    message: movieData.Title + " (" + movieData.Year + "): " + movieData.Released
+                                });
+                            }
+                            console.log('Command executed: releasedate');
+                        });
+
+                    }).on("error", (err) => {
+                        console.log("Error: " + err.message);
+                        console.log('Command executed: releasedate');
+                    });
+                }
+                break;
+            case 'omdbsearch':
+                //first 10 - page 1, 11-20 page 2, 21-30 page 3
+                //pagination - &page=2 //star trek - 29 pages
+                var query = '';
+                for (var i = 0; i < args.length; i++) {
+                  query += args[i] + "+";
+                }
+                // Remove the last + from the query
+                query = query.substring(0, query.length - 1);
+                console.log("Query: " + query);
+
+                http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&s=' + query, (resp) => {
+                    let data = '';
+                    var movieData = '';
+                    var searchOutput = '';
+
+                    resp.on('data', (chunk) => {
+                        data += chunk;
+                    });
+
+                    resp.on('end', () => {
+                        movieData = JSON.parse(data);
+                        console.log(movieData);
+                        console.log(movieData.totalResults);
+
+                        var totalResults = 0;
+                        var page = 1;
+
+                        searchOutput += "Films and Shows:" + "\n"
+                        do {
+                            for (var i = 0; i < movieData.Search.length; i++) {
+                                //console.log(results[i]);
+                                searchOutput += movieData.Search[i].Title + " (" + movieData.Search[i].Year + ")\n";
+                            }
+                            totalResults += movieData.Search.length;
+                            //http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&s=' + query, (resp) => {
+                            //resp.on('data', (chunk) => {
+                            //    data += chunk;
+                            //});
+                            //resp.on('end', () => {
+                            //    movieData = JSON.parse(data);
+                            //    console.log(movieData);
+                            //}
+                        } while (totalResults < movieData.totalResults)
+                        searchOutput += "\u200b";
+                        /*if (noResults) {
+                            noResults = false;
+                        }*/
+
+                        bot.sendMessage({
+                            to: channelID,
+                            message: searchOutput
+                        });
+                        console.log('Command executed: omdbsearch');
+                    });
+
+                }).on("error", (err) => {
+                    console.log("Error: " + err.message);
+                    console.log('Command executed: omdbsearch');
+                });
+                break;
+            case '8ball':
+                if (args.length == 0) {
+                    bot.sendMessage({
+                        to: channelID,
+                        message: "Ask a question moron"
+                    });
+                    break;
+                }
+                var magicResults = ['It is certain.', 'It is decidedly so.', 'Without a doubt.', 'Yes - definitely.', 'You may rely on it.',
+                    'As I see it, yes.', 'Most likely.', 'Outlook good.', 'Yes.', 'Signs point to yes.', 
+                    'Reply hazy, try again.', 'Ask again later.', 'Better not tell you now.', 'Cannot predict now.','Concentrate and ask again.',
+                    'Don\'t count on it.', 'My reply is no.', 'My sources say no.', 'Outlook not so good.', 'Very doubtful.'];
+                var magicResult = magicResults[Math.floor(Math.random() * magicResults.length)];
+                bot.sendMessage({
+                    to: channelID,
+                    message: magicResult
+                });
+                console.log('Command executed: 8ball');
+                break;
+            /*case 'oracle':
+                var divineResults = ['It is certain.', 'It is decidedly so.', 'Without a doubt.', 'Yes - definitely.', 'You may rely on it.',
+                    'As I see it, yes.', 'Most likely.', 'Outlook good.', 'Yes.', 'Signs point to yes.', 
+                    'Reply hazy, try again.', 'Ask again later.', 'Better not tell you now.', 'Cannot predict now.','Concentrate and ask again.',
+                    'Don\'t count on it.', 'My reply is no.', 'My sources say no.', 'Outlook not so good.', 'Very doubtful.'];
+                var divineResult = divineResults[Math.floor(Math.random() * divineResults.length)];
+                bot.sendMessage({
+                    to: channelID,
+                    message: divineResult
+                });
+                console.log('Command executed: magic');
+                break;*/
+            // Request
+            /*case 'request':
+                function requestMovie(ombi, msg, movieMsg, movie) {
+                    if ((!ombi.requestmovie || msg.member.roles.some(role => role.name === ombi.requestmovie)) && (!movie.available && !movie.requested && !movie.approved)) {
+                        msg.reply('If you want to request this movie please click on the ⬇ reaction.');
+                        movieMsg.react('⬇');
+                        
+                        movieMsg.awaitReactions((reaction, user) => reaction.emoji.name === '⬇' && user.id === msg.author.id, { max: 1, time: 120000 })
+                        .then(collected => {
+                            if (collected.first()) {
+                                post({
+                                    headers: {'accept' : 'application/json',
+                                    'Content-Type' : 'application/json',
+                                    'ApiKey': ombi.apikey,
+                                    'ApiAlias' : `${msg.author.username}#${msg.author.discriminator}`,
+                                    'UserName' : ombi.username ? ombi.username : undefined,
+                                    'User-Agent': `Mellow/${process.env.npm_package_version}`},
+                                    url: (checkURLPrefix(ombi.host) ? ombi.host : `http://${ombi.host}`) + ((ombi.port) ? ':' + ombi.port : '') + '/api/v1/Request/movie/',
+                                    body: JSON.stringify({ "theMovieDbId": movie.theMovieDbId })
+                                }).then((resolve) => {
+                                    return msg.reply(`Requested ${movie.title} in Ombi.`);
+                                }).catch((error) => {
+                                    console.error(error);
+                                    return msg.reply('There was an error in your request.');
+                                });
+                            }
+                        }).catch(collected => {
+                            return movieMsg;
+                        });
+                    }
+                    return movieMsg;
+                }
+                break;*/
             // Default response
             default:
                 bot.sendMessage({
