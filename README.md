@@ -55,3 +55,4 @@ The steps on the following page provide a good guide of the steps in creating an
 * https://discordjs.guide/
 * https://cog-creators.github.io/discord-embed-sandbox/
 * https://github.com/v0idp/Mellow
+* https://rapidapi.com/imdb/api/movie-database-imdb-alternative
