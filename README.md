@@ -48,3 +48,10 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Discord Webhooks: https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks
 1. Plex Webhooks: https://tautulli.com/ and https://github.com/Tautulli/Tautulli-Wiki/wiki/Notification-Agents-Guide#discord
 1. Github Webhooks: https://gist.github.com/jagrosh/5b1761213e33fc5b54ec7f6379034a22
+
+## Links and References
+
+* https://www.themoviedb.org/documentation/api?language=en-US
+* https://discordjs.guide/
+* https://cog-creators.github.io/discord-embed-sandbox/
+* https://github.com/v0idp/Mellow
