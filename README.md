@@ -17,6 +17,7 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and uses the plex-api library
 * [Discord.io 2.5.3+](https://izy521.gitbooks.io/discord-io/content/)
 * [Discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io)
 * [OMDb API](https://www.omdbapi.com/)
+* [Imgur API](https://api.imgur.com/)
 
 ## Installation & Configuration
 
