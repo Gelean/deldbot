@@ -11,5 +11,6 @@ module.exports = {
   'plexToken'         : 'PLEX_TOKEN',
   'omdbKey'           : 'OMDB_KEY',
   'imgurClientId'     : 'IMGUR_CLIENT_ID',
-  'imgurClientSecret' : 'IMGUR_CLIENT_SECRET'
+  'imgurClientSecret' : 'IMGUR_CLIENT_SECRET',
+  'imgurAlbum'        : 'IMGUR_ALBUM_URL'
 };
