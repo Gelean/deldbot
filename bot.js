@@ -1,29 +1,37 @@
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var dns = require('dns');
-var Discord = require('discord.io');
-var PlexAPI = require('plex-api');
-var logger = require('winston');
-var config = require('./config.js');
+const fs = require("fs");
+const http = require("http");
+const https = require("https");
+const Discord = require("discord.io");
+const PlexAPI = require("plex-api");
+const logger = require("winston");
+const config = require("./config.js");
+
+function sendChannelMessage(channelID, text, method) {
+    bot.sendMessage({
+        to: channelID,
+        message: text
+    });
+    console.log("Command executed: " + method);
+}
+
+function sendUserMessage(userID, text, method) {
+    bot.sendMessage({
+        to: userID,
+        message: text
+    });
+    console.log("Command executed: " + method);
+}
+
+function totalPages(number) {
+    return Math.ceil(number / 10);
+}
 
 /*TODO
-0. Add functionality to search by genre (ex: horror, thriller) or year (1990, 1991)
 1. Make search work just for films (f), shows (s), or albums (a)
-2. Return "no results found idiot"
-4. Investigate making search results Plex links
-5. Ombi integration for requests
-6. Check drobo disk space (http://drobo-utils.sourceforge.net/ ?)
-7. Pull images/memes from playlist or Imgur
-8. Minigame (lolis)
-9. Bot joins audio and plays Rick clips or YouTube clips
-10. Build up a to-do list of things to watch or do - Set up Mongo
-11. madamada voice chat when someone enters
-deldbucks (schrutebucks)
-
-!search weaboo movies
-!search suicide
-!search sudoku seppuku
+2. Pull images/memes from playlist or Imgur
+3. Minigame (lolis) - deldbucks (schrutebucks)
+4. Build up a to-do list of things to watch or do - Set up Mongo
+5. Check drobo disk space (http://drobo-utils.sourceforge.net/ ?)
 */
 
 // Configure logger settings
@@ -32,7 +40,7 @@ logger.remove(logger.transports.Console);
 logger.add(new logger.transports.Console, {
     colorize: true
 });
-logger.level = 'debug';
+logger.level = "debug";
 */
 
 // Initialize Discord Bot
@@ -43,12 +51,20 @@ var bot = new Discord.Client({
 
 // Initialize Plex
 var plex = new PlexAPI({
-    hostname: config.hostname,
-    port: config.port,
+    hostname: config.plexHostname,
+    port: config.plexPort,
     username: config.plexUsername,
     password: config.plexPassword,
     token: config.plexToken
 });
+
+// Initialize Imgur Options
+var imgurOptions = {
+    hostname: "api.imgur.com",
+    path: "/3/album/" + config.imgurAlbum,
+    headers: {"Authorization": "Client-ID " + config.imgurClientId},
+    method: "GET"
+};
 
 // Check Plex Server Information
 plex.query("/").then(function (result) {
@@ -61,88 +77,301 @@ plex.query("/").then(function (result) {
 //console.log(plex);
 
 // Ready the bot
-bot.on('ready', function (evt) {
-    console.log('Bot has connected');
-    console.log('Name: ' + bot.username + "\n" + 'ID: ' + bot.id);
+bot.on("ready", function (evt) {
+    console.log("Bot has connected");
+    console.log("Name: " + bot.username + "\n" + "ID: " + bot.id);
 });
 
 // Message handling
-bot.on('message', function (user, userID, channelID, message, evt) {
+bot.on("message", function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `!`
-    if (message.substring(0, 1) == '!') {
-        var args = message.substring(1).split(' ');
+    if (message.substring(0, 1) == "!") {
+        var args = message.substring(1).split(" ");
         var cmd = args[0];
         args = args.splice(1);
         
         switch(cmd) {
             // Report valid commands
-            case 'help':
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'Valid commands: !help, !serverstatus, !search, !playlist, !schwifty, !releasedate, !8ball'
-                });
-                logger.info('Command executed: help');
+            case "help":
+                sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !search, !playlist, !schwifty, !imgur, !soitbegins, !releasedate, !omdbsearch, !8ball", "help");
                 break;
-            // Check the Plex server status and report back if it's running
-            case 'serverstatus':
+            // Give usage information for a given command
+            case "usage":
+                var noResults = true;
+                var usageString = "";
+
+                //https://stackoverflow.com/questions/9725675/is-there-a-standard-format-for-command-line-shell-help-text
+                if (args[0] == "help") {
+                    usageString = "Good lord, the help command should be self explanatory";
+                    noResults = false;
+                } else if (args[0] == "usage") {
+                    usageString = "Trying to get meta are you?";
+                    noResults = false;
+                } else if (args[0] == "serverstatus") {
+                    usageString = "Usage: !serverstatus to find out if the Plex server is currently up";
+                    noResults = false;
+                } else if (args[0] == "search") {
+                    usageString = "Usage: !search <film, show, or album>";
+                    noResults = false;
+                } else if (args[0] == "playlist") {
+                    usageString = "Usage: !playlist [index]";
+                    noResults = false;
+                } else if (args[0] == "schwifty") {
+                    usageString = "Usage: !schwifty";
+                    noResults = false;
+                } else if (args[0] == "imgur") {
+                    usageString = "Usage: !imgur [index]";
+                    noResults = false;
+                } else if (args[0] == "soitbegins") {
+                    usageString = "Usage: !soitbegins";
+                    noResults = false;
+                } else if (args[0] == "releasedate") {
+                    usageString = "Usage: !releasedate <film or show> [year]";
+                    noResults = false;
+                } else if (args[0] == "omdbsearch") {
+                    usageString = "Usage: !omdbsearch [p1-100] <film or show>";
+                    noResults = false;
+                } else if (args[0] == "8ball") {
+                    usageString = "Usage: !8ball <question>";
+                    noResults = false;
+                }
+
+                if (noResults) {
+                    sendChannelMessage(channelID, "Please supply a command you wish to learn more about, for example !usage search", "usage");
+                } else {
+                    sendChannelMessage(channelID, usageString, "usage");
+                }
+                break;
+            // Check the Plex server status and report back if it"s running
+            case "serverstatus":
                 plex.query("/").then(function (result) {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: 'The Plex server appears to be up'
-                    });
+                    sendChannelMessage(channelID, "The Plex server appears to be up", "serverstatus");
                 }, function (err) {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: 'The Plex server appears to be down, go yell at Josh',
-                        color: black
-                    });
-                    console.error("The Plex server appears to be down, go yell at Josh", err);
+                    sendChannelMessage(channelID, "The Plex server appears to be down, go yell at Josh", "serverstatus");
                 });
-                console.log('Command executed: serverstatus');
                 break;
-            // Check if a given piece of media (film, television show, anime, or music) exists on the Plex server
-            case 'search':
+            // Check if a given piece of media (film, show, anime, or album) exists on the Plex server
+            case "search":
                 var query = "";
+                var searchOutput = '';
                 var noResults = true;
 
                 if (args.length == 0) {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: "No search term specified, please use: !search <query> to search for albums, movies, and shows on the Plex server"
-                    });
+                    sendChannelMessage(channelID, "No search term specified, please use: !search <query> to search for albums, movies, and shows on the Plex server", "search");
                     break;
                 } else {
                     for (var i = 0; i < args.length; i++) {
-                      query += args[i] + " ";
+                        query += args[i] + " ";
                     }
                     console.log("Query: " + query);
                 }
 
-                if (query === "derek's book" || query === "Derek's book") {
-                     bot.sendMessage({
-                        to: userID,
-                        message: "Fuck you"
-                    });
-                    console.log('Command executed: search');
+                if (query === "Derek's book" || query === "derek's book") {
+                    sendUserMessage(userID, "Fuck you", "search");
                     break;
                 }
 
-                // List of query types: https://github.com/Arcanemagus/plex-api/wiki/MediaTypes
-                // 1 - movie, 2 - show, 3 - season, 4 - episode, 5 - trailer, 6 - comic, 7 - person, 8 - artist,
-                // 9 - album, 10 - track, 11 - photo album, 12 - picture, 13 - photo, 14 - clip, 15 - playlist
+                (async() => {
 
+                    // List of query types: https://github.com/Arcanemagus/plex-api/wiki/MediaTypes
+                    // 1 - movie, 2 - show, 3 - season, 4 - episode, 5 - trailer, 6 - comic, 7 - person, 8 - artist,
+                    // 9 - album, 10 - track, 11 - photo album, 12 - picture, 13 - photo, 14 - clip, 15 - playlist
+
+                    const filmResponse = plex.query("/search/?type=1&query=" + query);
+                    const filmResults = await filmResponse;
+
+                    if (filmResults.MediaContainer.size >= 1) {
+                        searchOutput += "Films:";
+                        for (var i = 0; i < filmResults.MediaContainer.size; i++) {
+                            //console.log(filmResults.MediaContainer.Metadata[i]);
+                            searchOutput += "\n" + filmResults.MediaContainer.Metadata[i].title;
+                        }
+                        noResults = false;
+                    }
+
+                    const showResponse = plex.query("/search/?type=2&query=" + query);
+                    const showResults = await showResponse;
+
+                    if (showResults.MediaContainer.size >= 1) {
+                        searchOutput += "\nShows:";
+                        for (var i = 0; i < showResults.MediaContainer.size; i++) {
+                            //console.log(showResults.MediaContainer.Metadata[i]);
+                            searchOutput += "\n" + showResults.MediaContainer.Metadata[i].title;
+                        }
+                        noResults = false;
+                    }
+
+                    const albumResponse = plex.query("/search/?type=9&query=" + query);
+                    const albumResults = await albumResponse;
+
+                    if (albumResults.MediaContainer.size >= 1) {
+                        searchOutput += "\nAlbums:";
+                        for (var i = 0; i < albumResults.MediaContainer.size; i++) {
+                            //console.log(albumResults.MediaContainer.Metadata[i]);
+                            searchOutput += "\n" + albumResults.MediaContainer.Metadata[i].title;
+                        }
+                        noResults = false;
+                    }
+
+                    if (noResults) {
+                        sendChannelMessage(channelID, "No results found, please refine your search dimwit", "search");
+                    } else {
+                        sendChannelMessage(channelID, searchOutput, "search");
+                    }
+
+                })();
+                break;
+            // Return the top result in an embed with a Plex link
+            case "embedsearch":
+                var query = "";
+                var searchOutput = '';
+                var noResults = true;
+
+                if (args.length == 0) {
+                    sendChannelMessage(channelID, "No search term specified, please use: !embedsearch <query> to search for albums, movies, and shows on the Plex server", "embedsearch");
+                    break;
+                } else {
+                    for (var i = 0; i < args.length; i++) {
+                        query += args[i] + " ";
+                    }
+                    console.log("Query: " + query);
+                }
+
+                if (query === "Derek's book" || query === "derek's book") {
+                    sendUserMessage(userID, "Fuck you", "embedsearch");
+                    break;
+                }
+
+                (async() => {
+
+                    const filmResponse = plex.query("/search/?type=1&query=" + query);
+                    const filmResults = await filmResponse;
+
+                    if (filmResults.MediaContainer.size >= 1) {
+                        const botMessage = bot.sendMessage({
+                            to: channelID,
+                            message: "Films:"
+                        });
+                        const botResultsMessage = await botMessage;
+                        for (var i = 0; i < filmResults.MediaContainer.size; i++) {
+
+                            // Investigate making search results Plex links using embeds
+                            var film = {
+                                "title": filmResults.MediaContainer.Metadata[i].title,
+                                "url": "https://app.plex.tv/desktop#!/server/" + config.plexId + "/details?key=%2Flibrary%2Fmetadata%2F"
+                                    + filmResults.MediaContainer.Metadata[i].ratingKey + "&context=library%3Acontent.library",
+                                "color": 15048717,
+                                "footer": {
+                                    "icon_url": "https://dl2.macupdate.com/images/icons256/42311.png",
+                                    "text": "Plex"
+                                }
+                                //"thumbnail": {
+                                //      url: "https://app.plex.tv/desktop#!/server/id/
+                                //}
+                            };
+                            bot.sendMessage({
+                                to: channelID,
+                                embed: film
+                            });
+                        }
+                        noResults = false;
+                    }
+
+                    const showResponse = plex.query("/search/?type=2&query=" + query);
+                    const showResults = await showResponse;
+
+                    if (showResults.MediaContainer.size >= 1) {
+                        const botMessage = bot.sendMessage({
+                            to: channelID,
+                            message: "Shows:"
+                        });
+                        //const botResultsMessage = await botMessage;
+                        for (var i = 0; i < showResults.MediaContainer.size; i++) {
+                            var show = {
+                                "title": showResults.MediaContainer.Metadata[i].title,
+                                "url": "https://app.plex.tv/desktop#!/server/" + config.plexId + "/details?key=%2Flibrary%2Fmetadata%2F"
+                                    + showResults.MediaContainer.Metadata[i].ratingKey + "&context=library%3Acontent.library",
+                                "color": 15048717,
+                                "footer": {
+                                    "icon_url": "https://dl2.macupdate.com/images/icons256/42311.png",
+                                    "text": "Plex"
+                                }
+                            };
+                            const botResultsMessage = await botMessage;
+                            bot.sendMessage({
+                                to: channelID,
+                                embed: show
+                            });
+                        }
+                        noResults = false;
+                    }
+
+                    const albumResponse = plex.query("/search/?type=9&query=" + query);
+                    const albumResults = await albumResponse;
+
+                    if (albumResults.MediaContainer.size >= 1) {
+                        const botMessage = bot.sendMessage({
+                            to: channelID,
+                            message: "Albums:"
+                        });
+                        //const botResultsMessage = await botMessage;
+                        for (var i = 0; i < albumResults.MediaContainer.size; i++) {
+                            var album = {
+                                "title": albumResults.MediaContainer.Metadata[i].title,
+                                "url": "https://app.plex.tv/desktop#!/server/" + config.plexId + "/details?key=%2Flibrary%2Fmetadata%2F"
+                                    + albumResults.MediaContainer.Metadata[i].ratingKey + "&context=library%3Acontent.library",
+                                "color": 15048717,
+                                "footer": {
+                                    "icon_url": "https://dl2.macupdate.com/images/icons256/42311.png",
+                                    "text": "Plex"
+                                }
+                            };
+                            const botResultsMessage = await botMessage;
+                            bot.sendMessage({
+                                to: channelID,
+                                embed: album
+                            });
+                        }
+                        noResults = false;
+                    }
+
+                    if (noResults) {
+                        sendChannelMessage(channelID, "No results found, please refine your search dimwit", "embedsearch");
+                    } else {
+                        console.log("Command executed: embedsearch");
+                    }
+
+                })();
+                break;
+            // Genre search
+                // Add functionality to search by genre (ex: horror, thriller) or year (1990, 1991)
+                //case "searchgenre":
+                //plex.query("/library/sections/3/all").then(function (result) {
+                //console.log( result.MediaContainer );
+                //const {
+                //    Metadata
+                //        } = result.MediaContainer;
+                // Return release date of film
                 //https://blog.cloudboost.io/execute-asynchronous-tasks-in-series-942b74697f9c?gi=28073aa910e6
                 //https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
+                //filters=genre%3D4994&filterLabel=Action&key=%2Flibrary%2Fsections%2F17%2Fall&source=%2Fhubs%2Fsections%2F17
+                //filters=genre=4994&filterLabel=Action&key=/library/sections/17/all&source=/hubs/sections/17
+                // List of genres (differs by Plex server):
+                // 2853 - Action 
+                // 2967 - Drama
 
                 /*
-                plex.query('/library/sections/3/all?genre=' + query).then(function(res) {
+                plex.query("/library/sections/3/all?genre=2967").then(function(res) {
+                //plex.find("/library/sections", {type: "movie"}).then(function(res) {
+                    console.log("huh");
                     console.log(query);
                     var results = res.MediaContainer.Metadata;
                     var resultSize = res.MediaContainer.size;
                     var searchOutput = "";
 
                     console.log(res);
+                    console.log(res.MediaContainer);
 
                     if (resultSize >= 1) {
                         searchOutput += "Films:" + "\n"
@@ -170,214 +399,105 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                         to: channelID,
                         message: "An error has occurred, go yell at Derek"
                     });
-                    console.log('An error occurred in search');
+                    console.log("An error occurred in search");
                 });
-                */
-
-                /*var film = {
-                    'title': results[i].title,
-                    'url': 'https://app.plex.tv/desktop#!/server/dac55db844ca7b42e719206517f3623ced586cad/details?key=%2Flibrary%2Fmetadata%2F'
-                        + results[i].ratingKey + '&context=library%3Acontent.library',
-                    'color': 15048717,
-                    'footer': {
-                        'icon_url': 'https://dl2.macupdate.com/images/icons256/42311.png',
-                        'text': 'Plex'
-                    }
-                    //'thumbnail': {
-                    //      url: 'https://app.plex.tv/desktop#!/server/dac55db844ca7b42e719206517f3623ced586cad/
-                };
-                bot.sendMessage({
-                    to: channelID,
-                    embed: film
-                });*/
-
-                // TODO: Restructure with callbacks
-                // Search movies
-                plex.query("/search/?type=1&query=" + query).then(function(res) {
-                    var results = res.MediaContainer.Metadata;
-                    var resultSize = res.MediaContainer.size;
-                    var searchOutput = "";
-
-                    /*bot.sendMessage({
-                        to: channelID,
-                        message: "Films:\n"
-                    });*/
-
-                    if (resultSize >= 1) {
-                        searchOutput += "Films:" + "\n"
-                        for (var i = 0; i < resultSize; i++) {
-                            //console.log(results[i]);
-                            searchOutput += results[i].title + "\n";
-                            //console.log(results[i].Genre);
-                            //console.log(results[i].Genre.length);
-                            //for (var j = 0; j < results[i].Genre.length; j++) {
-                                //if (results[i].Genre[j].tag) {
-                                //    console.log(results[i].Genre[j].tag);
-                                //}
-                            //}
-                        }
-                        searchOutput += "\u200b";
-                        if (noResults) {
-                            noResults = false;
-                        }
-                    }
-                    bot.sendMessage({
-                        to: channelID,
-                        message: searchOutput
-                    });
-                }, function (err) {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: "An error has occurred, go yell at Derek"
-                    });
-                    console.log('An error occurred in search');
-                });
-
-                // Search shows
-                plex.query("/search/?type=2&query=" + query).then(function(res) {
-                    var results = res.MediaContainer.Metadata;
-                    var resultSize = res.MediaContainer.size;
-                    var searchOutput = "";
-
-                    if (resultSize >= 1) {
-                        searchOutput += "Shows:" + "\n"
-                        for (var i = 0; i < resultSize; i++) {
-                            //console.log(results[i]);
-                            searchOutput += results[i].title + "\n";
-                        }
-                        searchOutput += "\u200b";
-                        if (noResults) {
-                            noResults = false;
-                        }
-                    }
-                    bot.sendMessage({
-                        to: channelID,
-                        message: searchOutput
-                    });
-                }, function (err) {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: "An error has occurred, go yell at Derek"
-                    });
-                    console.log('An error occurred in search');
-                });
-
-                // Search albums
-                plex.query("/search/?type=9&query=" + query).then(function(res) {
-                    var results = res.MediaContainer.Metadata;
-                    var resultSize = res.MediaContainer.size;
-                    var searchOutput = "";
-
-                    /*bot.sendMessage({
-                        to: channelID,
-                        message: "Albums:\n"
-                    });*/
-
-                    if (resultSize >= 1) {
-                        searchOutput += "Albums:" + "\n"
-                        for (var i = 0; i < resultSize; i++) {
-                            //console.log(results[i]);
-                            searchOutput += results[i].title + "\n";
-                        }
-                        searchOutput += "\u200b";
-                        if (noResults) {
-                            noResults = false;
-                        }
-                    }
-                    bot.sendMessage({
-                        to: channelID,
-                        message: searchOutput
-                    });
-                }, function (err) {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: "An error has occurred, go yell at Derek"
-                    });
-                    console.log('An error occurred in search');
-                });
-
-                console.log('Command executed: search');
-                break;
-            // Genre search
-            //case 'searchgenre':
-            //plex.query("/library/sections/3/all").then(function (result) {
-            //console.log( result.MediaContainer );
-            //const {
-            //    Metadata
-            //        } = result.MediaContainer;
-            // Return release date of film
-            //break;
+                break;*/
             // Pull a Youtube link from a seed file (random video or index)
-            case 'playlist':
+            case "playlist":
                 var youtubeLink = "";
                 if (args == "") {
                     fs.readFile("playlist.txt", {"encoding": "utf8"},  function(err, data) {
                         if (err) {
-                            console.log('An error occurred in playlist');
+                            sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "playlist");
                         } else {
-                            var lines = data.toString().split('\n');
+                            var lines = data.toString().split("\n");
                             youtubeLink = lines[Math.floor(Math.random() * lines.length)];
-                            bot.sendMessage({
-                                to: channelID,
-                                message: youtubeLink
-                            });
-                            console.log('Command executed: playlist');
+                            sendChannelMessage(channelID, youtubeLink, "playlist");
                         }
                     });
                 } else {
                     if (args.length > 1) {
-                        bot.sendMessage({
-                            to: channelID,
-                            message: "Please specify a single index idiot"
-                        });
-                        console.log('Command executed: playlist with index');
-                        break;
+                        sendChannelMessage(channelID, "Please specify a single index idiot", "playlist (index)");
+                        return;
                     }
 
                     var argInt = parseInt(args[0], 10);
-                    if (typeof argInt != 'number' || isNaN(argInt)) {
-                        bot.sendMessage({
-                            to: channelID,
-                            message: "Please specify a number idiot"
-                        });
-                        console.log('Command executed: playlist with index');
-                        break;
+                    if (typeof argInt != "number" || isNaN(argInt)) {
+                        sendChannelMessage(channelID, "Please specify a number idiot", "playlist (index)");
+                        return;
                     }
 
                     fs.readFile("playlist.txt", {"encoding": "utf8"},  function(err, data) {
                         if (err) {
-                            console.log(err);
+                            sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "playlist (index)");
                         } else {
-                            var lines = data.toString().split('\n');
+                            var lines = data.toString().split("\n");
                             if (args >= lines.length) {
-                                bot.sendMessage({
-                                    to: channelID,
-                                    message: "The index specified is larger than the number of items in the playlist idiot"
-                                });
+                                sendChannelMessage(channelID, "The index specified is larger than the number of items in the playlist idiot", "playlist (index)");
                             } else {
                                 youtubeLink = lines[args];
-                                bot.sendMessage({
-                                    to: channelID,
-                                    message: youtubeLink
-                                });
+                                sendChannelMessage(channelID, youtubeLink, "playlist (index)");
                             }
-                            console.log('Command executed: playlist with index');
                         }
                     });
                 }
                 break;
             // Return Get Schwifty (Andromulus Remix)
-            case 'schwifty':
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'https://www.youtube.com/watch?v=m3RUYMGD9-o'
+            case "schwifty":
+                sendChannelMessage(channelID, "https://www.youtube.com/watch?v=m3RUYMGD9-o", "schwifty");
+                break;
+            // Pull an Imgur link from an album (random image or index)
+            case "imgur":
+                https.get(imgurOptions, (resp) => {
+                    let data = "";
+                    console.log("statusCode:", resp.statusCode);
+                    console.log("headers:", resp.headers);
+
+                    resp.on("data", (chunk) => {
+                        data += chunk;
+                    });
+
+                    resp.on("end", () => {
+                        imgurData = JSON.parse(data);
+                        console.log(imgurData.data.link);
+                        console.log(imgurData.data.images);
+
+                        if (args == "") {
+                            var randomIndex = Math.floor(Math.random() * imgurData.data.images.length);
+                            console.log(randomIndex);
+                            sendChannelMessage(channelID, imgurData.data.images[randomIndex].link, "imgur");
+                        } else {
+                            if (args.length > 1) {
+                                sendChannelMessage(channelID, "Please specify a single index idiot", "imgur (index)");
+                                return;
+                            }
+
+                            var argInt = parseInt(args[0], 10);
+                            if (typeof argInt != "number" || isNaN(argInt)) {
+                                sendChannelMessage(channelID, "Please specify a number idiot", "imgur (index)");
+                                return;
+                            }
+
+                            if (args >= imgurData.data.images.length) {
+                                sendChannelMessage(channelID, "The index specified is larger than the number of items in the album idiot", "playlist (index)");
+                            } else {
+                                sendChannelMessage(channelID, imgurData.data.images[argInt].link, "imgur");
+                            }
+                        }
+                    });
+                }).on("error", (err) => {
+                    console.error(e);
+                    sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "imgur");
                 });
-                console.log('Command executed: schwifty');
+                break;
+            // Return So it begins GIF
+            case "soitbegins":
+                sendChannelMessage(channelID, "https://imgur.com/owtlQgV", "soitbegins");
                 break;
             // Check OMDb for film and show information
-            case 'releasedate': 
-                var query = '';
-                var year = '';
+            case "releasedate": 
+                var query = "";
+                var year = "";
                 var useYear = false;
                 for (var i = 0; i < args.length; i++) {
                     // If the search has more than one term and the last argument is numeric, assume it is the year
@@ -393,197 +513,151 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 query = query.substring(0, query.length - 1);
                 console.log("Query: " + query);
 
-                if (query == '') {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: "Supply a movie or show name idiot"
-                    });
-                    console.log('Command executed: releasedate');
+                if (query == "") {
+                    sendChannelMessage(channelID, "Supply a movie or show name idiot", "releasedate");
                     break;
                 }
 
                 if (!useYear) {
-                    http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&t=' + query, (resp) => {
-                        let data = '';
-                        var movieData = '';
-                        var searchOutput = '';
+                    http.get("http://www.omdbapi.com/?apikey=" + config.omdbKey + "&t=" + query, (resp) => {
+                        let data = "";
+                        var movieData = "";
+                        var searchOutput = "";
 
-                        resp.on('data', (chunk) => {
+                        resp.on("data", (chunk) => {
                             data += chunk;
                         });
 
-                        resp.on('end', () => {
+                        resp.on("end", () => {
                             movieData = JSON.parse(data);
                             console.log(movieData);
 
                             if (movieData.Response == "False") {
-                                bot.sendMessage({
-                                    to: channelID,
-                                    message: "No movie or show found, please refine your search and consider including a year"
-                                });
+                                sendChannelMessage(channelID, "No movie or show found, please refine your search and consider including a year dimwit", "releasedate");
                             } else{
-                                bot.sendMessage({
-                                    to: channelID,
-                                    message: movieData.Title + " (" + movieData.Year + "): " + movieData.Released
-                                });
+                                sendChannelMessage(channelID, movieData.Title + " (" + movieData.Year + "): " + movieData.Released, "releasedate");
                             }
-                            console.log('Command executed: releasedate');
                         });
 
                     }).on("error", (err) => {
-                        console.log("Error: " + err.message);
-                        console.log('Command executed: releasedate');
+                        sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "releasedate");
                     });
                 } else {
-                    http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&t=' + query + '&y=' + year, (resp) => {
-                        let data = '';
-                        var movieData = '';
-                        var searchOutput = '';
+                    http.get("http://www.omdbapi.com/?apikey=" + config.omdbKey + "&t=" + query + "&y=" + year, (resp) => {
+                        let data = "";
+                        var movieData = "";
+                        var searchOutput = "";
 
-                        resp.on('data', (chunk) => {
+                        resp.on("data", (chunk) => {
                             data += chunk;
                         });
 
-                        resp.on('end', () => {
+                        resp.on("end", () => {
                             movieData = JSON.parse(data);
                             console.log(movieData);
 
                             if (movieData.Response == "False") {
-                                bot.sendMessage({
-                                    to: channelID,
-                                    message: "No movie or show found, please refine your search and consider including a year"
-                                });
+                                sendChannelMessage(channelID, "No movie or show found, please refine your search and consider including a year dimwit", "releasedate (year)");
                             } else{
-                                bot.sendMessage({
-                                    to: channelID,
-                                    message: movieData.Title + " (" + movieData.Year + "): " + movieData.Released
-                                });
+                                sendChannelMessage(channelID, movieData.Title + " (" + movieData.Year + "): " + movieData.Released, "releasedate (year)");
                             }
-                            console.log('Command executed: releasedate');
                         });
 
                     }).on("error", (err) => {
-                        console.log("Error: " + err.message);
-                        console.log('Command executed: releasedate');
+                        sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "releasedate (year)");
                     });
                 }
                 break;
-            case 'omdbsearch':
-                //first 10 - page 1, 11-20 page 2, 21-30 page 3
-                //pagination - &page=2 //star trek - 29 pages
-                var query = '';
+            case "omdbsearch":
+                var query = "";
+                var page = "";
+                var usePagination = false;
                 for (var i = 0; i < args.length; i++) {
-                  query += args[i] + "+";
+                    if (i == 0 && args[0].includes("p")) {
+                        usePagination = true;
+                        var fields = args[0].split('p');
+                        page = fields[1];
+                        console.log(page);
+                    } else {
+                        query += args[i] + "+";
+                    }
                 }
                 // Remove the last + from the query
                 query = query.substring(0, query.length - 1);
                 console.log("Query: " + query);
 
-                http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&s=' + query, (resp) => {
-                    let data = '';
-                    var movieData = '';
-                    var searchOutput = '';
+                if (usePagination) {
+                    var omdbQuery = "http://www.omdbapi.com/?apikey=" + config.omdbKey + "&s=" + query + "&page=" + page;
+                } else {
+                    var omdbQuery = "http://www.omdbapi.com/?apikey=" + config.omdbKey + "&s=" + query;
+                }
 
-                    resp.on('data', (chunk) => {
+                http.get(omdbQuery, (resp) => {
+                    let data = "";
+                    var movieData = "";
+                    var searchOutput = "";
+
+                    resp.on("data", (chunk) => {
                         data += chunk;
                     });
 
-                    resp.on('end', () => {
+                    resp.on("end", () => {
                         movieData = JSON.parse(data);
                         console.log(movieData);
-                        console.log(movieData.totalResults);
 
-                        var totalResults = 0;
-                        var page = 1;
+                        if (movieData.Response == "False") {
+                            sendChannelMessage(channelID, "No movie or show found, please refine your search and consider including a year dimwit", "omdbsearch");
+                        } else {
+                            searchOutput += "Films and Shows:" + "\n"
 
-                        searchOutput += "Films and Shows:" + "\n"
-                        do {
                             for (var i = 0; i < movieData.Search.length; i++) {
-                                //console.log(results[i]);
+                                //console.log(movieData.Search[i]);
                                 searchOutput += movieData.Search[i].Title + " (" + movieData.Search[i].Year + ")\n";
                             }
-                            totalResults += movieData.Search.length;
-                            //http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&s=' + query, (resp) => {
-                            //resp.on('data', (chunk) => {
-                            //    data += chunk;
-                            //});
-                            //resp.on('end', () => {
-                            //    movieData = JSON.parse(data);
-                            //    console.log(movieData);
-                            //}
-                        } while (totalResults < movieData.totalResults)
-                        searchOutput += "\u200b";
-                        /*if (noResults) {
-                            noResults = false;
-                        }*/
-
-                        bot.sendMessage({
-                            to: channelID,
-                            message: searchOutput
-                        });
-                        console.log('Command executed: omdbsearch');
+                            searchOutput += "Total Results: " + movieData.totalResults + " (" + totalPages(movieData.totalResults) + " pages)";
+                            sendChannelMessage(channelID, searchOutput, "omdbsearch");
+                        }
                     });
-
                 }).on("error", (err) => {
-                    console.log("Error: " + err.message);
-                    console.log('Command executed: omdbsearch');
+                    sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "omdbsearch");
                 });
                 break;
-            case '8ball':
+            case "8ball":
                 if (args.length == 0) {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: "Ask a question moron"
-                    });
+                    sendChannelMessage(channelID, "Ask a question moron", "8ball");
                     break;
                 }
-                var magicResults = ['It is certain.', 'It is decidedly so.', 'Without a doubt.', 'Yes - definitely.', 'You may rely on it.',
-                    'As I see it, yes.', 'Most likely.', 'Outlook good.', 'Yes.', 'Signs point to yes.', 
-                    'Reply hazy, try again.', 'Ask again later.', 'Better not tell you now.', 'Cannot predict now.','Concentrate and ask again.',
-                    'Don\'t count on it.', 'My reply is no.', 'My sources say no.', 'Outlook not so good.', 'Very doubtful.'];
+                var magicResults = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.",
+                    "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", 
+                    "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.","Concentrate and ask again.",
+                    "Don\"t count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful."];
                 var magicResult = magicResults[Math.floor(Math.random() * magicResults.length)];
-                bot.sendMessage({
-                    to: channelID,
-                    message: magicResult
-                });
-                console.log('Command executed: 8ball');
+                sendChannelMessage(channelID, magicResult, "8ball");
                 break;
-            /*case 'oracle':
-                var divineResults = ['It is certain.', 'It is decidedly so.', 'Without a doubt.', 'Yes - definitely.', 'You may rely on it.',
-                    'As I see it, yes.', 'Most likely.', 'Outlook good.', 'Yes.', 'Signs point to yes.', 
-                    'Reply hazy, try again.', 'Ask again later.', 'Better not tell you now.', 'Cannot predict now.','Concentrate and ask again.',
-                    'Don\'t count on it.', 'My reply is no.', 'My sources say no.', 'Outlook not so good.', 'Very doubtful.'];
-                var divineResult = divineResults[Math.floor(Math.random() * divineResults.length)];
-                bot.sendMessage({
-                    to: channelID,
-                    message: divineResult
-                });
-                console.log('Command executed: magic');
-                break;*/
-            // Request
-            /*case 'request':
+            // Request - Ombi integration for requests
+            /*case "request":
                 function requestMovie(ombi, msg, movieMsg, movie) {
                     if ((!ombi.requestmovie || msg.member.roles.some(role => role.name === ombi.requestmovie)) && (!movie.available && !movie.requested && !movie.approved)) {
-                        msg.reply('If you want to request this movie please click on the ⬇ reaction.');
-                        movieMsg.react('⬇');
+                        msg.reply("If you want to request this movie please click on the ⬇ reaction.");
+                        movieMsg.react("⬇");
                         
-                        movieMsg.awaitReactions((reaction, user) => reaction.emoji.name === '⬇' && user.id === msg.author.id, { max: 1, time: 120000 })
+                        movieMsg.awaitReactions((reaction, user) => reaction.emoji.name === "⬇" && user.id === msg.author.id, { max: 1, time: 120000 })
                         .then(collected => {
                             if (collected.first()) {
                                 post({
-                                    headers: {'accept' : 'application/json',
-                                    'Content-Type' : 'application/json',
-                                    'ApiKey': ombi.apikey,
-                                    'ApiAlias' : `${msg.author.username}#${msg.author.discriminator}`,
-                                    'UserName' : ombi.username ? ombi.username : undefined,
-                                    'User-Agent': `Mellow/${process.env.npm_package_version}`},
-                                    url: (checkURLPrefix(ombi.host) ? ombi.host : `http://${ombi.host}`) + ((ombi.port) ? ':' + ombi.port : '') + '/api/v1/Request/movie/',
+                                    headers: {"accept" : "application/json",
+                                    "Content-Type" : "application/json",
+                                    "ApiKey": ombi.apikey,
+                                    "ApiAlias" : `${msg.author.username}#${msg.author.discriminator}`,
+                                    "UserName" : ombi.username ? ombi.username : undefined,
+                                    "User-Agent": `Mellow/${process.env.npm_package_version}`},
+                                    url: (checkURLPrefix(ombi.host) ? ombi.host : `http://${ombi.host}`) + ((ombi.port) ? ":" + ombi.port : "") + "/api/v1/Request/movie/",
                                     body: JSON.stringify({ "theMovieDbId": movie.theMovieDbId })
                                 }).then((resolve) => {
                                     return msg.reply(`Requested ${movie.title} in Ombi.`);
                                 }).catch((error) => {
                                     console.error(error);
-                                    return msg.reply('There was an error in your request.');
+                                    return msg.reply("There was an error in your request.");
                                 });
                             }
                         }).catch(collected => {
@@ -593,13 +667,39 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                     return movieMsg;
                 }
                 break;*/
+            case "audiotest":
+                //https://izy521.gitbooks.io/discord-io/content/Methods/Handling_audio.html
+                //https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
+                //setx /M PATH "C:\Program Files\to\ffmpeg\bin;%PATH%"
+                //https://www.youtube.com/watch?v=t8FN2XOylTA
+                var voiceChannelID = 128700402135728130; //right click channel id after enabling dev mode - put this into config
+
+                //https://izy521.gitbooks.io/discord-io/content/Methods/Handling_audio.html
+                bot.joinVoiceChannel(voiceChannelID, function(error, events) {
+                    //Check to see if any errors happen while joining.
+                    if (error) return console.error(error);
+                    
+                    //Then get the audio context
+                    bot.getAudioContext(voiceChannelID, function(error, stream) {
+                        //Once again, check to see if any errors exist
+                        if (error) return console.error(error);
+
+                        //Create a stream to your file and pipe it to the stream
+                        //Without {end: false}, it would close up the stream, so make sure to include that.
+                        fs.createReadStream("sonofabitch.mp3").pipe(stream, {end: false}); //madamada
+                        //fs.createReadStream("madamada.mp3").pipe(stream, {end: false});
+
+                        //The stream fires `done` when it"s got nothing else to send to Discord.
+                        stream.on("done", function() {
+                           bot.leaveVoiceChannel(voiceChannelID);
+                           console.log("done");
+                        });
+                    });
+                });
+                break;
             // Default response
             default:
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'Type !help for commands'
-                });
-                console.log('No command executed');
+                sendChannelMessage(channelID, "Type !help for commands", "default");
                 break;
         }
     }
