@@ -94,7 +94,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
         switch(cmd) {
             // Report valid commands
             case "help":
-                sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !search, !playlist, !schwifty, !imgur, !soitbegins, !releasedate, !omdbsearch, !8ball", "help");
+                sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !search, !playlist, !schwifty, " +
+                    "!imgur, !soitbegins, !releasedate, !omdbsearch, !8ball, !uptime", "help");
                 break;
             // Give usage information for a given command
             case "usage":
@@ -109,31 +110,49 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     usageString = "Trying to get meta are you?";
                     noResults = false;
                 } else if (args[0] == "serverstatus") {
-                    usageString = "Usage: !serverstatus to find out if the Plex server is currently up";
+                    usageString  = "Description: Returns the status of the Plex server (up or down)";
+                    usageString += "\nUsage: !serverstatus";
                     noResults = false;
                 } else if (args[0] == "search") {
-                    usageString = "Usage: !search <film, show, or album>";
+                    usageString  = "Description: Searches the Plex server for the given query and reports matching films, shows, or albums";
+                    usageString += "\nUsage: !search <query>";
                     noResults = false;
                 } else if (args[0] == "playlist") {
-                    usageString = "Usage: !playlist [index]";
+                    var data = fs.readFileSync("playlist.txt", {"encoding": "utf8"});
+                    var entries = data.toString().split("\n");
+                    var numEntries = parseInt(entries.length);
+                    usageString  = "Description: Returns a random youtube video from the SoL YouTube playlist. May specify an index from 0 to " + (numEntries - 1) + " for a specific video."
+                    usageString += "\nUsage: !playlist [index]";
                     noResults = false;
                 } else if (args[0] == "schwifty") {
-                    usageString = "Usage: !schwifty";
+                    usageString  = "Description: Get Schwifty"
+                    usageString += "\nUsage: !schwifty";
                     noResults = false;
                 } else if (args[0] == "imgur") {
-                    usageString = "Usage: !imgur [index]";
+                    usageString  = "Description: Returns a random image from the SoL Imgur album. May specify an index for a specific image."
+                    usageString += "\nUsage: !imgur [index]";
                     noResults = false;
                 } else if (args[0] == "soitbegins") {
-                    usageString = "Usage: !soitbegins";
+                    usageString  = "Description: So it begins"
+                    usageString += "\nUsage: !soitbegins";
                     noResults = false;
                 } else if (args[0] == "releasedate") {
-                    usageString = "Usage: !releasedate <film or show> [year]";
+                    usageString  = "Description: Checks the release date for a film or show. OMDb only returns one result for a given query, so refine it and optionally "
+                        + "specify a year to increase the likelihood of finding the media you want."
+                    usageString += "\nUsage: !releasedate <query> [year]";
                     noResults = false;
                 } else if (args[0] == "omdbsearch") {
-                    usageString = "Usage: !omdbsearch [p1-100] <film or show>";
+                    usageString  = "Description: Searches OMDb for the given query and reports matching films, shows, or albums. Returns ten results at a time so you "
+                        + "may optionally pass in a page index to filter through the results"
+                    usageString += "\nUsage: !omdbsearch [p1-100] <query>";
                     noResults = false;
                 } else if (args[0] == "8ball") {
-                    usageString = "Usage: !8ball <question>";
+                    usageString  = "Description: What does the Magic 8 Ball say?"
+                    usageString += "\nUsage: !8ball <question>";
+                    noResults = false;
+                } else if (args[0] == "uptime") {
+                    usageString  = "Description: Reports how long " + bot.username + " has been online"
+                    usageString += "\nUsage: !uptime";
                     noResults = false;
                 }
 
@@ -158,7 +177,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 var noResults = true;
 
                 if (args.length == 0) {
-                    sendChannelMessage(channelID, "No search term specified, please use: !search <query> to search for albums, movies, and shows on the Plex server", "search");
+                    sendChannelMessage(channelID, "No search term specified, please use: !search <query> to search for movies, " +
+                        "shows, and albums on the Plex server", "search");
                     break;
                 } else {
                     for (var i = 0; i < args.length; i++) {
@@ -229,7 +249,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 var noResults = true;
 
                 if (args.length == 0) {
-                    sendChannelMessage(channelID, "No search term specified, please use: !embedsearch <query> to search for albums, movies, and shows on the Plex server", "embedsearch");
+                    sendChannelMessage(channelID, "No search term specified, please use: !embedsearch <query> to search for albums, " + 
+                        "movies, and shows on the Plex server", "embedsearch");
                     break;
                 } else {
                     for (var i = 0; i < args.length; i++) {
@@ -481,7 +502,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                             if (args >= imgurData.data.images.length) {
                                 sendChannelMessage(channelID, "The index specified is larger than the number of items in the album idiot", "playlist (index)");
                             } else {
-                                sendChannelMessage(channelID, imgurData.data.images[argInt].link, "imgur");
+                                sendChannelMessage(channelID, imgurData.data.images[argInt].link, "imgur (index)");
                             }
                         }
                     });
@@ -557,7 +578,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                             console.log(movieData);
 
                             if (movieData.Response == "False") {
-                                sendChannelMessage(channelID, "No movie or show found, please refine your search and consider including a year dimwit", "releasedate (year)");
+                                sendChannelMessage(channelID, "No movie or show found, please refine your search and consider " +
+                                    "including a year dimwit", "releasedate (year)");
                             } else{
                                 sendChannelMessage(channelID, movieData.Title + " (" + movieData.Year + "): " + movieData.Released, "releasedate (year)");
                             }
@@ -668,7 +690,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 }
                 break;*/
             case "audiotest":
-                //https://izy521.gitbooks.io/discord-io/content/Methods/Handling_audio.html
                 //https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
                 //setx /M PATH "C:\Program Files\to\ffmpeg\bin;%PATH%"
                 //https://www.youtube.com/watch?v=t8FN2XOylTA
@@ -686,7 +707,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                         //Create a stream to your file and pipe it to the stream
                         //Without {end: false}, it would close up the stream, so make sure to include that.
-                        fs.createReadStream("sonofabitch.mp3").pipe(stream, {end: false}); //madamada
+                        fs.createReadStream("audiofile.mp3").pipe(stream, {end: false}); //madamada
                         //fs.createReadStream("madamada.mp3").pipe(stream, {end: false});
 
                         //The stream fires `done` when it"s got nothing else to send to Discord.
@@ -696,6 +717,34 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         });
                     });
                 });
+                break;
+            // Bot uptime
+            case "uptime":
+                if (bot.presence.status == "online") {
+                    var date = new Date();
+                    var timeInMilliseconds = date.getTime();
+                    var totalSeconds = (timeInMilliseconds - bot.presence.since) / 1000;
+
+                    var years = Math.floor(totalSeconds / 31536000)
+                    var days = Math.floor(totalSeconds / 86400);
+                    var hours = Math.floor(totalSeconds / 3600);
+                    var minutes = Math.floor(totalSeconds / 60);
+                    var seconds = Math.floor(totalSeconds % 60);
+
+                    if (totalSeconds > 31536000) { // Years
+                        sendChannelMessage(channelID, bot.username + " has been online for " + years + " year(s), " + days + " day(s), " + hours + " hour(s), " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
+                    } else if (totalSeconds > 86400) { // Days
+                        sendChannelMessage(channelID, bot.username + " has been online for " + days + " day(s), " + hours + " hour(s), " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
+                    } else if (totalSeconds > 3600) { // Hours
+                        sendChannelMessage(channelID, bot.username + " has been online for " + hours + " hour(s), " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
+                    } else if (totalSeconds > 60) { // Hours
+                        sendChannelMessage(channelID, bot.username + " has been online for " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
+                    } else { // Seconds
+                        sendChannelMessage(channelID, bot.username + " has been online for " + seconds + " second(s)", "uptime");
+                    }
+                } else {
+                    sendChannelMessage(channelID, bot.username + " is currently offline", "uptime");
+                }
                 break;
             // Default response
             default:
