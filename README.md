@@ -51,6 +51,33 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Plex Webhooks: https://tautulli.com/ and https://github.com/Tautulli/Tautulli-Wiki/wiki/Notification-Agents-Guide#discord
 1. Github Webhooks: https://gist.github.com/jagrosh/5b1761213e33fc5b54ec7f6379034a22
 
+## Commands
+
+* `!help`
+    * Brings up the help menu
+* `!usage <command>`
+    * Gives usage details for a given command
+* `!serverstatus`
+    * Displays the Plex server status
+* `!search <query>`
+    * Searches the Plex server for anything matching the given query
+* `!playlist [index]`
+    * Return a YouTube link from the playlist.txt file
+* `!schwifty`
+    * Get Schwifty
+* `!imgur [index]`
+    * Return an imgur link from a given album
+* `!soitbegins`
+    * So it begins
+* `!releasedate <query> [year]`
+    * Check the release date of a given movie through OMDb
+* `!omdbsearch [p1-100] <query>`
+    * Run a search through OMDb and return the results
+* `8ball`
+    * The Magic 8-Ball
+* `!uptime`
+    * Displays the current uptime of the bot
+
 ## Links and References
 
 * https://www.themoviedb.org/documentation/api?language=en-US
