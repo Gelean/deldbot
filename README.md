@@ -1,8 +1,6 @@
 # deldbot
 
-## Description
-
-Deldbot is a Discord Bot written in Nodejs 10.16.3 and uses the plex-api library.
+Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api library and several API endpoints
 
 ## Features
 
