@@ -26,14 +26,6 @@ function totalPages(number) {
     return Math.ceil(number / 10);
 }
 
-/*TODO
-1. Make search work just for films (f), shows (s), or albums (a)
-2. Pull images/memes from playlist or Imgur
-3. Minigame (lolis) - deldbucks (schrutebucks)
-4. Build up a to-do list of things to watch or do - Set up Mongo
-5. Check drobo disk space (http://drobo-utils.sourceforge.net/ ?)
-*/
-
 // Configure logger settings
 /*
 logger.remove(logger.transports.Console);
@@ -171,6 +163,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 });
                 break;
             // Check if a given piece of media (film, show, anime, or album) exists on the Plex server
+            // TODO: Make search work just for films (f), shows (s), or albums (a)
             case "search":
                 var query = "";
                 var searchOutput = '';
@@ -365,7 +358,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                 })();
                 break;
-            // Genre search
+            // TODO: Genre search
+            //case "genre":
                 // Add functionality to search by genre (ex: horror, thriller) or year (1990, 1991)
                 //case "searchgenre":
                 //plex.query("/library/sections/3/all").then(function (result) {
@@ -463,6 +457,40 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     });
                 }
                 break;
+            // Add an item to the SoL Playlist
+            //case "addplaylist":
+                /**
+                //https://developers.google.com/youtube/v3/quickstart/js
+                //https://developers.google.com/youtube/v3/docs/playlists/insert
+                //https://github.com/youtube/api-samples/blob/master/javascript/playlist_updates.js
+
+                curl --request POST \
+                  'https://www.googleapis.com/youtube/v3/playlists?alt=json&prettyPrint=true&key=[YOUR_API_KEY]' \
+                  --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
+                  --header 'Accept: application/json' \
+                  --header 'Content-Type: application/json' \
+                  --data '{"id":""}' \
+                  --compressed
+
+                POST https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={YOUR_API_KEY}
+
+                Content-Type:  application/json
+                Authorization:  Bearer ya29.1.AADtN_WT2TRZzH1t86nVlX26z9WPp-gnDTxVHGvdQ6xx0vyTzmkYeXkLdJerwllLzF_a
+                X-JavaScript-User-Agent:  Google APIs Explorer
+
+                //https://www.youtube.com/playlist?list=PLLwcjCbudUfDvnGYHNNpOG6le2xrC6ij_
+                //https://www.youtube.com/playlist?list=PLLwcjCbudUfArDWGtC0_iQBw0gtlMzvzF
+
+                {
+                  "snippet": {
+                    "playlistId": "PL8hD12HFC-nuswc21_e64aPAy9B25sEH7",
+                    "resourceId": {
+                      "kind": "youtube#video",
+                      "videoId": "KMGuyGY5gvY"
+                    }
+                  }
+                } 
+                */
             // Return Get Schwifty (Andromulus Remix)
             case "schwifty":
                 sendChannelMessage(channelID, "https://www.youtube.com/watch?v=m3RUYMGD9-o", "schwifty");
@@ -511,11 +539,12 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "imgur");
                 });
                 break;
+            // Revamp: memes <meme name> or <id>
             // Return So it begins GIF
             case "soitbegins":
                 sendChannelMessage(channelID, "https://imgur.com/owtlQgV", "soitbegins");
                 break;
-            // Check OMDb for film and show information
+            // Check OMDb for film and show release date information
             case "releasedate": 
                 var query = "";
                 var year = "";
@@ -590,6 +619,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     });
                 }
                 break;
+            // Check OMDb for film and show information
             case "omdbsearch":
                 var query = "";
                 var page = "";
@@ -597,7 +627,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 for (var i = 0; i < args.length; i++) {
                     if (i == 0 && args[0].includes("p")) {
                         usePagination = true;
-                        var fields = args[0].split('p');
+                        var fields = args[0].split("p");
                         page = fields[1];
                         console.log(page);
                     } else {
@@ -644,6 +674,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "omdbsearch");
                 });
                 break;
+            // The Magic 8-Ball
             case "8ball":
                 if (args.length == 0) {
                     sendChannelMessage(channelID, "Ask a question moron", "8ball");
@@ -656,7 +687,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 var magicResult = magicResults[Math.floor(Math.random() * magicResults.length)];
                 sendChannelMessage(channelID, magicResult, "8ball");
                 break;
-            // Request - Ombi integration for requests
+            // TODO: Ombi integration for requests
             /*case "request":
                 function requestMovie(ombi, msg, movieMsg, movie) {
                     if ((!ombi.requestmovie || msg.member.roles.some(role => role.name === ombi.requestmovie)) && (!movie.available && !movie.requested && !movie.approved)) {
@@ -689,6 +720,11 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     return movieMsg;
                 }
                 break;*/
+            // Collect deldbucks
+            //case "deld":
+                //Minigame for collecting deldbucks
+                //break;
+            // Audiotest
             case "audiotest":
                 //https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
                 //setx /M PATH "C:\Program Files\to\ffmpeg\bin;%PATH%"
@@ -725,23 +761,15 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     var timeInMilliseconds = date.getTime();
                     var totalSeconds = (timeInMilliseconds - bot.presence.since) / 1000;
 
-                    var years = Math.floor(totalSeconds / 31536000)
                     var days = Math.floor(totalSeconds / 86400);
+                    totalSeconds -= days * 86400;
                     var hours = Math.floor(totalSeconds / 3600);
+                    totalSeconds -= hours * 3600;
                     var minutes = Math.floor(totalSeconds / 60);
-                    var seconds = Math.floor(totalSeconds % 60);
-
-                    if (totalSeconds > 31536000) { // Years
-                        sendChannelMessage(channelID, bot.username + " has been online for " + years + " year(s), " + days + " day(s), " + hours + " hour(s), " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
-                    } else if (totalSeconds > 86400) { // Days
-                        sendChannelMessage(channelID, bot.username + " has been online for " + days + " day(s), " + hours + " hour(s), " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
-                    } else if (totalSeconds > 3600) { // Hours
-                        sendChannelMessage(channelID, bot.username + " has been online for " + hours + " hour(s), " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
-                    } else if (totalSeconds > 60) { // Hours
-                        sendChannelMessage(channelID, bot.username + " has been online for " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
-                    } else { // Seconds
-                        sendChannelMessage(channelID, bot.username + " has been online for " + seconds + " second(s)", "uptime");
-                    }
+                    totalSeconds -= minutes * 60;
+                    var seconds = Math.floor(totalSeconds)
+                    
+                    sendChannelMessage(channelID, bot.username + " has been online for " + days + " day(s), " + hours + " hour(s), " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
                 } else {
                     sendChannelMessage(channelID, bot.username + " is currently offline", "uptime");
                 }
