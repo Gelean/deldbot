@@ -64,7 +64,7 @@ The steps on the following page provide a good guide of the steps in creating an
 * `!schwifty`
     * Get Schwifty
 * `!imgur [index]`
-    * Return an imgur link from a given album
+    * Return an imgur link from an Imgur album specified in the config.js
 * `!soitbegins`
     * So it begins
 * `!releasedate <query> [year]`
