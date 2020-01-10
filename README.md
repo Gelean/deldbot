@@ -13,9 +13,10 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 * [NodeJS 10.x+](https://nodejs.org/en/download/)
 * [Plex-Api 5.2.5+](https://www.npmjs.com/package/plex-api/)
 * [Discord.io 2.5.3+](https://izy521.gitbooks.io/discord-io/content/)
-* [Discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io)
+* [Discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io/)
 * [OMDb API](https://www.omdbapi.com/)
 * [Imgur API](https://api.imgur.com/)
+* [HowLongToBeat API](https://www.npmjs.com/package/howlongtobeat/)
 
 ## Installation & Configuration
 
@@ -35,6 +36,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Change directory to the directory where the bot's code resides
 1. Run the following: npm install discord.io winston plex-api –save
 1. Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
+1. Rune the following: npm install howlongtobeat --save
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
@@ -71,6 +73,8 @@ The steps on the following page provide a good guide of the steps in creating an
     * Check the release date of a given movie through OMDb
 * `!omdbsearch [p1-100] <query>`
     * Run a search through OMDb and return the results
+* `!howlongtobeat <query>`
+    * Run a search through HowLongtoBeat and return the results
 * `!8ball <query>`
     * The Magic 8-Ball gives you a response for your yes/no query
 * `!uptime`
