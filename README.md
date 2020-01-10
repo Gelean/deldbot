@@ -36,7 +36,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Change directory to the directory where the bot's code resides
 1. Run the following: npm install discord.io winston plex-api –save
 1. Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
-1. Rune the following: npm install howlongtobeat --save
+1. Run the following: npm install howlongtobeat --save
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
