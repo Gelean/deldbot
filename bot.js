@@ -5,6 +5,7 @@ const Discord = require("discord.io");
 const PlexAPI = require("plex-api");
 const logger = require("winston");
 const config = require("./config.js");
+const hltb = require("howlongtobeat");
 
 function sendChannelMessage(channelID, text, method) {
     bot.sendMessage({
@@ -68,6 +69,9 @@ plex.query("/").then(function (result) {
 });
 //console.log(plex);
 
+// Initialize HLTB Service
+var hltbService = new hltb.HowLongToBeatService();
+
 // Ready the bot
 bot.on("ready", function (evt) {
     console.log("Bot has connected");
@@ -87,65 +91,58 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             // Report valid commands
             case "help":
                 sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !search, !playlist, !schwifty, " +
-                    "!imgur, !soitbegins, !releasedate, !omdbsearch, !8ball, !uptime", "help");
+                    "!imgur, !soitbegins, !releasedate, !omdbsearch, !howlongtobeat, !8ball, !uptime", "help");
                 break;
             // Give usage information for a given command
             case "usage":
-                var noResults = true;
+                var noResults = false;
                 var usageString = "";
 
                 //https://stackoverflow.com/questions/9725675/is-there-a-standard-format-for-command-line-shell-help-text
                 if (args[0] == "help") {
                     usageString = "Good lord, the help command should be self explanatory";
-                    noResults = false;
                 } else if (args[0] == "usage") {
                     usageString = "Trying to get meta are you?";
-                    noResults = false;
                 } else if (args[0] == "serverstatus") {
                     usageString  = "Description: Returns the status of the Plex server (up or down)";
                     usageString += "\nUsage: !serverstatus";
-                    noResults = false;
                 } else if (args[0] == "search") {
                     usageString  = "Description: Searches the Plex server for the given query and reports matching films, shows, or albums";
                     usageString += "\nUsage: !search <query>";
-                    noResults = false;
                 } else if (args[0] == "playlist") {
                     var data = fs.readFileSync("playlist.txt", {"encoding": "utf8"});
                     var entries = data.toString().split("\n");
                     var numEntries = parseInt(entries.length);
-                    usageString  = "Description: Returns a random youtube video from the SoL YouTube playlist. May specify an index from 0 to " + (numEntries - 1) + " for a specific video."
+                    usageString  = "Description: Returns a random youtube video from the SoL YouTube playlist. May specify an index from 0 to " + (numEntries - 1) + " for a specific video.";
                     usageString += "\nUsage: !playlist [index]";
-                    noResults = false;
                 } else if (args[0] == "schwifty") {
-                    usageString  = "Description: Get Schwifty"
+                    usageString  = "Description: Get Schwifty";
                     usageString += "\nUsage: !schwifty";
-                    noResults = false;
                 } else if (args[0] == "imgur") {
                     usageString  = "Description: Returns a random image from the SoL Imgur album. May specify an index for a specific image."
                     usageString += "\nUsage: !imgur [index]";
-                    noResults = false;
                 } else if (args[0] == "soitbegins") {
-                    usageString  = "Description: So it begins"
+                    usageString  = "Description: So it begins";
                     usageString += "\nUsage: !soitbegins";
-                    noResults = false;
                 } else if (args[0] == "releasedate") {
                     usageString  = "Description: Checks the release date for a film or show. OMDb only returns one result for a given query, so refine it and optionally "
-                        + "specify a year to increase the likelihood of finding the media you want."
+                        + "specify a year to increase the likelihood of finding the media you want.";
                     usageString += "\nUsage: !releasedate <query> [year]";
-                    noResults = false;
                 } else if (args[0] == "omdbsearch") {
                     usageString  = "Description: Searches OMDb for the given query and reports matching films, shows, or albums. Returns ten results at a time so you "
-                        + "may optionally pass in a page index to filter through the results"
+                        + "may optionally pass in a page index to filter through the results";
                     usageString += "\nUsage: !omdbsearch [p1-100] <query>";
-                    noResults = false;
+                } else if (args[0] == "howlongtobeat") {
+                    usageString  = "Description: Searches HowLongToBeat for the average completion time for games";
+                    usageString += "\nUsage: !howlongtobeat <query>";
                 } else if (args[0] == "8ball") {
-                    usageString  = "Description: What does the Magic 8 Ball say?"
+                    usageString  = "Description: What does the Magic 8 Ball say?";
                     usageString += "\nUsage: !8ball <question>";
-                    noResults = false;
                 } else if (args[0] == "uptime") {
-                    usageString  = "Description: Reports how long " + bot.username + " has been online"
+                    usageString  = "Description: Reports how long " + bot.username + " has been online";
                     usageString += "\nUsage: !uptime";
-                    noResults = false;
+                } else {
+                    noResults = true;
                 }
 
                 if (noResults) {
@@ -170,8 +167,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 var noResults = true;
 
                 if (args.length == 0) {
-                    sendChannelMessage(channelID, "No search term specified, please use: !search <query> to search for movies, " +
-                        "shows, and albums on the Plex server", "search");
+                    sendChannelMessage(channelID, "No search term specified, please use: !search <query> to search for movies, "
+                        + "shows, and albums on the Plex server", "search");
                     break;
                 } else {
                     for (var i = 0; i < args.length; i++) {
@@ -242,8 +239,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 var noResults = true;
 
                 if (args.length == 0) {
-                    sendChannelMessage(channelID, "No search term specified, please use: !embedsearch <query> to search for albums, " + 
-                        "movies, and shows on the Plex server", "embedsearch");
+                    sendChannelMessage(channelID, "No search term specified, please use: !embedsearch <query> to search for albums, "
+                        + "movies, and shows on the Plex server", "embedsearch");
                     break;
                 } else {
                     for (var i = 0; i < args.length; i++) {
@@ -673,6 +670,43 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 }).on("error", (err) => {
                     sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "omdbsearch");
                 });
+                break;
+            // Check HowLongToBeat for game completion times
+            case "howlongtobeat":
+                var query = "";
+                var hltbOutput = '';
+                var noResults = true;
+
+                if (args.length == 0) {
+                    sendChannelMessage(channelID, "No game specified, please use: !howlongtobeat <query> to search for the average completion time for games", "howlongtobeat");
+                    break;
+                } else {
+                    for (var i = 0; i < args.length; i++) {
+                        query += args[i] + " ";
+                    }
+                    console.log("Query: " + query);
+                }
+
+                (async() => {
+                    const hltbResponse = hltbService.search(query);
+                    const hltbResults = await hltbResponse;
+                    //console.log(hltbResults);
+
+                    if (hltbResults.length >= 1) {
+                        hltbOutput += "Games and Completion Times (Main Story, Main + Extra, Completionist):";
+                        for (var i = 0; i < hltbResults.length; i++) {
+                            hltbOutput += "\n" + hltbResults[i].name + " (" + hltbResults[i].gameplayMain + "h, " + 
+                                hltbResults[i].gameplayMainExtra + "h, " + hltbResults[i].gameplayCompletionist + "h)";
+                        }
+                        noResults = false;
+                    } else {
+                        hltbOutput += "\n" + hltbResults.name + " (" + hltbResults.gameplayMain + "h, " + 
+                                hltbResults.gameplayMainExtra + "h, " + hltbResults.gameplayCompletionist + "h)";
+                        noResults = false;
+                    }
+
+                    sendChannelMessage(channelID, hltbOutput, "howlongtobeat");
+                })();
                 break;
             // The Magic 8-Ball
             case "8ball":

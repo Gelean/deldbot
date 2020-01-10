@@ -6,6 +6,7 @@
    "author": "Derek Elder",
    "dependencies": {
       "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+      "howlongtobeat": "^1.1.1",
       "plex-api": "^5.2.5",
       "winston": "^3.2.1"
    }
