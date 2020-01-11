@@ -699,13 +699,13 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                                 hltbResults[i].gameplayMainExtra + "h, " + hltbResults[i].gameplayCompletionist + "h)";
                         }
                         noResults = false;
-                    } else {
-                        hltbOutput += "\n" + hltbResults.name + " (" + hltbResults.gameplayMain + "h, " + 
-                                hltbResults.gameplayMainExtra + "h, " + hltbResults.gameplayCompletionist + "h)";
-                        noResults = false;
                     }
 
-                    sendChannelMessage(channelID, hltbOutput, "howlongtobeat");
+                    if (noResults) {
+                        sendChannelMessage(channelID, "No results found, please refine your search dimwit", "howlongtobeat");
+                    } else {
+                        sendChannelMessage(channelID, hltbOutput, "howlongtobeat");
+                    }
                 })();
                 break;
             // The Magic 8-Ball
