@@ -34,6 +34,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Unzip the repository code somewhere on your machine
 1. Open up the windows CMD prompt and run as administrator  (or whatever you use to run code)
 1. Change directory to the directory where the bot's code resides
+1. Optional if you run into cache issues with the following three commands: npm cache clean --force
 1. Run the following: npm install discord.io winston plex-api –save
 1. Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
 1. Run the following: npm install howlongtobeat --save
