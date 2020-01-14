@@ -27,15 +27,6 @@ function totalPages(number) {
     return Math.ceil(number / 10);
 }
 
-// Configure logger settings
-/*
-logger.remove(logger.transports.Console);
-logger.add(new logger.transports.Console, {
-    colorize: true
-});
-logger.level = "debug";
-*/
-
 // Initialize Discord Bot
 var bot = new Discord.Client({
    token: config.botToken,
@@ -91,14 +82,13 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             // Report valid commands
             case "help":
                 sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !search, !playlist, !schwifty, " +
-                    "!imgur, !soitbegins, !releasedate, !omdbsearch, !howlongtobeat, !8ball, !uptime", "help");
+                    "!imgur, !soitbegins, !releasedate, !omdbsearch, !hltb, !howlongtobeat, !8ball, !uptime", "help");
                 break;
             // Give usage information for a given command
             case "usage":
                 var noResults = false;
                 var usageString = "";
 
-                //https://stackoverflow.com/questions/9725675/is-there-a-standard-format-for-command-line-shell-help-text
                 if (args[0] == "help") {
                     usageString = "Good lord, the help command should be self explanatory";
                 } else if (args[0] == "usage") {
@@ -160,7 +150,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 });
                 break;
             // Check if a given piece of media (film, show, anime, or album) exists on the Plex server
-            // TODO: Make search work just for films (f), shows (s), or albums (a)
             case "search":
                 var query = "";
                 var searchOutput = '';
@@ -171,22 +160,18 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         + "shows, and albums on the Plex server", "search");
                     break;
                 } else {
-                    for (var i = 0; i < args.length; i++) {
-                        query += args[i] + " ";
-                    }
+                    query = args.join(' ');
                     console.log("Query: " + query);
                 }
 
-                if (query === "Derek's book" || query === "derek's book") {
-                    sendUserMessage(userID, "Fuck you", "search");
+                if (query.toLowerCase() === "derek's book") {
+                    sendUserMessage(userID, "Go fuck yourself", "search");
                     break;
                 }
 
                 (async() => {
 
                     // List of query types: https://github.com/Arcanemagus/plex-api/wiki/MediaTypes
-                    // 1 - movie, 2 - show, 3 - season, 4 - episode, 5 - trailer, 6 - comic, 7 - person, 8 - artist,
-                    // 9 - album, 10 - track, 11 - photo album, 12 - picture, 13 - photo, 14 - clip, 15 - playlist
 
                     const filmResponse = plex.query("/search/?type=1&query=" + query);
                     const filmResults = await filmResponse;
@@ -243,14 +228,12 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         + "movies, and shows on the Plex server", "embedsearch");
                     break;
                 } else {
-                    for (var i = 0; i < args.length; i++) {
-                        query += args[i] + " ";
-                    }
+                    query = args.join(' ');
                     console.log("Query: " + query);
                 }
 
-                if (query === "Derek's book" || query === "derek's book") {
-                    sendUserMessage(userID, "Fuck you", "embedsearch");
+                if (query.toLowerCase() === "derek's book") {
+                    sendUserMessage(userID, "Go fuck yourself", "embedsearch");
                     break;
                 }
 
@@ -355,65 +338,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                 })();
                 break;
-            // TODO: Genre search
-            //case "genre":
-                // Add functionality to search by genre (ex: horror, thriller) or year (1990, 1991)
-                //case "searchgenre":
-                //plex.query("/library/sections/3/all").then(function (result) {
-                //console.log( result.MediaContainer );
-                //const {
-                //    Metadata
-                //        } = result.MediaContainer;
-                // Return release date of film
-                //https://blog.cloudboost.io/execute-asynchronous-tasks-in-series-942b74697f9c?gi=28073aa910e6
-                //https://stackoverflow.com/questions/5010288/how-to-make-a-function-wait-until-a-callback-has-been-called-using-node-js
-                //filters=genre%3D4994&filterLabel=Action&key=%2Flibrary%2Fsections%2F17%2Fall&source=%2Fhubs%2Fsections%2F17
-                //filters=genre=4994&filterLabel=Action&key=/library/sections/17/all&source=/hubs/sections/17
-                // List of genres (differs by Plex server):
-                // 2853 - Action 
-                // 2967 - Drama
-
-                /*
-                plex.query("/library/sections/3/all?genre=2967").then(function(res) {
-                //plex.find("/library/sections", {type: "movie"}).then(function(res) {
-                    console.log("huh");
-                    console.log(query);
-                    var results = res.MediaContainer.Metadata;
-                    var resultSize = res.MediaContainer.size;
-                    var searchOutput = "";
-
-                    console.log(res);
-                    console.log(res.MediaContainer);
-
-                    if (resultSize >= 1) {
-                        searchOutput += "Films:" + "\n"
-                        for (var i = 0; i < resultSize; i++) {
-                            console.log(results[i]);
-                            searchOutput += results[i].title + "\n";
-                            console.log(results[i].Genre);
-                            console.log(results[i].Genre.length);
-                            for (var j = 0; j < results[i].Genre.length; j++) {
-                                if (results[i].Genre[j].tag)
-                                console.log(results[i].Genre[j].tag);
-                            }
-                        }
-                        searchOutput += "\u200b";
-                        if (noResults) {
-                            noResults = false;
-                        }
-                    }
-                    bot.sendMessage({
-                        to: channelID,
-                        message: searchOutput
-                    });
-                }, function (err) {
-                    bot.sendMessage({
-                        to: channelID,
-                        message: "An error has occurred, go yell at Derek"
-                    });
-                    console.log("An error occurred in search");
-                });
-                break;*/
             // Pull a Youtube link from a seed file (random video or index)
             case "playlist":
                 var youtubeLink = "";
@@ -454,40 +378,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     });
                 }
                 break;
-            // Add an item to the SoL Playlist
-            //case "addplaylist":
-                /**
-                //https://developers.google.com/youtube/v3/quickstart/js
-                //https://developers.google.com/youtube/v3/docs/playlists/insert
-                //https://github.com/youtube/api-samples/blob/master/javascript/playlist_updates.js
-
-                curl --request POST \
-                  'https://www.googleapis.com/youtube/v3/playlists?alt=json&prettyPrint=true&key=[YOUR_API_KEY]' \
-                  --header 'Authorization: Bearer [YOUR_ACCESS_TOKEN]' \
-                  --header 'Accept: application/json' \
-                  --header 'Content-Type: application/json' \
-                  --data '{"id":""}' \
-                  --compressed
-
-                POST https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&key={YOUR_API_KEY}
-
-                Content-Type:  application/json
-                Authorization:  Bearer ya29.1.AADtN_WT2TRZzH1t86nVlX26z9WPp-gnDTxVHGvdQ6xx0vyTzmkYeXkLdJerwllLzF_a
-                X-JavaScript-User-Agent:  Google APIs Explorer
-
-                //https://www.youtube.com/playlist?list=PLLwcjCbudUfDvnGYHNNpOG6le2xrC6ij_
-                //https://www.youtube.com/playlist?list=PLLwcjCbudUfArDWGtC0_iQBw0gtlMzvzF
-
-                {
-                  "snippet": {
-                    "playlistId": "PL8hD12HFC-nuswc21_e64aPAy9B25sEH7",
-                    "resourceId": {
-                      "kind": "youtube#video",
-                      "videoId": "KMGuyGY5gvY"
-                    }
-                  }
-                } 
-                */
             // Return Get Schwifty (Andromulus Remix)
             case "schwifty":
                 sendChannelMessage(channelID, "https://www.youtube.com/watch?v=m3RUYMGD9-o", "schwifty");
@@ -672,6 +562,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 });
                 break;
             // Check HowLongToBeat for game completion times
+            case "hltb":
             case "howlongtobeat":
                 var query = "";
                 var hltbOutput = '';
@@ -681,9 +572,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     sendChannelMessage(channelID, "No game specified, please use: !howlongtobeat <query> to search for the average completion time for games", "howlongtobeat");
                     break;
                 } else {
-                    for (var i = 0; i < args.length; i++) {
-                        query += args[i] + " ";
-                    }
+                    query = args.join(' ');
                     console.log("Query: " + query);
                 }
 
@@ -720,73 +609,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     "Don\"t count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful."];
                 var magicResult = magicResults[Math.floor(Math.random() * magicResults.length)];
                 sendChannelMessage(channelID, magicResult, "8ball");
-                break;
-            // TODO: Ombi integration for requests
-            /*case "request":
-                function requestMovie(ombi, msg, movieMsg, movie) {
-                    if ((!ombi.requestmovie || msg.member.roles.some(role => role.name === ombi.requestmovie)) && (!movie.available && !movie.requested && !movie.approved)) {
-                        msg.reply("If you want to request this movie please click on the ⬇ reaction.");
-                        movieMsg.react("⬇");
-                        
-                        movieMsg.awaitReactions((reaction, user) => reaction.emoji.name === "⬇" && user.id === msg.author.id, { max: 1, time: 120000 })
-                        .then(collected => {
-                            if (collected.first()) {
-                                post({
-                                    headers: {"accept" : "application/json",
-                                    "Content-Type" : "application/json",
-                                    "ApiKey": ombi.apikey,
-                                    "ApiAlias" : `${msg.author.username}#${msg.author.discriminator}`,
-                                    "UserName" : ombi.username ? ombi.username : undefined,
-                                    "User-Agent": `Mellow/${process.env.npm_package_version}`},
-                                    url: (checkURLPrefix(ombi.host) ? ombi.host : `http://${ombi.host}`) + ((ombi.port) ? ":" + ombi.port : "") + "/api/v1/Request/movie/",
-                                    body: JSON.stringify({ "theMovieDbId": movie.theMovieDbId })
-                                }).then((resolve) => {
-                                    return msg.reply(`Requested ${movie.title} in Ombi.`);
-                                }).catch((error) => {
-                                    console.error(error);
-                                    return msg.reply("There was an error in your request.");
-                                });
-                            }
-                        }).catch(collected => {
-                            return movieMsg;
-                        });
-                    }
-                    return movieMsg;
-                }
-                break;*/
-            // Collect deldbucks
-            //case "deld":
-                //Minigame for collecting deldbucks
-                //break;
-            // Audiotest
-            case "audiotest":
-                //https://github.com/adaptlearning/adapt_authoring/wiki/Installing-FFmpeg
-                //setx /M PATH "C:\Program Files\to\ffmpeg\bin;%PATH%"
-                //https://www.youtube.com/watch?v=t8FN2XOylTA
-                var voiceChannelID = 128700402135728130; //right click channel id after enabling dev mode - put this into config
-
-                //https://izy521.gitbooks.io/discord-io/content/Methods/Handling_audio.html
-                bot.joinVoiceChannel(voiceChannelID, function(error, events) {
-                    //Check to see if any errors happen while joining.
-                    if (error) return console.error(error);
-                    
-                    //Then get the audio context
-                    bot.getAudioContext(voiceChannelID, function(error, stream) {
-                        //Once again, check to see if any errors exist
-                        if (error) return console.error(error);
-
-                        //Create a stream to your file and pipe it to the stream
-                        //Without {end: false}, it would close up the stream, so make sure to include that.
-                        fs.createReadStream("audiofile.mp3").pipe(stream, {end: false}); //madamada
-                        //fs.createReadStream("madamada.mp3").pipe(stream, {end: false});
-
-                        //The stream fires `done` when it"s got nothing else to send to Discord.
-                        stream.on("done", function() {
-                           bot.leaveVoiceChannel(voiceChannelID);
-                           console.log("done");
-                        });
-                    });
-                });
                 break;
             // Bot uptime
             case "uptime":
