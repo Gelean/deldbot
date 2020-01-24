@@ -14,6 +14,7 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 * [plex-api 5.2.5+](https://www.npmjs.com/package/plex-api/)
 * [discord.io 2.5.3+](https://izy521.gitbooks.io/discord-io/content/)
 * [discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io/)
+* [discord.js 11.5.1+](https://www.npmjs.com/package/discord.js/)
 * [howlongtobeat 1.2.1+](https://www.npmjs.com/package/howlongtobeat/)
 * [itad-api 1.0.4+](https://www.npmjs.com/package/itad-api-client-ts/)
 * [Plex API](https://github.com/Arcanemagus/plex-api/wiki/)
@@ -42,6 +43,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
 1. Run the following: npm install howlongtobeat --save
 1. Run the following: npm install itad-api-client-ts --save
+1. Run the following: npm install discord.js save
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
