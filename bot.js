@@ -1,11 +1,13 @@
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
-const Discord = require("discord.io");
-const PlexAPI = require("plex-api");
 const logger = require("winston");
-const config = require("./config.js");
+const Discord = require("discord.io");
+const DiscordJs = require("discord.js");
+const PlexAPI = require("plex-api");
 const hltb = require("howlongtobeat");
+const itad = require("itad-api-client-ts");
+const config = require("./config.js");
 
 function sendChannelMessage(channelID, text, method) {
     bot.sendMessage({
@@ -19,6 +21,14 @@ function sendUserMessage(userID, text, method) {
     bot.sendMessage({
         to: userID,
         message: text
+    });
+    console.log("Command executed: " + method);
+}
+
+function sendEmbedMessage(channelID, embed, method) {
+    bot.sendMessage({
+        to: channelID,
+        embed: embed
     });
     console.log("Command executed: " + method);
 }
@@ -63,6 +73,9 @@ plex.query("/").then(function (result) {
 // Initialize HLTB Service
 var hltbService = new hltb.HowLongToBeatService();
 
+// Initialize ITAD Service
+var itadApi = new itad.IsThereAnyDealApi(config.itadKey);
+
 // Ready the bot
 bot.on("ready", function (evt) {
     console.log("Bot has connected");
@@ -82,7 +95,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             // Report valid commands
             case "help":
                 sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !search, !playlist, !schwifty, " +
-                    "!imgur, !soitbegins, !releasedate, !omdbsearch, !hltb, !howlongtobeat, !8ball, !uptime", "help");
+                    "!imgur, !soitbegins, !releasedate, !omdbsearch, !hltb, !howlongtobeat, !itad, !isthereanydeal, !8ball, !uptime", "help");
                 break;
             // Give usage information for a given command
             case "usage":
@@ -122,9 +135,18 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     usageString  = "Description: Searches OMDb for the given query and reports matching films, shows, or albums. Returns ten results at a time so you "
                         + "may optionally pass in a page index to filter through the results";
                     usageString += "\nUsage: !omdbsearch [p1-100] <query>";
+                } else if (args[0] == "hltb") {
+                    usageString  = "Description: Searches HowLongToBeat for the average completion time for games";
+                    usageString += "\nUsage: !hltb <query>";
                 } else if (args[0] == "howlongtobeat") {
                     usageString  = "Description: Searches HowLongToBeat for the average completion time for games";
                     usageString += "\nUsage: !howlongtobeat <query>";
+                } else if (args[0] == "itad") {
+                    usageString  = "Description: Searches HowLongToBeat for the average completion time for games";
+                    usageString += "\nUsage: !itad <query>";
+                } else if (args[0] == "isthereanydeal") {
+                    usageString  = "Description: Searches HowLongToBeat for the average completion time for games";
+                    usageString += "\nUsage: !isthereanydeal <query>";
                 } else if (args[0] == "8ball") {
                     usageString  = "Description: What does the Magic 8 Ball say?";
                     usageString += "\nUsage: !8ball <question>";
@@ -152,7 +174,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             // Check if a given piece of media (film, show, anime, or album) exists on the Plex server
             case "search":
                 var query = "";
-                var searchOutput = '';
+                var searchOutput = "";
                 var noResults = true;
 
                 if (args.length == 0) {
@@ -220,7 +242,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             // Return the top result in an embed with a Plex link
             case "embedsearch":
                 var query = "";
-                var searchOutput = '';
+                var searchOutput = "";
                 var noResults = true;
 
                 if (args.length == 0) {
@@ -257,7 +279,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                                     + filmResults.MediaContainer.Metadata[i].ratingKey + "&context=library%3Acontent.library",
                                 "color": 15048717,
                                 "footer": {
-                                    "icon_url": "https://dl2.macupdate.com/images/icons256/42311.png",
+                                    "icon_url": "https://i.imgur.com/QhElb95.png",
                                     "text": "Plex"
                                 }
                                 //"thumbnail": {
@@ -565,11 +587,11 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             case "hltb":
             case "howlongtobeat":
                 var query = "";
-                var hltbOutput = '';
+                var hltbOutput = "";
                 var noResults = true;
 
                 if (args.length == 0) {
-                    sendChannelMessage(channelID, "No game specified, please use: !howlongtobeat <query> to search for the average completion time for games", "howlongtobeat");
+                    sendChannelMessage(channelID, "No game specified, please use: !hltb <query> or !howlongtobeat <query> to search for the average completion time for games", "howlongtobeat");
                     break;
                 } else {
                     query = args.join(' ');
@@ -594,6 +616,62 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         sendChannelMessage(channelID, "No results found, please refine your search dimwit", "howlongtobeat");
                     } else {
                         sendChannelMessage(channelID, hltbOutput, "howlongtobeat");
+                    }
+                })();
+                break;
+            // Check IsThereAnyDeal for game deals
+            case "itad":
+            case "isthereanydeal":
+                var query = "";
+                var itadOutput = "";
+                var noResults = true;
+                var title = "";
+                var fieldCount = 0;
+                var gameEmbed = new DiscordJs.RichEmbed();
+
+                if (args.length == 0) {
+                    sendChannelMessage(channelID, "No game specified, please use: !itad <query> or !isthereanydeal <query> to search for prices for a games", "isthereanydeal");
+                    break;
+                } else {
+                    query = args.join(' ');
+                    console.log("Query: " + query);
+                }
+
+                sendChannelMessage(channelID, "Please wait a few moments while the closest result can be found", "isthereanydeal");
+                (async() => {
+                    const itadOutput = await itadApi.getDealsFull({
+                      shops: ["steam", "gog", "origin", "epic", "battlenet", "uplay", "squenix", "newegg", "microsoft", "humblestore", "discord", "amazonus"],
+                    }, query);
+
+                    var arrayCount = itadOutput.count;
+                    for (var i = 0; i < arrayCount; i++) {
+                        //console.log(itadOutput.list[i]);
+                        //console.log(itadOutput.list[i].title);
+                        if (title === "" && !itadOutput.list[i].title.includes("Offer") && !itadOutput.list[i].title.includes("Currency") 
+                            && !itadOutput.list[i].title.includes("Pass") && itadOutput.list[i].is_dlc === false) {
+                            title = itadOutput.list[i].title;
+
+                            gameEmbed.setColor("046EB2")
+                                .setTitle(itadOutput.list[i].title)
+                                .setURL(itadOutput.list[i].urls.game)
+                                .setImage(itadOutput.list[i].image)
+                                .setFooter("IsThereAnyDeal", "https://i.imgur.com/Y53EOrA.jpg");
+                        }
+                        if (title === itadOutput.list[i].title && !itadOutput.list[i].title.includes("Offer") && !itadOutput.list[i].title.includes("Currency") 
+                            && !itadOutput.list[i].title.includes("Pass") && itadOutput.list[i].is_dlc === false && fieldCount < 8) {
+                            //console.log(itadOutput.list[i]);
+
+                            gameEmbed.addField("Sale Price (" + itadOutput.list[i].shop.name + ")", "$" + itadOutput.list[i].price_new.toString(), true);
+                            gameEmbed.addField("List Price (" + itadOutput.list[i].shop.name + ")", "$" + itadOutput.list[i].price_old.toString(), true);
+                            gameEmbed.addField("Discount", itadOutput.list[i].price_cut.toString() + "%", true);
+                            fieldCount++;
+                        }
+                    }
+
+                    if (arrayCount >= 1) {
+                        sendEmbedMessage(channelID, gameEmbed, "isthereanydeal");
+                    } else {
+                        sendChannelMessage(channelID, "No results found, please refine your search dimwit", "isthereanydeal");
                     }
                 })();
                 break;
