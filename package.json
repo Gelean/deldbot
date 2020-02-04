@@ -10,7 +10,6 @@
       "howlongtobeat": "^1.1.1",
       "itad-api-client-ts": "^1.0.4",
       "plex-api": "^5.2.5",
-      "save": "^2.4.0",
       "winston": "^3.2.1"
    }
 }
