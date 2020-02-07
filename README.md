@@ -80,9 +80,9 @@ The steps on the following page provide a good guide of the steps in creating an
     * Check the release date of a given movie through OMDb
 * `!omdbsearch [p1-100] <query>`
     * Run a search through OMDb and return the results
-* `!howlongtobeat <query>` | `!hltb <query>`
+* `!howlongtobeat <query>` OR `!hltb <query>`
     * Run a search through HowLongtoBeat and return the results
-* `!isthereanydeal <query>` | `!itad <query>`
+* `!isthereanydeal <query>` OR `!itad <query>`
     * Run a search through IsThereAnyDeal and return the results
 * `!8ball <query>`
     * The Magic 8-Ball gives you a response for your yes/no query
