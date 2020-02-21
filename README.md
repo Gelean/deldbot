@@ -2,12 +2,6 @@
 
 Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api library and several API endpoints
 
-## Features
-
-* Pull Youtube links from a playlist file
-* Check if the Plex server is up
-* Search for entries in the Plex server
-
 ## Software, Libraries, and APIs
 
 * [NodeJS 10.x+](https://nodejs.org/en/download/)
@@ -60,7 +54,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Plex Webhooks: https://tautulli.com/ and https://github.com/Tautulli/Tautulli-Wiki/wiki/Notification-Agents-Guide#discord
 1. GitHub Webhooks: https://gist.github.com/jagrosh/5b1761213e33fc5b54ec7f6379034a22
 
-## Commands
+## Commands and Features
 
 * `!help`
     * Brings up the help menu
