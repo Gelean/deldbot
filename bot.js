@@ -75,6 +75,7 @@ var hltbService = new hltb.HowLongToBeatService();
 
 // Initialize ITAD Service
 var itadApi = new itad.IsThereAnyDealApi(config.itadKey);
+//var shops = await itadApi.getShops(); //http://taobao.mirrors.alibaba.ir/package/itad-api-client-ts/v/1.0.1
 
 // Ready the bot
 bot.on("ready", function (evt) {
@@ -405,6 +406,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 sendChannelMessage(channelID, "https://www.youtube.com/watch?v=m3RUYMGD9-o", "schwifty");
                 break;
             // Pull an Imgur link from an album (random image or index)
+            // TODO: need an imgur count command and a link to post the imgur library
             case "imgur":
                 https.get(imgurOptions, (resp) => {
                     let data = "";
@@ -643,35 +645,36 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                       shops: ["steam", "gog", "origin", "epic", "battlenet", "uplay", "squenix", "newegg", "microsoft", "humblestore", "discord", "amazonus"],
                     }, query);
 
-                    var arrayCount = itadOutput.count;
-                    for (var i = 0; i < arrayCount; i++) {
-                        //console.log(itadOutput.list[i]);
-                        //console.log(itadOutput.list[i].title);
-                        if (title === "" && !itadOutput.list[i].title.includes("Offer") && !itadOutput.list[i].title.includes("Currency") 
-                            && !itadOutput.list[i].title.includes("Pass") && itadOutput.list[i].is_dlc === false) {
-                            title = itadOutput.list[i].title;
+                    if (itadOutput.count >= 1) {
+                        for (var i = 0; i < itadOutput.count; i++) {
+                            var itadElement = itadOutput.list[i];
+                            //console.log(itadElement);
+                            //console.log(itadElement.title);
 
-                            gameEmbed.setColor("046EB2")
-                                .setTitle(itadOutput.list[i].title)
-                                .setURL(itadOutput.list[i].urls.game)
-                                .setImage(itadOutput.list[i].image)
-                                .setFooter("IsThereAnyDeal", "https://i.imgur.com/Y53EOrA.jpg");
+                            if (title === "" && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") 
+                                && !itadElement.title.includes("Pass") && itadElement.is_dlc === false) {
+                                title = itadElement.title;
+                                gameEmbed.setColor("046EB2")
+                                    .setTitle(title)
+                                    .setURL(itadElement.urls.game)
+                                    .setImage(itadElement.image)
+                                    .setFooter("IsThereAnyDeal", "https://i.imgur.com/Y53EOrA.jpg");
+                            }
+                            if (title === itadElement.title && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") 
+                                && !itadElement.title.includes("Pass") && itadElement.is_dlc === false && fieldCount < 8) {
+                                gameEmbed.addField("Sale Price (" + itadElement.shop.name + ")", "$" + itadElement.price_new.toString(), true);
+                                gameEmbed.addField("List Price (" + itadElement.shop.name + ")", "$" + itadElement.price_old.toString(), true);
+                                gameEmbed.addField("Discount", itadElement.price_cut.toString() + "%", true);
+                                fieldCount++;
+                            }
                         }
-                        if (title === itadOutput.list[i].title && !itadOutput.list[i].title.includes("Offer") && !itadOutput.list[i].title.includes("Currency") 
-                            && !itadOutput.list[i].title.includes("Pass") && itadOutput.list[i].is_dlc === false && fieldCount < 8) {
-                            //console.log(itadOutput.list[i]);
-
-                            gameEmbed.addField("Sale Price (" + itadOutput.list[i].shop.name + ")", "$" + itadOutput.list[i].price_new.toString(), true);
-                            gameEmbed.addField("List Price (" + itadOutput.list[i].shop.name + ")", "$" + itadOutput.list[i].price_old.toString(), true);
-                            gameEmbed.addField("Discount", itadOutput.list[i].price_cut.toString() + "%", true);
-                            fieldCount++;
-                        }
+                        noResults = false;
                     }
 
-                    if (arrayCount >= 1) {
-                        sendEmbedMessage(channelID, gameEmbed, "isthereanydeal");
-                    } else {
+                    if (noResults) {
                         sendChannelMessage(channelID, "No results found, please refine your search dimwit", "isthereanydeal");
+                    } else {
+                        sendEmbedMessage(channelID, gameEmbed, "isthereanydeal");
                     }
                 })();
                 break;
@@ -686,6 +689,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.","Concentrate and ask again.",
                     "Don\"t count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful."];
                 var magicResult = magicResults[Math.floor(Math.random() * magicResults.length)];
+
                 sendChannelMessage(channelID, magicResult, "8ball");
                 break;
             // Bot uptime
