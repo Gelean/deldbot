@@ -655,7 +655,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     if (itadOutput.count >= 1) {
                         for (var i = 0; i < itadOutput.count; i++) {
                             var itadElement = itadOutput.list[i];
-                            console.log(itadElement);
+                            //console.log(itadElement);
                             //console.log(itadElement.title);
 
                             if (title === "" && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") 
