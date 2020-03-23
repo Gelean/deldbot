@@ -75,7 +75,10 @@ var hltbService = new hltb.HowLongToBeatService();
 
 // Initialize ITAD Service
 var itadApi = new itad.IsThereAnyDealApi(config.itadKey);
-//var shops = await itadApi.getShops(); //http://taobao.mirrors.alibaba.ir/package/itad-api-client-ts/v/1.0.1
+
+async() => {
+    const shops = await itadApi.getShops(); //http://taobao.mirrors.alibaba.ir/package/itad-api-client-ts/v/1.0.1
+};
 
 // Ready the bot
 bot.on("ready", function (evt) {
@@ -643,12 +646,16 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 (async() => {
                     const itadOutput = await itadApi.getDealsFull({
                       shops: ["steam", "gog", "origin", "epic", "battlenet", "uplay", "squenix", "newegg", "microsoft", "humblestore", "discord", "amazonus"],
+                      limit: 40,
+                      sort: "time",
                     }, query);
+
+                    //itadOutput.sort();
 
                     if (itadOutput.count >= 1) {
                         for (var i = 0; i < itadOutput.count; i++) {
                             var itadElement = itadOutput.list[i];
-                            //console.log(itadElement);
+                            console.log(itadElement);
                             //console.log(itadElement.title);
 
                             if (title === "" && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") 
@@ -660,15 +667,18 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                                     .setImage(itadElement.image)
                                     .setFooter("IsThereAnyDeal", "https://i.imgur.com/Y53EOrA.jpg");
                             }
+                            if (itadElement.shop.name === "Epic Game Store") {
+                                itadElement.shop.name = "Epic";
+                            }
                             if (title === itadElement.title && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") 
                                 && !itadElement.title.includes("Pass") && itadElement.is_dlc === false && fieldCount < 8) {
                                 gameEmbed.addField("Sale Price (" + itadElement.shop.name + ")", "$" + itadElement.price_new.toString(), true);
                                 gameEmbed.addField("List Price (" + itadElement.shop.name + ")", "$" + itadElement.price_old.toString(), true);
                                 gameEmbed.addField("Discount", itadElement.price_cut.toString() + "%", true);
                                 fieldCount++;
+                                noResults = false;
                             }
                         }
-                        noResults = false;
                     }
 
                     if (noResults) {
