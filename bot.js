@@ -7,6 +7,7 @@ const DiscordJs = require("discord.js");
 const PlexAPI = require("plex-api");
 const hltb = require("howlongtobeat");
 const itad = require("itad-api-client-ts");
+//const igdb = require("igdb-api-node");
 const config = require("./config.js");
 
 function sendChannelMessage(channelID, text, method) {
@@ -75,6 +76,9 @@ var hltbService = new hltb.HowLongToBeatService();
 
 // Initialize ITAD Service
 var itadApi = new itad.IsThereAnyDealApi(config.itadKey);
+
+//Initialize IGDB Service
+//var igdbApi = new igdb.igdb(config.igdbKey);
 
 async() => {
     const shops = await itadApi.getShops(); //http://taobao.mirrors.alibaba.ir/package/itad-api-client-ts/v/1.0.1
@@ -642,15 +646,30 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     console.log("Query: " + query);
                 }
 
+                /*
+                const response = await igdb()
+                    .fields(['name', 'movies', 'age']) // fetches only the name, movies, and age fields
+                    .fields('name,movies,age') // same as above
+                    .limit(50) // limit to 50 results
+                    .offset(10) // offset results by 10
+                    .sort('name') // default sort direction is 'asc' (ascending)
+                    .sort('name', 'desc') // sorts by name, descending
+                    .search('mario') // search for a specific name (search implementations can vary)
+                    .where(`first_release_date > ${new Date().getTime() / 1000}`) // filter the results
+                    .request('/games'); // execute the query and return a response object
+                console.log(response.data);
+                */
+
                 sendChannelMessage(channelID, "Please wait a few moments while the closest result can be found", "isthereanydeal");
                 (async() => {
                     const itadOutput = await itadApi.getDealsFull({
-                      shops: ["steam", "gog", "origin", "epic", "battlenet", "uplay", "squenix", "newegg", "microsoft", "humblestore", "discord", "amazonus"],
-                      limit: 40,
+                      shops: ["steam", "gog", "origin", "epic", "battlenet", "uplay", "squenix", "humblestore"],
+                      limit: 50,
                       sort: "time",
                     }, query);
 
-                    //itadOutput.sort();
+                    itadOutput.list.sort((a, b) => a.title.localeCompare(b.title, 'en', {ignorePunctuation: true}));
+                    //console.log(itadOutput);
 
                     if (itadOutput.count >= 1) {
                         for (var i = 0; i < itadOutput.count; i++) {
@@ -658,8 +677,20 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                             //console.log(itadElement);
                             //console.log(itadElement.title);
 
-                            if (title === "" && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") 
-                                && !itadElement.title.includes("Pass") && itadElement.is_dlc === false) {
+                            if (title === "" && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") && !itadElement.title.includes("Pass") 
+                                && !itadElement.title.includes("Pack") && itadElement.is_dlc === false && itadElement.image !== null) {
+
+                                /*if (!query.toLowerCase().includes("complete") && (itadElement.title.includes("Complete") || itadElement.title.includes("Collection"))) {
+                                    console.log(query);
+                                    console.log(itadElement.title)
+                                    break;
+                                }
+                                else if (!query.toLowerCase().includes("goty") && (itadElement.title.includes("Game of the Year") || itadElement.title.includes("GOTY"))) {
+                                    console.log(query);
+                                    console.log(itadElement.title)
+                                    break;
+                                }*/
+
                                 title = itadElement.title;
                                 gameEmbed.setColor("046EB2")
                                     .setTitle(title)
@@ -671,7 +702,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                                 itadElement.shop.name = "Epic";
                             }
                             if (title === itadElement.title && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") 
-                                && !itadElement.title.includes("Pass") && itadElement.is_dlc === false && fieldCount < 8) {
+                                && !itadElement.title.includes("Pass") && !itadElement.title.includes("Pack") 
+                                && itadElement.is_dlc === false && itadElement.image !== null && fieldCount < 8) {
                                 gameEmbed.addField("Sale Price (" + itadElement.shop.name + ")", "$" + itadElement.price_new.toString(), true);
                                 gameEmbed.addField("List Price (" + itadElement.shop.name + ")", "$" + itadElement.price_old.toString(), true);
                                 gameEmbed.addField("Discount", itadElement.price_cut.toString() + "%", true);
