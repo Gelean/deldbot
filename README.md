@@ -5,7 +5,6 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 ## Software, Libraries, and APIs
 
 * [NodeJS 10.x+](https://nodejs.org/en/download/)
-* [Mocha 7.0+](https://mochajs.org)
 * [plex-api 5.2.5+](https://www.npmjs.com/package/plex-api/)
 * [discord.io 2.5.3+](https://izy521.gitbooks.io/discord-io/content/)
 * [discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io/)
@@ -16,6 +15,7 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 * [OMDb API](https://www.omdbapi.com/)
 * [Imgur API](https://api.imgur.com/)
 * [HowLongToBeat API](https://itad.docs.apiary.io/)
+* [Mocha 7.0+](https://mochajs.org)
 
 ## Installation & Configuration
 
@@ -34,12 +34,9 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Open up the windows CMD prompt and run as administrator  (or whatever you use to run code)
 1. Change directory to the directory where the bot's code resides
 1. Optional if you run into cache issues with the following three commands: npm cache clean --force
-1. Run the following: npm install discord.io winston plex-api –-save
-1. Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
-1. Run the following: npm install howlongtobeat --save
-1. Run the following: npm install itad-api-client-ts --save
-1. Run the following: npm install discord.js --save
-1. Run the following: npm install --global mocha --save
+1. Run the following: Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
+1. Run the following: npm install discord.io winston plex-api howlongtobeat itad-api-client-ts discord.js
+1. Run the following: npm install --global mocha
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
