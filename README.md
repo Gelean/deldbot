@@ -4,18 +4,18 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 
 ## Software, Libraries, and APIs
 
-* [NodeJS 10.x+](https://nodejs.org/en/download/)
+* [NodeJS 12.16.2+](https://nodejs.org/en/download/)
 * [plex-api 5.2.5+](https://www.npmjs.com/package/plex-api/)
 * [discord.io 2.5.3+](https://izy521.gitbooks.io/discord-io/content/)
 * [discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io/)
-* [discord.js 11.5.1+](https://www.npmjs.com/package/discord.js/)
+* [discord.js 12.2.0+](https://www.npmjs.com/package/discord.js/)
 * [howlongtobeat 1.2.1+](https://www.npmjs.com/package/howlongtobeat/)
 * [itad-api 1.0.4+](https://www.npmjs.com/package/itad-api-client-ts/)
+* [Mocha 7.0+](https://mochajs.org)
 * [Plex API](https://github.com/Arcanemagus/plex-api/wiki/)
 * [OMDb API](https://www.omdbapi.com/)
 * [Imgur API](https://api.imgur.com/)
 * [HowLongToBeat API](https://itad.docs.apiary.io/)
-* [Mocha 7.0+](https://mochajs.org)
 
 ## Installation & Configuration
 
