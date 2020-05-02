@@ -1,15 +1,22 @@
 {
    "name": "deldbot",
-   "version": "1.0",
+   "version": "1.0.0",
    "description": "Deldbot heeds the call of the Sons of Lanarchy",
    "main": "bot.js",
    "author": "Derek Elder",
    "dependencies": {
       "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
-      "discord.js": "^11.5.1",
-      "howlongtobeat": "^1.1.1",
+      "discord.js": "^12.2.0",
+      "winston": "^3.2.1",
+      "plex-api": "^5.3.1",
+      "howlongtobeat": "^1.2.1",
       "itad-api-client-ts": "^1.0.4",
-      "plex-api": "^5.2.5",
-      "winston": "^3.2.1"
+      "mocha": "^7.1.2"
+   },
+   "mocha": {
+      "spec": "tests"
+   },
+   "scripts": {
+      "test": "mocha"
    }
 }

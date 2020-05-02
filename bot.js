@@ -80,7 +80,7 @@ var itadApi = new itad.IsThereAnyDealApi(config.itadKey);
 //Initialize IGDB Service
 //var igdbApi = new igdb.igdb(config.igdbKey);
 
-async() => {
+async() => { //try removing this or discordjs code
     const shops = await itadApi.getShops(); //http://taobao.mirrors.alibaba.ir/package/itad-api-client-ts/v/1.0.1
 };
 
@@ -89,6 +89,35 @@ bot.on("ready", function (evt) {
     console.log("Bot has connected");
     console.log("Name: " + bot.username + "\n" + "ID: " + bot.id);
 });
+
+bot.on('debug', function(rawEvent) { var today = new Date(); var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() 
+    + ', ' + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds(); console.log(date); console.log(rawEvent); });
+
+/*
+bot.on('any', function(rawEvent, user, userID, channelID, message, evt) {
+    if (rawEvent.t == "VOICE_STATE_UPDATE") {
+        console.log(rawEvent);
+        console.log(rawEvent.d.member.user);
+        console.log("here");
+        sendChannelMessage("128700402135728129", "delder has entered or left", "Voice");
+    }
+});
+*/
+
+/*
+bot.on('voiceStateUpdate', (oldMember, newMember) => {
+  let newUserChannel = newMember.voiceChannel;
+  let oldUserChannel = oldMember.voiceChannel;
+
+  if(oldUserChannel === undefined && newUserChannel !== undefined) {
+    console.log("here");
+    sendChannelMessage("128700402135728129", "delder has entered", "Voice");
+  } else if(newUserChannel === undefined){
+    console.log("here");
+    sendChannelMessage("128700402135728129", "delder has left", "Voice");
+  }
+})
+*/
 
 // Message handling
 bot.on("message", function (user, userID, channelID, message, evt) {
@@ -636,7 +665,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 var noResults = true;
                 var title = "";
                 var fieldCount = 0;
-                var gameEmbed = new DiscordJs.RichEmbed();
+                var gameEmbed = new DiscordJs.MessageEmbed();
 
                 if (args.length == 0) {
                     sendChannelMessage(channelID, "No game specified, please use: !itad <query> or !isthereanydeal <query> to search for prices for a games", "isthereanydeal");
