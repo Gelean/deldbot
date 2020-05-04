@@ -11,6 +11,7 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 * [discord.js 12.2.0+](https://www.npmjs.com/package/discord.js/)
 * [howlongtobeat 1.2.1+](https://www.npmjs.com/package/howlongtobeat/)
 * [itad-api 1.0.4+](https://www.npmjs.com/package/itad-api-client-ts/)
+* [pm2 4.4.0+](https://www.npmjs.com/package/pm2)
 * [Mocha 7.1.2+](https://mochajs.org)
 * [Plex API](https://github.com/Arcanemagus/plex-api/wiki/)
 * [OMDb API](https://www.omdbapi.com/)
@@ -36,13 +37,13 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Optional if you run into cache issues with the following three commands: npm cache clean --force
 1. Run the following: Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
 1. Run the following: npm install discord.io winston plex-api howlongtobeat itad-api-client-ts discord.js
-1. Run the following: npm install --global mocha
+1. Run the following: npm install --global mocha pm2
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
 1. Obtain an ITAD API Key by setting up an account and creating a new app at https://isthereanydeal.com/dev/app
 1. Update config.js with the client id, client secret, discord token, plex id, plex token, username, password, plex token, plex server hostname, plex server port, omdb api key, imgur client id, imgur client secret, the id of the imgur album you wish to use, and your itad key. Some of these are optional depending on what functionality you want to use.
-1. Run the following: node bot.js
+1. Run the following: pm2 start bot.js
 1. Keep it running for the bot to work
 1. Voila, you can now start to issue commands in your discord server and test out if the bot is working right
 
