@@ -76,22 +76,18 @@ var hltbService = new hltb.HowLongToBeatService();
 
 // Initialize ITAD Service
 var itadApi = new itad.IsThereAnyDealApi(config.itadKey);
+async() => {
+    const shops = await itadApi.getShops();
+};
 
 //Initialize IGDB Service
 //var igdbApi = new igdb.igdb(config.igdbKey);
-
-async() => { //try removing this or discordjs code
-    const shops = await itadApi.getShops(); //http://taobao.mirrors.alibaba.ir/package/itad-api-client-ts/v/1.0.1
-};
 
 // Ready the bot
 bot.on("ready", function (evt) {
     console.log("Bot has connected");
     console.log("Name: " + bot.username + "\n" + "ID: " + bot.id);
 });
-
-bot.on('debug', function(rawEvent) { var today = new Date(); var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() 
-    + ', ' + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds(); console.log(date); console.log(rawEvent); });
 
 /*
 bot.on('any', function(rawEvent, user, userID, channelID, message, evt) {
