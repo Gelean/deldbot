@@ -44,7 +44,6 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Obtain an ITAD API Key by setting up an account and creating a new app at https://isthereanydeal.com/dev/app
 1. Update config.js with the client id, client secret, discord token, plex id, plex token, username, password, plex token, plex server hostname, plex server port, omdb api key, imgur client id, imgur client secret, the id of the imgur album you wish to use, and your itad key. Some of these are optional depending on what functionality you want to use.
 1. Run the following: pm2 start bot.js
-1. Keep it running for the bot to work
 1. Voila, you can now start to issue commands in your discord server and test out if the bot is working right
 
 ## Webhooks
