@@ -35,9 +35,9 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Open up the windows CMD prompt and run as administrator  (or whatever you use to run code)
 1. Change directory to the directory where the bot's code resides
 1. Optional if you run into cache issues with the following three commands: npm cache clean --force
-1. Run the following: Run the following: npm install https://github.com/woor/discord.io/tarball/gateway_v6
-1. Run the following: npm install discord.io winston plex-api howlongtobeat itad-api-client-ts discord.js
 1. Run the following: npm install --global mocha pm2
+1. Run the following: npm install
+   1. The above should work with the package.json, but if you want to get it working manually, run: npm install discord.io winston plex-api howlongtobeat itad-api-client-ts discord.js https://github.com/woor/discord.io/tarball/gateway_v6
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
