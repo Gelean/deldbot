@@ -43,6 +43,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
 1. Obtain an ITAD API Key by setting up an account and creating a new app at https://isthereanydeal.com/dev/app
 1. Update config.js with the client id, client secret, discord token, plex id, plex token, username, password, plex token, plex server hostname, plex server port, omdb api key, imgur client id, imgur client secret, the id of the imgur album you wish to use, and your itad key. Some of these are optional depending on what functionality you want to use.
+1. In Discord, go to User Settings > Appearance, enable Developer Mode, right-click your username, Copy ID, paste that number into USERID in config.js in the ownerId row
 1. Run the following: pm2 start bot.js
 1. Voila, you can now start to issue commands in your discord server and test out if the bot is working right
 
@@ -60,6 +61,8 @@ The steps on the following page provide a good guide of the steps in creating an
     * Gives usage details for a given command
 * `!serverstatus`
     * Displays the Plex server status
+* `!discordstatus`
+    * Displays the Discord service status from https://status.discord.com/api/v2/
 * `!search <query>`
     * Searches the Plex server for anything matching the given query
 * `!playlist [index]`
@@ -70,6 +73,10 @@ The steps on the following page provide a good guide of the steps in creating an
     * Return an imgur link from an Imgur album specified in the config.js
 * `!soitbegins`
     * So it begins
+* `!godwillsit`
+    * God wills it!
+* `!absenceofgod`
+    * Absence of God
 * `!releasedate <query> [year]`
     * Check the release date of a given movie through OMDb
 * `!omdbsearch [p1-100] <query>`
@@ -80,6 +87,8 @@ The steps on the following page provide a good guide of the steps in creating an
     * Run a search through IsThereAnyDeal and return the results
 * `!8ball <query>`
     * The Magic 8-Ball gives you a response for your yes/no query
+* `!destroy @<user>`
+    * Destroy other users on the server
 * `!uptime`
     * Displays the current uptime of the bot
 
@@ -92,3 +101,4 @@ The steps on the following page provide a good guide of the steps in creating an
 * https://rapidapi.com/imdb/api/movie-database-imdb-alternative
 * https://izy521.gitbooks.io/discord-io/content/Methods/Handling_audio.html
 * https://gifrun.com
+* https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-
