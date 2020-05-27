@@ -1,4 +1,5 @@
 module.exports = {
+  'ownerId'           : '<@!USERID>',
   'botClientId'       : 'CLIENT_ID',
   'botClientSecret'   : 'CLIENT_SECRET',
   'botUsername'       : 'BOT_NAME',
