@@ -10,6 +10,7 @@ const itad = require("itad-api-client-ts");
 //const igdb = require("igdb-api-node");
 const config = require("./config.js");
 
+// Helper Functions
 function sendChannelMessage(channelID, text, method) {
     bot.sendMessage({
         to: channelID,
@@ -34,16 +35,6 @@ function sendEmbedMessage(channelID, embed, method) {
     console.log("Command executed: " + method);
 }
 
-function totalPages(number) {
-    return Math.ceil(number / 10);
-}
-
-// Initialize Discord Bot
-var bot = new Discord.Client({
-   token: config.botToken,
-   autorun: true
-});
-
 // Initialize Plex
 var plex = new PlexAPI({
     hostname: config.plexHostname,
@@ -53,21 +44,13 @@ var plex = new PlexAPI({
     token: config.plexToken
 });
 
-// Initialize Imgur Options
-var imgurOptions = {
-    hostname: "api.imgur.com",
-    path: "/3/album/" + config.imgurAlbum,
-    headers: {"Authorization": "Client-ID " + config.imgurClientId},
-    method: "GET"
-};
-
 // Check Plex Server Information
 plex.query("/").then(function (result) {
     console.log("Sever: %s" + "\n" + "Plex Version: %s",
         result.MediaContainer.friendlyName,
         result.MediaContainer.version);
 }, function (err) {
-    console.error("The Plex server appears to be down, go yell at Josh", err);
+    console.error("The Plex server appears to be down", err);
 });
 //console.log(plex);
 
@@ -83,42 +66,21 @@ async() => {
 //Initialize IGDB Service
 //var igdbApi = new igdb.igdb(config.igdbKey);
 
-// Ready the bot
+// Initialize Discord Bot
+var bot = new Discord.Client({
+   token: config.botToken,
+   autorun: true
+});
+
 bot.on("ready", function (evt) {
     console.log("Bot has connected");
     console.log("Name: " + bot.username + "\n" + "ID: " + bot.id);
 });
 
-/*
-bot.on('any', function(rawEvent, user, userID, channelID, message, evt) {
-    if (rawEvent.t == "VOICE_STATE_UPDATE") {
-        console.log(rawEvent);
-        console.log(rawEvent.d.member.user);
-        console.log("here");
-        sendChannelMessage("128700402135728129", "delder has entered or left", "Voice");
-    }
-});
-*/
-
-/*
-bot.on('voiceStateUpdate', (oldMember, newMember) => {
-  let newUserChannel = newMember.voiceChannel;
-  let oldUserChannel = oldMember.voiceChannel;
-
-  if(oldUserChannel === undefined && newUserChannel !== undefined) {
-    console.log("here");
-    sendChannelMessage("128700402135728129", "delder has entered", "Voice");
-  } else if(newUserChannel === undefined){
-    console.log("here");
-    sendChannelMessage("128700402135728129", "delder has left", "Voice");
-  }
-})
-*/
-
 // Message handling
 bot.on("message", function (user, userID, channelID, message, evt) {
-    // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!`
+    // The bot needs to know if it will execute a command
+    // It will listen for messages that start with `!`
     if (message.substring(0, 1) == "!") {
         var args = message.substring(1).split(" ");
         var cmd = args[0];
@@ -127,8 +89,9 @@ bot.on("message", function (user, userID, channelID, message, evt) {
         switch(cmd) {
             // Report valid commands
             case "help":
-                sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !search, !playlist, !schwifty, " +
-                    "!imgur, !soitbegins, !releasedate, !omdbsearch, !hltb, !howlongtobeat, !itad, !isthereanydeal, !8ball, !uptime", "help");
+                sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !discordstatus, !search, !playlist, " +
+                    "!schwifty, !imgur, !soitbegins, !godwillsit, !absenceofgod, !releasedate, !omdbsearch, !hltb, !howlongtobeat, " +
+                    "!itad, !isthereanydeal, !8ball, !destroy, !uptime", "help");
                 break;
             // Give usage information for a given command
             case "usage":
@@ -142,6 +105,9 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 } else if (args[0] == "serverstatus") {
                     usageString  = "Description: Returns the status of the Plex server (up or down)";
                     usageString += "\nUsage: !serverstatus";
+                } else if (args[0] == "discordstatus") {
+                    usageString  = "Description: Returns the status of the Discord service";
+                    usageString += "\nUsage: !discordstatus";
                 } else if (args[0] == "search") {
                     usageString  = "Description: Searches the Plex server for the given query and reports matching films, shows, or albums";
                     usageString += "\nUsage: !search <query>";
@@ -160,6 +126,12 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 } else if (args[0] == "soitbegins") {
                     usageString  = "Description: So it begins";
                     usageString += "\nUsage: !soitbegins";
+                } else if (args[0] == "godwillsit") {
+                    usageString  = "Description: God wills it!";
+                    usageString += "\nUsage: !godwillsit";
+                } else if (args[0] == "absenceofgod") {
+                    usageString  = "Description: Absence of God";
+                    usageString += "\nUsage: !absenceofgod";
                 } else if (args[0] == "releasedate") {
                     usageString  = "Description: Checks the release date for a film or show. OMDb only returns one result for a given query, so refine it and optionally "
                         + "specify a year to increase the likelihood of finding the media you want.";
@@ -175,14 +147,17 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     usageString  = "Description: Searches HowLongToBeat for the average completion time for games";
                     usageString += "\nUsage: !howlongtobeat <query>";
                 } else if (args[0] == "itad") {
-                    usageString  = "Description: Searches HowLongToBeat for the average completion time for games";
+                    usageString  = "Description: Searches IsThereAnyDeal for deals on games";
                     usageString += "\nUsage: !itad <query>";
                 } else if (args[0] == "isthereanydeal") {
-                    usageString  = "Description: Searches HowLongToBeat for the average completion time for games";
+                    usageString  = "Description: Searches IsThereAnyDeal for deals on games";
                     usageString += "\nUsage: !isthereanydeal <query>";
                 } else if (args[0] == "8ball") {
                     usageString  = "Description: What does the Magic 8 Ball say?";
                     usageString += "\nUsage: !8ball <question>";
+                } else if (args[0] == "destroy") {
+                    usageString  = "Description: Destroys other users";
+                    usageString += "\nUsage: !destroy @<user>";
                 } else if (args[0] == "uptime") {
                     usageString  = "Description: Reports how long " + bot.username + " has been online";
                     usageString += "\nUsage: !uptime";
@@ -196,12 +171,49 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     sendChannelMessage(channelID, usageString, "usage");
                 }
                 break;
-            // Check the Plex server status and report back if it"s running
+            // Check the Plex server status and report back if it's running
             case "serverstatus":
                 plex.query("/").then(function (result) {
                     sendChannelMessage(channelID, "The Plex server appears to be up", "serverstatus");
                 }, function (err) {
                     sendChannelMessage(channelID, "The Plex server appears to be down, go yell at Josh", "serverstatus");
+                });
+                break;
+            // Check the Discord status and report back if there are any issues
+            case "discordstatus":
+                // Initialize Discord API Options
+                var discordOptions = {
+                    hostname: "srhpyqt94yxb.statuspage.io",
+                    path: "/api/v2/incidents/unresolved.json",
+                    method: "GET"
+                };
+
+                https.get(discordOptions, (resp) => {
+                    let data = "";
+                    console.log("statusCode:", resp.statusCode);
+                    console.log("headers:", resp.headers);
+
+                    resp.on("data", (chunk) => {
+                        data += chunk;
+                    });
+
+                    resp.on("end", () => {
+                        discordData = JSON.parse(data);
+                        console.log("data:", discordData);
+
+                        if (discordData.incidents.length == 0 || discordData.incidents === undefined) {
+                            sendChannelMessage(channelID, "There are no ongoing incidents", "discordstatus");
+                            sendChannelMessage(channelID, "https://status.discord.com", "discordstatus");
+                        } else {
+                            for (var i = 0; i < discordData.incidents.length; i++) {
+                                sendChannelMessage(channelID, discordData.incidents[i].name, "discordstatus");
+                                sendChannelMessage(channelID, discordData.incidents[i].shortlink, "discordstatus");
+                            }
+                        }
+                    });
+                }).on("error", (err) => {
+                    console.error(err);
+                    sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "discordstatus");
                 });
                 break;
             // Check if a given piece of media (film, show, anime, or album) exists on the Plex server
@@ -440,6 +452,14 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             // Pull an Imgur link from an album (random image or index)
             // TODO: need an imgur count command and a link to post the imgur library
             case "imgur":
+                // Initialize Imgur Options
+                var imgurOptions = {
+                    hostname: "api.imgur.com",
+                    path: "/3/album/" + config.imgurAlbum,
+                    headers: {"Authorization": "Client-ID " + config.imgurClientId},
+                    method: "GET"
+                };
+
                 https.get(imgurOptions, (resp) => {
                     let data = "";
                     console.log("statusCode:", resp.statusCode);
@@ -449,10 +469,10 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         data += chunk;
                     });
 
+                    sendChannelMessage(channelID, "Please wait a few moments while the media can be found", "imgur");
                     resp.on("end", () => {
                         imgurData = JSON.parse(data);
-                        console.log(imgurData.data.link);
-                        console.log(imgurData.data.images);
+                        console.log("data:", imgurData.data);
 
                         if (args == "") {
                             var randomIndex = Math.floor(Math.random() * imgurData.data.images.length);
@@ -478,14 +498,22 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         }
                     });
                 }).on("error", (err) => {
-                    console.error(e);
+                    console.error(err);
                     sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "imgur");
                 });
                 break;
             // Revamp: memes <meme name> or <id>
             // Return So it begins GIF
             case "soitbegins":
-                sendChannelMessage(channelID, "https://imgur.com/owtlQgV", "soitbegins");
+                sendChannelMessage(channelID, "https://i.imgur.com/owtlQgV.gifv", "soitbegins");
+                break;
+            // Return God wills it! GIF
+            case "godwillsit":
+                sendChannelMessage(channelID, "https://i.imgur.com/cTmgfgJ.gifv", "godwillsit");
+                break;
+            // Return Absence of God GIF
+            case "absenceofgod":
+                sendChannelMessage(channelID, "https://i.imgur.com/sLvxe4X.gifv", "absenceofgod");
                 break;
             // Check OMDb for film and show release date information
             case "releasedate": 
@@ -523,7 +551,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                         resp.on("end", () => {
                             movieData = JSON.parse(data);
-                            console.log(movieData);
+                            console.log("data:", movieData);
 
                             if (movieData.Response == "False") {
                                 sendChannelMessage(channelID, "No movie or show found, please refine your search and consider including a year dimwit", "releasedate");
@@ -547,7 +575,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                         resp.on("end", () => {
                             movieData = JSON.parse(data);
-                            console.log(movieData);
+                            console.log("data:", movieData);
 
                             if (movieData.Response == "False") {
                                 sendChannelMessage(channelID, "No movie or show found, please refine your search and consider " +
@@ -572,7 +600,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         usePagination = true;
                         var fields = args[0].split("p");
                         page = fields[1];
-                        console.log(page);
+                        console.log("page:", page);
                     } else {
                         query += args[i] + "+";
                     }
@@ -598,7 +626,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                     resp.on("end", () => {
                         movieData = JSON.parse(data);
-                        console.log(movieData);
+                        console.log("data:", movieData);
 
                         if (movieData.Response == "False") {
                             sendChannelMessage(channelID, "No movie or show found, please refine your search and consider including a year dimwit", "omdbsearch");
@@ -609,7 +637,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                                 //console.log(movieData.Search[i]);
                                 searchOutput += movieData.Search[i].Title + " (" + movieData.Search[i].Year + ")\n";
                             }
-                            searchOutput += "Total Results: " + movieData.totalResults + " (" + totalPages(movieData.totalResults) + " pages)";
+
+                            searchOutput += "Total Results: " + movieData.totalResults + " (" + Math.ceil(movieData.totalResults / 10) + " pages)";
                             sendChannelMessage(channelID, searchOutput, "omdbsearch");
                         }
                     });
@@ -758,6 +787,64 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 var magicResult = magicResults[Math.floor(Math.random() * magicResults.length)];
 
                 sendChannelMessage(channelID, magicResult, "8ball");
+                break;
+            // Destroy
+            case "destroy":
+                var botId = "<@!" + bot.id + ">";
+                var userId = "<@!" + userID + ">";
+                var wmdArray = [
+                  ["bombards", "https://i.imgur.com/pdGzHtM.gifv", "with a battleship"],
+                  ["destroys", "https://i.imgur.com/Hq2slHC.gifv", "with a tiger tank"],
+                  ["assassinates", "https://i.imgur.com/zL845S5.gifv", "with a sniper rifle"],
+                  ["strikes", "https://i.imgur.com/56SS9Ac.gifv", "with a Warthog"],
+                  ["sinks", "https://i.imgur.com/ciJVtg4.gifv", "with a cannon"],
+                  ["slits", "https://i.imgur.com/2Pj1HYJ.gifv", "throat with a bayonet"],
+                  ["targets", "https://i.imgur.com/nVixnXj.gifv", "with a drone strike"],
+                  ["kills", "https://i.imgur.com/UKcVfgS.gifv", "with a Huey"],
+                  ["burns", "https://i.imgur.com/P6wbpeA.gifv", "to death with a flamethrower"],
+                  ["napalms", "https://i.imgur.com/4VFMRfd.gifv", "with a Super Sabre"],
+                  ["swats", "https://i.imgur.com/CuwooEX.gifv", "with a prank call"],
+                  ["terminates", "https://i.imgur.com/Z9Ob0UF.gifv", "with a nuke"],
+                  ["obliterates", "https://i.imgur.com/yYOL3Zp.gifv", "with a Jericho missile"],
+                  ["9/11s", "https://i.imgur.com/i04NTMX.gifv", "with a 767"],
+                  ["Pearl Harbors", "https://i.imgur.com/HQFYvhJ.gifv", "with a space cruiser"],
+                  ["DESTROYS", "https://i.imgur.com/HdjIdTJ.gifv", "with FACTS and LOGIC"]
+                ];
+                var wmdIndex = Math.floor(Math.random() * wmdArray.length);
+
+                if (args.length == 0) {
+                    sendChannelMessage(channelID, "No target specified, please use: !destroy @<user>", "destroy");
+                    break;
+                }
+
+                for (var i = 0; i < args.length; i++) {
+                    if (!args[i].startsWith("<@") && args[i] !== "@everyone") {
+                        var message = "No valid target identified, calling off the attack";
+                        var image = "https://i.imgur.com/aFh4dvl.gifv";
+                    } else if (args[i] === botId) {
+                        var message = userId + " attempts to destroy " + args[i] + ", but fails";
+                        var image = "https://i.imgur.com/Av8WEet.gifv";
+                    }  else if (args[i] === userId) {
+                        var message = userId + " commits sepukku";
+                        var image = "https://i.imgur.com/SPme9Mk.gifv";
+                    } else if (args[i] === config.ownerId) {
+                        var message = userId + "'s gun misfires and kills himself after attempting to shoot " + config.ownerId;
+                        var image = "https://i.imgur.com/exd2yso.gifv"
+                    } else if (args[i] === "@here") {
+                        var message = userId + "wipes out everyone here with a comet";
+                        var image = "https://i.imgur.com/llTxowt.gifv";
+                    } else if (args[i] === "@everyone") {
+                        var message = userId + "calls down an exterminatus on everyone with an Atmospheric Incinerator Torpedo";
+                        var image = "https://i.imgur.com/IQF4V6x.gifv";
+                    } else {
+                        var message = userId + " " + wmdArray[wmdIndex][0] + " " + args[i] + " " + wmdArray[wmdIndex][2];
+                        var image = wmdArray[wmdIndex][1];
+                    }
+
+                    sendChannelMessage(channelID, message, "destroy");
+                    sendChannelMessage(channelID, image, "destroy");
+                }
+
                 break;
             // Bot uptime
             case "uptime":
