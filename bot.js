@@ -831,10 +831,10 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         var message = userId + "'s gun misfires and kills himself after attempting to shoot " + config.ownerId;
                         var image = "https://i.imgur.com/exd2yso.gifv"
                     } else if (args[i] === "@here") {
-                        var message = userId + "wipes out everyone here with a comet";
+                        var message = userId + " wipes out everyone here with a comet";
                         var image = "https://i.imgur.com/llTxowt.gifv";
                     } else if (args[i] === "@everyone") {
-                        var message = userId + "calls down an exterminatus on everyone with an Atmospheric Incinerator Torpedo";
+                        var message = userId + " calls down an exterminatus on everyone with an Atmospheric Incinerator Torpedo";
                         var image = "https://i.imgur.com/IQF4V6x.gifv";
                     } else {
                         var message = userId + " " + wmdArray[wmdIndex][0] + " " + args[i] + " " + wmdArray[wmdIndex][2];
