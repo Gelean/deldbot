@@ -825,7 +825,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         var message = userId + " attempts to destroy " + args[i] + ", but fails";
                         var image = "https://i.imgur.com/Av8WEet.gifv";
                     }  else if (args[i] === userId) {
-                        var message = userId + " commits sepukku";
+                        var message = userId + " commits seppuku";
                         var image = "https://i.imgur.com/SPme9Mk.gifv";
                     } else if (args[i] === config.ownerId) {
                         var message = userId + "'s gun misfires and kills himself after attempting to shoot " + config.ownerId;
