@@ -818,7 +818,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 }
 
                 for (var i = 0; i < args.length; i++) {
-                    if (!args[i].startsWith("<@") && args[i] !== "@everyone") {
+                    if (!args[i].startsWith("<@") && args[i] !== "@everyone" && args[i] !== "@here") {
                         var message = "No valid target identified, calling off the attack";
                         var image = "https://i.imgur.com/aFh4dvl.gifv";
                     } else if (args[i] === botId) {
