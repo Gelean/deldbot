@@ -7,16 +7,9 @@
    "dependencies": {
       "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
       "discord.js": "^12.2.0",
-      "winston": "^3.2.1",
-      "plex-api": "^5.3.1",
       "howlongtobeat": "^1.2.1",
       "itad-api-client-ts": "^1.0.4",
-      "mocha": "^7.1.2"
-   },
-   "mocha": {
-      "spec": "tests"
-   },
-   "scripts": {
-      "test": "mocha"
+      "plex-api": "^5.3.1",
+      "winston": "^3.2.1"
    }
 }
