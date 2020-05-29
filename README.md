@@ -12,7 +12,6 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 * [howlongtobeat 1.2.1+](https://www.npmjs.com/package/howlongtobeat/)
 * [itad-api 1.0.4+](https://www.npmjs.com/package/itad-api-client-ts/)
 * [pm2 4.4.0+](https://www.npmjs.com/package/pm2)
-* [Mocha 7.1.2+](https://mochajs.org)
 * [Plex API](https://github.com/Arcanemagus/plex-api/wiki/)
 * [OMDb API](https://www.omdbapi.com/)
 * [Imgur API](https://api.imgur.com/)
@@ -35,7 +34,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Open up the windows CMD prompt and run as administrator  (or whatever you use to run code)
 1. Change directory to the directory where the bot's code resides
 1. Optional if you run into cache issues with the following three commands: npm cache clean --force
-1. Run the following: npm install --global mocha pm2
+1. Run the following: npm install --global pm2
 1. Run the following: npm install
    1. The above should work with the package.json, but if you want to get it working manually, run: npm install discord.io winston plex-api howlongtobeat itad-api-client-ts discord.js https://github.com/woor/discord.io/tarball/gateway_v6
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
