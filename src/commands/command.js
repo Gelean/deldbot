@@ -2,7 +2,7 @@ const prefix = require('../../.env/config.json').global.prefix
 
 module.exports = {
   name: 'help',
-  description: 'List all of my commands or info about a specifc command.',
+  description: 'Report valid commands',
   args: false,
   usage: '[arguments name]',
   guildOnly: false,
@@ -15,7 +15,7 @@ module.exports = {
     if(!args.length) {
       data.push('Here\'s a list of all my commands:')
       data.push(commands.map(command => command.name).join(', '))
-      data.push(`\nYou can send \`${prefix}help [command name]\` to get info on a specifc command!`)
+      data.push(`\nPlease supply a command you wish to learn more about, for example\n\`${prefix}help [command name]\``)
 
       return message.author.send(data, { split: true})
         .then(() => {

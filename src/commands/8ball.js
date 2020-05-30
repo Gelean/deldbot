@@ -2,7 +2,7 @@ const fortunes = require('../data/8ball.json')
 
 module.exports = {
   name: '8ball',
-  description: 'Ask a question',
+  description: 'The Magic 8-Ball',
   args: true,
   usage: 'question',
   guildOnly: true,

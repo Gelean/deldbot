@@ -8,77 +8,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
     args = args.splice(1)
 
     switch (cmd) {
-      // Report valid commands
-      case 'help':
-        sendChannelMessage(channelID, 'Valid commands: !help, !usage, !serverstatus, !search, !playlist, !schwifty, ' +
-                    '!imgur, !soitbegins, !releasedate, !omdbsearch, !hltb, !howlongtobeat, !itad, !isthereanydeal, !8ball, !uptime', 'help')
-        break
-        // Give usage information for a given command
-      case 'usage':
-        var noResults = false
-        var usageString = ''
-
-        if (args[0] == 'help') {
-          usageString = 'Good lord, the help command should be self explanatory'
-        } else if (args[0] == 'usage') {
-          usageString = 'Trying to get meta are you?'
-        } else if (args[0] == 'serverstatus') {
-          usageString = 'Description: Returns the status of the Plex server (up or down)'
-          usageString += '\nUsage: !serverstatus'
-        } else if (args[0] == 'search') {
-          usageString = 'Description: Searches the Plex server for the given query and reports matching films, shows, or albums'
-          usageString += '\nUsage: !search <query>'
-        } else if (args[0] == 'playlist') {
-          var data = fs.readFileSync('playlist.txt', { 'encoding': 'utf8' })
-          var entries = data.toString().split('\n')
-          var numEntries = parseInt(entries.length)
-          usageString = 'Description: Returns a random youtube video from the SoL YouTube playlist. May specify an index from 0 to ' + (numEntries - 1) + ' for a specific video.'
-          usageString += '\nUsage: !playlist [index]'
-        } else if (args[0] == 'schwifty') {
-          usageString = 'Description: Get Schwifty'
-          usageString += '\nUsage: !schwifty'
-        } else if (args[0] == 'imgur') {
-          usageString = 'Description: Returns a random image from the SoL Imgur album. May specify an index for a specific image.'
-          usageString += '\nUsage: !imgur [index]'
-        } else if (args[0] == 'soitbegins') {
-          usageString = 'Description: So it begins'
-          usageString += '\nUsage: !soitbegins'
-        } else if (args[0] == 'releasedate') {
-          usageString = 'Description: Checks the release date for a film or show. OMDb only returns one result for a given query, so refine it and optionally ' +
-                        'specify a year to increase the likelihood of finding the media you want.'
-          usageString += '\nUsage: !releasedate <query> [year]'
-        } else if (args[0] == 'omdbsearch') {
-          usageString = 'Description: Searches OMDb for the given query and reports matching films, shows, or albums. Returns ten results at a time so you ' +
-                        'may optionally pass in a page index to filter through the results'
-          usageString += '\nUsage: !omdbsearch [p1-100] <query>'
-        } else if (args[0] == 'hltb') {
-          usageString = 'Description: Searches HowLongToBeat for the average completion time for games'
-          usageString += '\nUsage: !hltb <query>'
-        } else if (args[0] == 'howlongtobeat') {
-          usageString = 'Description: Searches HowLongToBeat for the average completion time for games'
-          usageString += '\nUsage: !howlongtobeat <query>'
-        } else if (args[0] == 'itad') {
-          usageString = 'Description: Searches HowLongToBeat for the average completion time for games'
-          usageString += '\nUsage: !itad <query>'
-        } else if (args[0] == 'isthereanydeal') {
-          usageString = 'Description: Searches HowLongToBeat for the average completion time for games'
-          usageString += '\nUsage: !isthereanydeal <query>'
-        } else if (args[0] == '8ball') {
-          usageString = 'Description: What does the Magic 8 Ball say?'
-          usageString += '\nUsage: !8ball <question>'
-        } else if (args[0] == 'uptime') {
-          usageString = 'Description: Reports how long ' + bot.username + ' has been online'
-          usageString += '\nUsage: !uptime'
-        } else {
-          noResults = true
-        }
-
-        if (noResults) {
-          sendChannelMessage(channelID, 'Please supply a command you wish to learn more about, for example !usage search', 'usage')
-        } else {
-          sendChannelMessage(channelID, usageString, 'usage')
-        }
-        break
         // Check the Plex server status and report back if it"s running
       case 'serverstatus':
         plex.query('/').then(function (result) {
@@ -311,10 +240,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           })
         }
         break
-        // Return Get Schwifty (Andromulus Remix)
-      case 'schwifty':
-        sendChannelMessage(channelID, 'https://www.youtube.com/watch?v=m3RUYMGD9-o', 'schwifty')
-        break
         // Pull an Imgur link from an album (random image or index)
         // TODO: need an imgur count command and a link to post the imgur library
       case 'imgur':
@@ -359,11 +284,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           console.error(e)
           sendChannelMessage(channelID, 'An error has occurred, go yell at Derek', 'imgur')
         })
-        break
-        // Revamp: memes <meme name> or <id>
-        // Return So it begins GIF
-      case 'soitbegins':
-        sendChannelMessage(channelID, 'https://imgur.com/owtlQgV', 'soitbegins')
         break
         // Check OMDb for film and show release date information
       case 'releasedate':
@@ -619,20 +539,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             sendEmbedMessage(channelID, gameEmbed, 'isthereanydeal')
           }
         })()
-        break
-        // The Magic 8-Ball
-      case '8ball':
-        if (args.length == 0) {
-          sendChannelMessage(channelID, 'Ask a question moron', '8ball')
-          break
-        }
-        var magicResults = ['It is certain.', 'It is decidedly so.', 'Without a doubt.', 'Yes - definitely.', 'You may rely on it.',
-          'As I see it, yes.', 'Most likely.', 'Outlook good.', 'Yes.', 'Signs point to yes.',
-          'Reply hazy, try again.', 'Ask again later.', 'Better not tell you now.', 'Cannot predict now.', 'Concentrate and ask again.',
-          'Don"t count on it.', 'My reply is no.', 'My sources say no.', 'Outlook not so good.', 'Very doubtful.']
-        var magicResult = magicResults[Math.floor(Math.random() * magicResults.length)]
-
-        sendChannelMessage(channelID, magicResult, '8ball')
         break
         // Bot uptime
       case 'uptime':
