@@ -200,46 +200,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           }
         })()
         break
-        // Pull a Youtube link from a seed file (random video or index)
-      case 'playlist':
-        var youtubeLink = ''
-        if (args == '') {
-          fs.readFile('playlist.txt', { 'encoding': 'utf8' }, function (err, data) {
-            if (err) {
-              sendChannelMessage(channelID, 'An error has occurred, go yell at Derek', 'playlist')
-            } else {
-              var lines = data.toString().split('\n')
-              youtubeLink = lines[Math.floor(Math.random() * lines.length)]
-              sendChannelMessage(channelID, youtubeLink, 'playlist')
-            }
-          })
-        } else {
-          if (args.length > 1) {
-            sendChannelMessage(channelID, 'Please specify a single index idiot', 'playlist (index)')
-            return
-          }
-
-          var argInt = parseInt(args[0], 10)
-          if (typeof argInt !== 'number' || isNaN(argInt)) {
-            sendChannelMessage(channelID, 'Please specify a number idiot', 'playlist (index)')
-            return
-          }
-
-          fs.readFile('playlist.txt', { 'encoding': 'utf8' }, function (err, data) {
-            if (err) {
-              sendChannelMessage(channelID, 'An error has occurred, go yell at Derek', 'playlist (index)')
-            } else {
-              var lines = data.toString().split('\n')
-              if (args >= lines.length) {
-                sendChannelMessage(channelID, 'The index specified is larger than the number of items in the playlist idiot', 'playlist (index)')
-              } else {
-                youtubeLink = lines[args]
-                sendChannelMessage(channelID, youtubeLink, 'playlist (index)')
-              }
-            }
-          })
-        }
-        break
         // Pull an Imgur link from an album (random image or index)
         // TODO: need an imgur count command and a link to post the imgur library
       case 'imgur':
