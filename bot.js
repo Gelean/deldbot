@@ -790,6 +790,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 break;
             // Destroy
             case "destroy":
+                var sentMessage = false;
                 var botId = "<@!" + bot.id + ">";
                 var userId = "<@!" + userID + ">";
                 var wmdArray = [
@@ -806,11 +807,11 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                   ["swats", "https://i.imgur.com/CuwooEX.gifv", "with a prank call"],
                   ["terminates", "https://i.imgur.com/Z9Ob0UF.gifv", "with a nuke"],
                   ["obliterates", "https://i.imgur.com/yYOL3Zp.gifv", "with a Jericho missile"],
+                  ["blows up", "https://i.imgur.com/uWTJ6gD.gifv", "with a pistol"],
                   ["9/11s", "https://i.imgur.com/i04NTMX.gifv", "with a 767"],
                   ["Pearl Harbors", "https://i.imgur.com/HQFYvhJ.gifv", "with a space cruiser"],
                   ["DESTROYS", "https://i.imgur.com/HdjIdTJ.gifv", "with FACTS and LOGIC"]
                 ];
-                var wmdIndex = Math.floor(Math.random() * wmdArray.length);
 
                 if (args.length == 0) {
                     sendChannelMessage(channelID, "No target specified, please use: !destroy @<user>", "destroy");
@@ -818,9 +819,10 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 }
 
                 for (var i = 0; i < args.length; i++) {
+                    var sendMessage = true;
+
                     if (!args[i].startsWith("<@") && args[i] !== "@everyone" && args[i] !== "@here") {
-                        var message = "No valid target identified, calling off the attack";
-                        var image = "https://i.imgur.com/aFh4dvl.gifv";
+                        sendMessage = false;
                     } else if (args[i] === botId) {
                         var message = userId + " attempts to destroy " + args[i] + ", but fails";
                         var image = "https://i.imgur.com/Av8WEet.gifv";
@@ -837,10 +839,21 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         var message = userId + " calls down an exterminatus on everyone with an Atmospheric Incinerator Torpedo";
                         var image = "https://i.imgur.com/IQF4V6x.gifv";
                     } else {
+                        var wmdIndex = Math.floor(Math.random() * wmdArray.length);
                         var message = userId + " " + wmdArray[wmdIndex][0] + " " + args[i] + " " + wmdArray[wmdIndex][2];
                         var image = wmdArray[wmdIndex][1];
                     }
 
+                    if (sendMessage) {
+                        sendChannelMessage(channelID, message, "destroy");
+                        sendChannelMessage(channelID, image, "destroy");
+                        sentMessage = true;
+                    }
+                }
+
+                if (!sentMessage) {
+                    var message = "No valid target identified, calling off the attack";
+                    var image = "https://i.imgur.com/aFh4dvl.gifv";
                     sendChannelMessage(channelID, message, "destroy");
                     sendChannelMessage(channelID, image, "destroy");
                 }
