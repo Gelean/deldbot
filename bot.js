@@ -1,9 +1,9 @@
 let config
 try {
   config = require('./.env/config.json')
-} catch(error) {
+} catch (error) {
   console.error('CONFIG: Copy and Modify ./config.json into ./.env/config.json')
-  throw(error)
+  throw (error)
 }
 
 const prefix = config.global.prefix
@@ -38,7 +38,7 @@ client.on('message', message => {
   const command = client.commands.get(commandName) ||
     client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName))
 
-  if(!command) return
+  if (!command) return
 
   if (command.guildOnly && message.channel.type !== 'text') {
     return message.reply('I can\'t execute that command inside DMs!')

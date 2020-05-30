@@ -10,18 +10,18 @@ module.exports = {
   aliases: ['video'],
   execute (message, args) {
     switch (args.length) {
-      case 0: 
+      case 0:
         message.channel.send(videos[Math.floor(Math.random() * videos.length)])
         break
       case 1:
         let index = parseInt(args[0])
 
-        if(typeof index !== 'number' || isNaN(index)) {
+        if (typeof index !== 'number' || isNaN(index)) {
           message.channel.send('Please specify a number idiot')
           return
         }
 
-        if(index >= 0 &&  index < videos.length) {
+        if (index >= 0 && index < videos.length) {
           message.channel.send(videos[index])
           return
         } else {

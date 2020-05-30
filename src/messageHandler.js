@@ -500,27 +500,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           }
         })()
         break
-        // Bot uptime
-      case 'uptime':
-        if (bot.presence.status == 'online') {
-          var date = new Date()
-          var timeInMilliseconds = date.getTime()
-          var totalSeconds = (timeInMilliseconds - bot.presence.since) / 1000
-
-          var days = Math.floor(totalSeconds / 86400)
-          totalSeconds -= days * 86400
-          var hours = Math.floor(totalSeconds / 3600)
-          totalSeconds -= hours * 3600
-          var minutes = Math.floor(totalSeconds / 60)
-          totalSeconds -= minutes * 60
-          var seconds = Math.floor(totalSeconds)
-
-          sendChannelMessage(channelID, bot.username + ' has been online for ' + days + ' day(s), ' + hours + ' hour(s), ' + minutes + ' minute(s), ' + seconds + ' second(s)', 'uptime')
-        } else {
-          sendChannelMessage(channelID, bot.username + ' is currently offline', 'uptime')
-        }
-        break
-        // Default response
       default:
         sendChannelMessage(channelID, 'Type !help for commands', 'default')
         break
