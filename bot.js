@@ -801,7 +801,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                 for (var i = 0; i < args.length; i++) {
                     var sendMessage = true;
-                    console.log(args[i]);
+                    //console.log(args[i]);
 
                     if (args[i].indexOf("><") !== -1) {
                         sendMessage = false;
@@ -864,6 +864,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                             ["obliterates", "https://i.imgur.com/yYOL3Zp.gifv", "with a Jericho missile"],
                             ["blows up", "https://i.imgur.com/uWTJ6gD.gifv", "with a pistol"],
                             ["shoots", "https://i.imgur.com/nGW5Gf9.gifv", "with a gun"],
+                            ["shoots", "https://i.imgur.com/RnLwIiM.gifv", "with a gun"],
                             ["sinks", "https://i.imgur.com/dqE3yfn.gifv", "with a torpedo"],
                             ["blinds","https://i.imgur.com/oQp2L8b.gifv", "with light"],
                             ["headshots","https://i.imgur.com/nRnPiyC.gifv", "with a sniper rifle"],
@@ -882,6 +883,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                             ["stabs", "https://i.imgur.com/eNQkEyt.gifv", "with several knives"],
                             ["blows up", "https://i.imgur.com/kgYlUzn.gifv", "with a wrench"],
                             ["vaporizes", "https://i.imgur.com/3mzHY1J.gifv", "with a Beam Cannon"],
+                            ["embarasses", "https://i.imgur.com/NRCAl5z.gifv", "with a Bright Slap"],
                             ["9/11s", "https://i.imgur.com/i04NTMX.gifv", "with a 767"],
                             ["Pearl Harbors", "https://i.imgur.com/HQFYvhJ.gifv", "with a space cruiser"],
                             ["DESTROYS", "https://i.imgur.com/HdjIdTJ.gifv", "with FACTS and LOGIC"]
@@ -896,7 +898,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         ];
 
                         var backfirePercent = Math.random();
-                        console.log(backfirePercent);
 
                         // 80% chance of hitting, 20% chance of a backfire/miss
                         if (backfirePercent <= 0.8) {
@@ -908,7 +909,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                             var message = backfireArray[backfireIndex][1];
                             var image = backfireArray[backfireIndex][0];
                         }
-
                     }
 
                     if (sendMessage) {
@@ -925,6 +925,32 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     sendChannelMessage(channelID, image, "destroy");
                 }
 
+                break;
+            // Custom destroy
+            case "deldbot":
+                var userId = "<@!" + userID + ">";
+
+                if (args.length == 0) {
+                    sendChannelMessage(channelID, "Awaiting orders", "destroy");
+                    break;
+                } else if (args.length == 1) {
+                    sendChannelMessage(channelID, "No target specified for Deldbot", "destroy");
+                    break;
+                } else if (!args[1].startsWith("<@") && args[1] !== "@everyone" && args[1] !== "@here") {
+                    sendChannelMessage(channelID, "No target specified for Deldbot", "destroy");
+                    break;
+                }
+
+                if (args[0] === "destroy" && userId === config.ownerId) {
+                    var message = "Deldbot heeds the call of the last Deld and destroys " + args[1];
+                    var image = "https://i.imgur.com/yha5vhb.gifv";
+                    sendChannelMessage(channelID, message, "destroy");
+                    sendChannelMessage(channelID, image, "destroy");
+                    sentMessage = true;
+                } else {
+                    var message = "Deldbot does not recognize your authority";
+                    sendChannelMessage(channelID, message, "destroy");
+                }
                 break;
             // Bot uptime
             case "uptime":
