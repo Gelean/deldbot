@@ -9,6 +9,7 @@ const hltb = require("howlongtobeat");
 const itad = require("itad-api-client-ts");
 //const igdb = require("igdb-api-node");
 const config = require("./config.js");
+const package = require('./package.json');
 
 // Helper Functions
 function sendChannelMessage(channelID, text, method) {
@@ -984,7 +985,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 break;
             // Report bot version
             case "version":
-                sendChannelMessage(channelID, "Current Version: 1.0", "version");
+                sendChannelMessage(channelID, "Current Version: " + package.version, "version");
                 break;
             // Default response
             default:
