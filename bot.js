@@ -91,7 +91,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             case "help":
                 sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !discordstatus, !search, !playlist, " +
                     "!schwifty, !imgur, !soitbegins, !godwillsit, !absenceofgod, !releasedate, !omdbsearch, !hltb, !howlongtobeat, " +
-                    "!itad, !isthereanydeal, !8ball, !destroy, !uptime", "help");
+                    "!itad, !isthereanydeal, !8ball, !destroy, !uptime, !repo, !version", "help");
                 break;
             // Give usage information for a given command
             case "usage":
@@ -161,6 +161,12 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 } else if (args[0] == "uptime") {
                     usageString  = "Description: Reports how long " + bot.username + " has been online";
                     usageString += "\nUsage: !uptime";
+                } else if (args[0] == "repo") {
+                    usageString  = "Description: Links the repository for " +  bot.username + "'s code";
+                    usageString += "\nUsage: !repo";
+                } else if (args[0] == "version") {
+                    usageString  = "Description: Reports " +  bot.username + "'s version";
+                    usageString += "\nUsage: !version";
                 } else {
                     noResults = true;
                 }
@@ -970,7 +976,15 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     sendChannelMessage(channelID, bot.username + " has been online for " + days + " day(s), " + hours + " hour(s), " + minutes + " minute(s), " + seconds + " second(s)", "uptime");
                 } else {
                     sendChannelMessage(channelID, bot.username + " is currently offline", "uptime");
-                }
+                } 
+                break;
+            // Link to code repository
+            case "repo":
+                sendChannelMessage(channelID, "Code for this bot resides at: https://github.com/Gelean/deldbot", "repo");
+                break;
+            // Report bot version
+            case "version":
+                sendChannelMessage(channelID, "Current Version: 1.0", "version");
                 break;
             // Default response
             default:
