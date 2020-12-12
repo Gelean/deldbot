@@ -90,6 +90,10 @@ The steps on the following page provide a good guide of the steps in creating an
     * Destroy other users on the server
 * `!uptime`
     * Displays the current uptime of the bot
+* `!repo`
+    * Displays the URL for this repo
+* `!version`
+    * Displays the current version of the bot
 
 ## Links and References
 
