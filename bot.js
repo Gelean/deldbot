@@ -987,10 +987,15 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             case "version":
                 sendChannelMessage(channelID, "Current Version: " + package.version, "version");
                 break;
+            /*case "ping":
+                sendChannelMessage(channelID, "Ping is: " + bot.ping + "ms)", "ping");
+                break;*/
             // Default response
             default:
                 sendChannelMessage(channelID, "Type !help for commands", "default");
                 break;
         }
+    } else if(message.includes("<@!" + bot.id + ">") && !message.includes("destroy")) {
+        sendChannelMessage(channelID, "https://i.gifer.com/73Xq.gif", "deldbotmessage");
     }
 });
