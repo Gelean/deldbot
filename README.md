@@ -51,6 +51,7 @@ The steps on the following page provide a good guide of the steps in creating an
 1. Discord Webhooks: https://support.discordapp.com/hc/en-us/articles/228383668-Intro-to-Webhooks
 1. Plex Webhooks: https://tautulli.com/ and https://github.com/Tautulli/Tautulli-Wiki/wiki/Notification-Agents-Guide#discord
 1. GitHub Webhooks: https://gist.github.com/jagrosh/5b1761213e33fc5b54ec7f6379034a22
+1. Gitlab Webhooks: https://docs.gitlab.com/ee/user/project/integrations/webhooks.html
 
 ## Commands and Features
 
