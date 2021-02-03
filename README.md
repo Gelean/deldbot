@@ -19,7 +19,7 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 
 ## Installation & Configuration
 
-The steps on the following page provide a good guide of the steps in creating and running a Discord bot: https://www.digitaltrends.com/gaming/how-to-make-a-discord-bot/
+These steps provide a good walkthrough of creating and running a Discord bot: https://www.digitaltrends.com/gaming/how-to-make-a-discord-bot/
 
 1. Go to discordapp.com/developers/applications
 1. Click on New Application and supply a name
