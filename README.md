@@ -10,12 +10,14 @@ Deldbot is a Discord Bot written in Nodejs 10.16.3 and using the plex-api librar
 * [discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io/)
 * [discord.js 12.2.0+](https://www.npmjs.com/package/discord.js/)
 * [howlongtobeat 1.2.1+](https://www.npmjs.com/package/howlongtobeat/)
-* [itad-api 1.0.4+](https://www.npmjs.com/package/itad-api-client-ts/)
+* [itad-api-client-ts 1.0.4+](https://www.npmjs.com/package/itad-api-client-ts/)
 * [pm2 4.4.0+](https://www.npmjs.com/package/pm2)
+* [popyt 4.2.0+](https://www.npmjs.com/package/popyt)
 * [Plex API](https://github.com/Arcanemagus/plex-api/wiki/)
 * [OMDb API](https://www.omdbapi.com/)
 * [Imgur API](https://api.imgur.com/)
 * [HowLongToBeat API](https://itad.docs.apiary.io/)
+* [Youtube Data API](https://developers.google.com/youtube/v3)
 
 ## Installation & Configuration
 
@@ -36,12 +38,13 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 1. Optional if you run into cache issues with the following three commands: npm cache clean --force
 1. Run the following: npm install --global pm2
 1. Run the following: npm install
-   1. The above should work with the package.json, but if you want to get it working manually, run: npm install discord.io winston plex-api howlongtobeat itad-api-client-ts discord.js https://github.com/woor/discord.io/tarball/gateway_v6
+   1. The above should work with the package.json, but if you want to get it working manually, run: npm install discord.io winston plex-api howlongtobeat itad-api-client-ts discord.js popyt pm2 https://github.com/woor/discord.io/tarball/gateway_v6
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
-1. Obtain an ITAD API Key by setting up an account and creating a new app at https://isthereanydeal.com/dev/app
-1. Update config.js with the client id, client secret, discord token, plex id, plex token, username, password, plex token, plex server hostname, plex server port, omdb api key, imgur client id, imgur client secret, the id of the imgur album you wish to use, and your itad key. Some of these are optional depending on what functionality you want to use.
+1. Obtain an ITAD API Key by setting up an account and creating a new application at https://isthereanydeal.com/dev/app
+1. Obtain a Youtube API Key by setting up an account and creating a new application at https://console.developers.google.com/apis/credentials and enable the YouTube Data API v3 at https://console.developers.google.com/apis/api/youtube.googleapis.com/overview
+1. Update config.js with the client id, client secret, discord token, plex id, plex token, username, password, plex token, plex server hostname, plex server port, omdb api key, imgur client id, imgur client secret, the id of the imgur album you wish to use, itad key, and your Youtube API key. Some of these are optional depending on what functionality you want to use.
 1. In Discord, go to User Settings > Appearance, enable Developer Mode, right-click your username, Copy ID, paste that number into USERID in config.js in the ownerId row
 1. Run the following: pm2 start bot.js
 1. Voila, you can now start to issue commands in your discord server and test out if the bot is working right
@@ -67,6 +70,8 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
     * Searches the Plex server for anything matching the given query
 * `!playlist [index]`
     * Return a YouTube link from the playlist.txt file
+* `!youtubesearch <query>`
+    * Return a YouTube video
 * `!schwifty`
     * Get Schwifty
 * `!imgur [index]`
@@ -77,6 +82,8 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
     * God wills it!
 * `!absenceofgod`
     * Absence of God
+* `!dealwithit`
+    * Deal With It
 * `!releasedate <query> [year]`
     * Check the release date of a given movie through OMDb
 * `!omdbsearch [p1-100] <query>`

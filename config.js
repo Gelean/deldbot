@@ -14,5 +14,6 @@ module.exports = {
   'imgurClientId'     : 'IMGUR_CLIENT_ID',
   'imgurClientSecret' : 'IMGUR_CLIENT_SECRET',
   'imgurAlbum'        : 'IMGUR_ALBUM_URL',
-  'itadKey'           : 'ITAD_KEY'
+  'itadKey'           : 'ITAD_KEY',
+  'youtubeKey'        : 'YOUTUBE_KEY'
 };

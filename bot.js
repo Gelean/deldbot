@@ -7,6 +7,7 @@ const DiscordJs = require("discord.js");
 const PlexAPI = require("plex-api");
 const hltb = require("howlongtobeat");
 const itad = require("itad-api-client-ts");
+const { YouTube } = require('popyt')
 //const igdb = require("igdb-api-node");
 const config = require("./config.js");
 const package = require('./package.json');
@@ -60,11 +61,11 @@ var hltbService = new hltb.HowLongToBeatService();
 
 // Initialize ITAD Service
 var itadApi = new itad.IsThereAnyDealApi(config.itadKey);
-async() => {
-    const shops = await itadApi.getShops();
-};
 
-//Initialize IGDB Service
+// Initialize Popyt Youtube API
+var youtube = new YouTube(config.youtubeKey)
+
+// Initialize IGDB Service
 //var igdbApi = new igdb.igdb(config.igdbKey);
 
 // Initialize Discord Bot
@@ -90,8 +91,8 @@ bot.on("message", function (user, userID, channelID, message, evt) {
         switch(cmd.toLowerCase()) {
             // Report valid commands
             case "help":
-                sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !discordstatus, !search, !playlist, " +
-                    "!schwifty, !imgur, !soitbegins, !godwillsit, !absenceofgod, !releasedate, !omdbsearch, !hltb, !howlongtobeat, " +
+                sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !discordstatus, !search, !playlist, !youtubesearch," +
+                    "!schwifty, !imgur, !soitbegins, !godwillsit, !absenceofgod, !dealwithit, !releasedate, !omdbsearch, !hltb, !howlongtobeat, " +
                     "!itad, !isthereanydeal, !8ball, !destroy, !uptime, !repo, !version", "help");
                 break;
             // Give usage information for a given command
@@ -113,11 +114,11 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     usageString  = "Description: Searches the Plex server for the given query and reports matching films, shows, or albums";
                     usageString += "\nUsage: !search <query>";
                 } else if (args[0] == "playlist") {
-                    var data = fs.readFileSync("playlist.txt", {"encoding": "utf8"});
-                    var entries = data.toString().split("\n");
-                    var numEntries = parseInt(entries.length);
-                    usageString  = "Description: Returns a random youtube video from the SoL YouTube playlist. May specify an index from 0 to " + (numEntries - 1) + " for a specific video.";
+                    usageString  = "Description: Returns a random youtube video from the SoL YouTube playlist. Or you may specify an index for a specific video.";
                     usageString += "\nUsage: !playlist [index]";
+                } else if (args[0] == "youtubesearch") {
+                    usageString  = "Description: Searches Youtube for the given query and returns the first result";
+                    usageString += "\nUsage: !youtubesearch <query>";
                 } else if (args[0] == "schwifty") {
                     usageString  = "Description: Get Schwifty";
                     usageString += "\nUsage: !schwifty";
@@ -133,6 +134,9 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 } else if (args[0] == "absenceofgod") {
                     usageString  = "Description: Absence of God";
                     usageString += "\nUsage: !absenceofgod";
+                } else if (args[0] == "dealwithit") {
+                    usageString  = "Description: Deal With It";
+                    usageString += "\nUsage: !dealwithit";
                 } else if (args[0] == "releasedate") {
                     usageString  = "Description: Checks the release date for a film or show. OMDb only returns one result for a given query, so refine it and optionally "
                         + "specify a year to increase the likelihood of finding the media you want.";
@@ -412,45 +416,70 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                 })();
                 break;
-            // Pull a Youtube link from a seed file (random video or index)
+            // Play a video from the Sons of Lanarchy playlist
             case "playlist":
-                var youtubeLink = "";
-                if (args == "") {
-                    fs.readFile("playlist.txt", {"encoding": "utf8"},  function(err, data) {
-                        if (err) {
-                            sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "playlist");
-                        } else {
-                            var lines = data.toString().split("\n");
-                            youtubeLink = lines[Math.floor(Math.random() * lines.length)];
-                            sendChannelMessage(channelID, youtubeLink, "playlist");
-                        }
-                    });
-                } else {
-                    if (args.length > 1) {
-                        sendChannelMessage(channelID, "Please specify a single index idiot", "playlist (index)");
-                        return;
-                    }
+                var query = "";
+                var searchOutput = "";
+                var noResults = true;
+                var argInt = parseInt(args[0], 10);
 
-                    var argInt = parseInt(args[0], 10);
-                    if (typeof argInt != "number" || isNaN(argInt)) {
-                        sendChannelMessage(channelID, "Please specify a number idiot", "playlist (index)");
-                        return;
-                    }
-
-                    fs.readFile("playlist.txt", {"encoding": "utf8"},  function(err, data) {
-                        if (err) {
-                            sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "playlist (index)");
-                        } else {
-                            var lines = data.toString().split("\n");
-                            if (args >= lines.length) {
-                                sendChannelMessage(channelID, "The index specified is larger than the number of items in the playlist idiot", "playlist (index)");
-                            } else {
-                                youtubeLink = lines[args];
-                                sendChannelMessage(channelID, youtubeLink, "playlist (index)");
-                            }
-                        }
-                    });
+                if (args.length > 1) {
+                    sendChannelMessage(channelID, "Please specify a single index idiot", "playlist (index)");
+                    return;
                 }
+
+                (async() => {   
+                    try {
+                        //var playlist = await youtube.getPlaylist("PLLwcjCbudUfArDWGtC0_iQBw0gtlMzvzF");
+                        //console.log(playlist);
+                        var playlistItems = await youtube.getPlaylistItems("PLLwcjCbudUfArDWGtC0_iQBw0gtlMzvzF", 0);
+                        //console.log(playlistItems);
+
+                        if (args.length == 1 && args <= 0) {
+                            sendChannelMessage(channelID, "Specify an index falling between 1 and " + playlistItems.length + ", idiot", "playlist (index)");
+                        } else if (args > playlistItems.length) {
+                            sendChannelMessage(channelID, "The index specified is larger than the number of items in the playlist (" + playlistItems.length + "), idiot", "playlist (index)");
+                        } else if (args.length == 1) {
+                            if (typeof argInt != "number" || isNaN(argInt)) {
+                                sendChannelMessage(channelID, "Please specify a number idiot", "playlist (index)");
+                            } else {
+                                youtubeLink = playlistItems[args - 1];
+                                sendChannelMessage(channelID, youtubeLink.url, "playlist (index)");
+                            }
+                        } else {
+                            youtubeLink = playlistItems[Math.floor(Math.random() * playlistItems.length)];
+                            sendChannelMessage(channelID, youtubeLink.url, "playlist");
+                        }
+
+                        //for (var i = 0; i < playlistItems.length; i++) {
+                        //    console.log(playlistItems[i].url);
+                        //}
+                    } catch(exception) {
+                        sendChannelMessage(channelID, "An exception occurred (" + exception + "), go yell at Derek", "youtubesearch");
+                    }
+                })();
+                break;
+            // Return the top result of a Youtube search
+            case "youtubesearch":
+                var query = "";
+
+                if (args.length == 0) {
+                    sendChannelMessage(channelID, "No search term specified, please use: !youtubesearch <query> to search for Youtube videos", "youtubesearch");
+                    break;
+                } else {
+                    query = args.join(' ');
+                    console.log("Query: " + query);
+                }
+
+                (async() => {   
+                    try {
+                        var video = await youtube.getVideo(query);
+                        //console.log(video)
+                        sendChannelMessage(channelID, "https://www.youtube.com/watch?v=" + video.id, "youtubesearch");
+                    } catch(UnhandledPromiseRejectionWarning) {
+                        sendChannelMessage(channelID, "Nothing found for that search term, please refine your search dimwit", "youtubesearch");
+                    }
+                })();
                 break;
             // Return Get Schwifty (Andromulus Remix)
             case "schwifty":
@@ -521,6 +550,10 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             // Return Absence of God GIF
             case "absenceofgod":
                 sendChannelMessage(channelID, "https://i.imgur.com/sLvxe4X.gifv", "absenceofgod");
+                break;
+            // Return Deal With It GIF
+            case "dealwithit":
+                sendChannelMessage(channelID, "https://i.imgur.com/1W9I06u.gifv", "dealwithit");
                 break;
             // Check OMDb for film and show release date information
             case "releasedate": 
@@ -719,6 +752,10 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     .where(`first_release_date > ${new Date().getTime() / 1000}`) // filter the results
                     .request('/games'); // execute the query and return a response object
                 console.log(response.data);
+
+                async() => {
+                    const shops = await itadApi.getShops();
+                };
                 */
 
                 sendChannelMessage(channelID, "Please wait a few moments while the closest result can be found", "isthereanydeal");
