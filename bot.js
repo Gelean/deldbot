@@ -776,7 +776,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                             //console.log(itadElement.title);
 
                             if (title === "" && !itadElement.title.includes("Offer") && !itadElement.title.includes("Currency") && !itadElement.title.includes("Pass") 
-                                && !itadElement.title.includes("Pack") && itadElement.is_dlc === false && itadElement.image !== null) {
+                                && !itadElement.title.includes("Pack") && itadElement.is_dlc === false && itadElement.image !== null && itadElement.achievements === true) {
 
                                 /*if (!query.toLowerCase().includes("complete") && (itadElement.title.includes("Complete") || itadElement.title.includes("Collection"))) {
                                     console.log(query);
