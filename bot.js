@@ -1018,7 +1018,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 break;
             // Link to code repository
             case "repo":
-                sendChannelMessage(channelID, "Code for this bot resides at: https://github.com/Gelean/deldbot", "repo");
+                sendChannelMessage(channelID, "Code for this bot resides at: " + package.repository.url, "repo");
                 break;
             // Report bot version
             case "version":

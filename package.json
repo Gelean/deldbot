@@ -4,13 +4,17 @@
    "description": "Deldbot heeds the call of the Sons of Lanarchy",
    "main": "bot.js",
    "author": "Derek Elder",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/Gelean/deldbot.git"
+   },
    "dependencies": {
       "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
       "discord.js": "^12.2.0",
       "howlongtobeat": "^1.2.1",
       "itad-api-client-ts": "https://github.com/Gelean/itad-api-client-ts.git",
       "plex-api": "^5.3.1",
-      "pm2": "^4.5.5",
+      "pm2": "^4.5.6",
       "popyt": "^4.2.0",
       "winston": "^3.2.1"
    }
