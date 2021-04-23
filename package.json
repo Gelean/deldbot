@@ -8,6 +8,10 @@
       "type": "git",
       "url": "https://github.com/Gelean/deldbot.git"
    },
+   "license": {
+      "type": "MIT",
+      "url": "https://www.opensource.org/licenses/mit-license.php"
+    },
    "dependencies": {
       "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
       "discord.js": "^12.2.0",
