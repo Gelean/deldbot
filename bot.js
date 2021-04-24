@@ -92,7 +92,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             // Report valid commands
             case "help":
                 sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !discordstatus, !search, !playlist, !youtubesearch," +
-                    "!schwifty, !imgur, !soitbegins, !godwillsit, !absenceofgod, !dealwithit, !releasedate, !omdbsearch, !hltb, !howlongtobeat, " +
+                    "!schwifty, !imgur, !ooooooh, !ganondance, !soitbegins, !godwillsit, !absenceofgod, !dealwithit, !releasedate, !omdbsearch, !hltb, !howlongtobeat, " +
                     "!itad, !isthereanydeal, !8ball, !destroy, !uptime, !repo, !version", "help");
                 break;
             // Give usage information for a given command
@@ -125,6 +125,12 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 } else if (args[0] == "imgur") {
                     usageString  = "Description: Returns a random image from the SoL Imgur album. May specify an index for a specific image."
                     usageString += "\nUsage: !imgur [index]";
+                } else if (args[0] == "ooooooh") {
+                    usageString  = "Description: Ooooooh!";
+                    usageString += "\nUsage: !ooooooh";
+                } else if (args[0] == "ganondance") {
+                    usageString  = "Description: Hahahaha, Ronaldinho soccer!";
+                    usageString += "\nUsage: !ganondance";
                 } else if (args[0] == "soitbegins") {
                     usageString  = "Description: So it begins";
                     usageString += "\nUsage: !soitbegins";
@@ -539,6 +545,14 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 });
                 break;
             // Revamp: memes <meme name> or <id>
+            // Return Ooooooh GIF
+            case "ooooooh":
+                sendChannelMessage(channelID, "https://i.imgur.com/uUQHFcF.gifv", "ooooooh");
+                break;
+            // Return Ganon Dance GIF
+            case "ganondance":
+                sendChannelMessage(channelID, "https://i.imgur.com/XACZc4s.gifv", "ganondance");
+                break;
             // Return So it begins GIF
             case "soitbegins":
                 sendChannelMessage(channelID, "https://i.imgur.com/owtlQgV.gifv", "soitbegins");
@@ -726,7 +740,6 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             case "itad":
             case "isthereanydeal":
                 var query = "";
-                var itadOutput = "";
                 var noResults = true;
                 var title = "";
                 var fieldCount = 0;
@@ -758,7 +771,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 };
                 */
 
-                sendChannelMessage(channelID, "Please wait a few moments while the closest result can be found", "isthereanydeal");
+                //sendChannelMessage(channelID, "Please wait a few moments while the closest result can be found", "isthereanydeal");
                 (async() => {
                     const itadOutput = await itadApi.getDealsFull({
                       shops: ["steam", "gog", "origin", "epic", "battlenet", "uplay", "squenix", "humblestore"],
@@ -768,6 +781,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
 
                     itadOutput.list.sort((a, b) => a.title.localeCompare(b.title, 'en', {ignorePunctuation: true}));
                     //console.log(itadOutput);
+                    //console.log(itadOutput.list);
 
                     if (itadOutput.count >= 1) {
                         for (var i = 0; i < itadOutput.count; i++) {
