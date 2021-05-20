@@ -55,6 +55,7 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 1. Plex Webhooks: https://tautulli.com/ and https://github.com/Tautulli/Tautulli-Wiki/wiki/Notification-Agents-Guide#discord
 1. GitHub Webhooks: https://gist.github.com/jagrosh/5b1761213e33fc5b54ec7f6379034a22
 1. Gitlab Webhooks: https://docs.gitlab.com/ee/user/project/integrations/webhooks.html
+1. Integromat: https://www.integromat.com/
 
 ## Commands and Features
 
