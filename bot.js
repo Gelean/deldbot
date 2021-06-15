@@ -193,7 +193,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 plex.query("/").then(function (result) {
                     sendChannelMessage(channelID, "The Plex server appears to be up", "serverstatus");
                 }, function (err) {
-                    sendChannelMessage(channelID, "The Plex server appears to be down, go yell at Josh", "serverstatus");
+                    sendChannelMessage(channelID, "The Plex server appears to be down, go yell at " + config.ownerId, "serverstatus");
                 });
                 break;
             // Check the Discord status and report back if there are any issues
@@ -230,7 +230,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     });
                 }).on("error", (err) => {
                     console.error(err);
-                    sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "discordstatus");
+                    sendChannelMessage(channelID, "An error has occurred, go yell at " + config.ownerId, "discordstatus");
                 });
                 break;
             // Check if a given piece of media (film, show, anime, or album) exists on the Plex server
@@ -461,7 +461,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         //    console.log(playlistItems[i].url);
                         //}
                     } catch(exception) {
-                        sendChannelMessage(channelID, "An exception occurred (" + exception + "), go yell at Derek", "youtubesearch");
+                        sendChannelMessage(channelID, "An exception occurred (" + exception + "), go yell at " + config.ownerId, "youtubesearch");
                     }
                 })();
                 break;
@@ -541,7 +541,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     });
                 }).on("error", (err) => {
                     console.error(err);
-                    sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "imgur");
+                    sendChannelMessage(channelID, "An error has occurred, go yell at " + config.ownerId, "imgur");
                 });
                 break;
             // Revamp: memes <meme name> or <id>
@@ -615,7 +615,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         });
 
                     }).on("error", (err) => {
-                        sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "releasedate");
+                        sendChannelMessage(channelID, "An error has occurred, go yell at " + config.ownerId, "releasedate");
                     });
                 } else {
                     http.get("http://www.omdbapi.com/?apikey=" + config.omdbKey + "&t=" + query + "&y=" + year, (resp) => {
@@ -640,7 +640,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         });
 
                     }).on("error", (err) => {
-                        sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "releasedate (year)");
+                        sendChannelMessage(channelID, "An error has occurred, go yell at " + config.ownerId, "releasedate (year)");
                     });
                 }
                 break;
@@ -697,7 +697,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                         }
                     });
                 }).on("error", (err) => {
-                    sendChannelMessage(channelID, "An error has occurred, go yell at Derek", "omdbsearch");
+                    sendChannelMessage(channelID, "An error has occurred, go yell at " + config.ownerId, "omdbsearch");
                 });
                 break;
             // Check HowLongToBeat for game completion times
