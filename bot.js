@@ -93,7 +93,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
             case "help":
                 sendChannelMessage(channelID, "Valid commands: !help, !usage, !serverstatus, !discordstatus, !search, !playlist, !youtubesearch," +
                     "!schwifty, !imgur, !ooooooh, !ganondance, !soitbegins, !godwillsit, !absenceofgod, !dealwithit, !releasedate, !omdbsearch, !hltb, !howlongtobeat, " +
-                    "!itad, !isthereanydeal, !8ball, !destroy, !uptime, !repo, !version", "help");
+                    "!itad, !isthereanydeal, !8ball, !destroy, !request, !uptime, !repo, !version", "help");
                 break;
             // Give usage information for a given command
             case "usage":
@@ -169,6 +169,9 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 } else if (args[0] == "destroy") {
                     usageString  = "Description: Destroys other users";
                     usageString += "\nUsage: !destroy @<user>";
+                } else if (args[0] == "request") {
+                    usageString  = "Description: Make a request";
+                    usageString += "\nUsage: !request <text>";
                 } else if (args[0] == "uptime") {
                     usageString  = "Description: Reports how long " + bot.username + " has been online";
                     usageString += "\nUsage: !uptime";
@@ -983,6 +986,21 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                     sendChannelMessage(channelID, image, "destroy");
                 }
 
+                break;
+            // Request
+            case "request":
+                var botId = "<@!" + bot.id + ">";
+                var userId = "<@!" + userID + ">";
+
+                if (args.length == 0) {
+                    sendChannelMessage(channelID, "You need to request something idiot", "request");
+                    break;
+                } else {
+                    query = args.join(' ');
+                    console.log("Query: " + query);
+                }
+
+                sendChannelMessage(channelID, userId + " requests " + query + " from " + config.ownerId, "request");
                 break;
             // Custom destroy
             case "deldbot":
