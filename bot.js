@@ -1,7 +1,5 @@
-const fs = require("fs");
 const http = require("http");
 const https = require("https");
-const logger = require("winston");
 const Discord = require("discord.io");
 const DiscordJs = require("discord.js");
 const PlexAPI = require("plex-api");
@@ -1064,7 +1062,7 @@ bot.on("message", function (user, userID, channelID, message, evt) {
                 sendChannelMessage(channelID, "Type !help for commands", "default");
                 break;
         }
-    } else if(message.includes("<@!" + bot.id + ">") && !message.includes("destroy")) {
+    } else if (message.includes("<@!" + bot.id + ">") && !message.includes("destroy")) {
         sendChannelMessage(channelID, "https://i.gifer.com/73Xq.gif", "deldbotmessage");
     }
 });
