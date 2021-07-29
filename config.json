@@ -1,0 +1,36 @@
+{
+  "owner": {
+    "id": "OWNER_ID"
+  },
+  "discord": {
+    "id": "DISCORD_CLIENT_ID",
+    "secret": "DISCORD_CLIENT_SECRET",
+    "useername": "DISCORD_BOT_NAME",
+    "token": "DISCORD_TOKEN"
+  },
+  "plex": {
+    "hostname": "PLEX_IP",
+    "port": "PLEX_PORT",
+    "id": "PLEX_ID",
+    "username": "PLEX_USERNAME",
+    "password": "PLEX_PASSWORD",
+    "token": "PLEX_TOKEN"
+  },
+  "omdb": {
+    "key": "OMDB_KEY"
+  },
+  "imgur": {
+    "clientId": "IMGUR_CLIENT_ID",
+    "clientSecret": "IMGUR_CLIENT_SECRET",
+    "album": "IMGUR_ALBUM_URL"
+  },
+  "itad": {
+    "key": "ITAD_KEY"
+  },
+  "youtube": {
+    "key": "YOUTUBE_KEY"
+  },
+  "global": {
+    "prefix": "!"
+  }
+}
