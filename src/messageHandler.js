@@ -1,22 +1,41 @@
+const config = require("../.env/config.json")
+
+/*
+const prefix = config.global.prefix
+const Discord = require('discord.js')
+const fs = require('fs')
+
+var client = new Discord.Client()
+client.commands = new Discord.Collection()
+const cooldowns = new Discord.Collection()
+const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'))
+
+for (const file of commandFiles) {
+  const command = require(`./src/commands/${file}`)
+  client.commands.set(command.name, command)
+}
+
+client.login(config.discord.token)
+
+client.once('ready', () => {
+  console.log('Bot has connected')
+  console.log("Name: " + config.discord.username + "\n" + "ID: " + config.discord.id);
+})
+
+client.on('message', message => {
+*/
+
 // Message handling
 bot.on('message', function (user, userID, channelID, message, evt) {
-  // Our bot needs to know if it will execute a command
-  // It will listen for messages that will start with `!`
+  // The bot needs to know if it will execute a command
+  // It will listen for messages that start with `!`
   if (message.substring(0, 1) == '!') {
     var args = message.substring(1).split(' ')
     var cmd = args[0]
     args = args.splice(1)
 
-    switch (cmd) {
-        // Check the Plex server status and report back if it"s running
-      case 'serverstatus':
-        plex.query('/').then(function (result) {
-          sendChannelMessage(channelID, 'The Plex server appears to be up', 'serverstatus')
-        }, function (err) {
-          sendChannelMessage(channelID, 'The Plex server appears to be down, go yell at Josh', 'serverstatus')
-        })
-        break
-        // Check if a given piece of media (film, show, anime, or album) exists on the Plex server
+    switch (cmd.toLowerCase()) {
+      // Check if a given piece of media (film, show, anime, or album) exists on the Plex server
       case 'search':
         var query = ''
         var searchOutput = ''
@@ -82,7 +101,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           }
         })()
         break
-        // Return the top result in an embed with a Plex link
+      // Return the top result in an embed with a Plex link
       case 'embedsearch':
         var query = ''
         var searchOutput = ''
@@ -116,7 +135,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
               // Investigate making search results Plex links using embeds
               var film = {
                 'title': filmResults.MediaContainer.Metadata[i].title,
-                'url': 'https://app.plex.tv/desktop#!/server/' + config.plexId + '/details?key=%2Flibrary%2Fmetadata%2F' +
+                'url': 'https://app.plex.tv/desktop#!/server/' + config.plex.id + '/details?key=%2Flibrary%2Fmetadata%2F' +
                                     filmResults.MediaContainer.Metadata[i].ratingKey + '&context=library%3Acontent.library',
                 'color': 15048717,
                 'footer': {
@@ -147,7 +166,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             for (var i = 0; i < showResults.MediaContainer.size; i++) {
               var show = {
                 'title': showResults.MediaContainer.Metadata[i].title,
-                'url': 'https://app.plex.tv/desktop#!/server/' + config.plexId + '/details?key=%2Flibrary%2Fmetadata%2F' +
+                'url': 'https://app.plex.tv/desktop#!/server/' + config.plex.id + '/details?key=%2Flibrary%2Fmetadata%2F' +
                                     showResults.MediaContainer.Metadata[i].ratingKey + '&context=library%3Acontent.library',
                 'color': 15048717,
                 'footer': {
@@ -176,7 +195,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             for (var i = 0; i < albumResults.MediaContainer.size; i++) {
               var album = {
                 'title': albumResults.MediaContainer.Metadata[i].title,
-                'url': 'https://app.plex.tv/desktop#!/server/' + config.plexId + '/details?key=%2Flibrary%2Fmetadata%2F' +
+                'url': 'https://app.plex.tv/desktop#!/server/' + config.plex.id + '/details?key=%2Flibrary%2Fmetadata%2F' +
                                     albumResults.MediaContainer.Metadata[i].ratingKey + '&context=library%3Acontent.library',
                 'color': 15048717,
                 'footer': {
@@ -200,13 +219,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           }
         })()
         break
-        // Pull an Imgur link from an album (random image or index)
-        // TODO: need an imgur count command and a link to post the imgur library
+      // Pull an Imgur link from an album (random image or index)
+      // TODO: need an imgur count command and a link to post the imgur library
       case 'imgur':
         https.get(imgurOptions, (resp) => {
           let data = ''
-          console.log('statusCode:', resp.statusCode)
-          console.log('headers:', resp.headers)
+          console.log("data:", imgurData.data);
 
           resp.on('data', (chunk) => {
             data += chunk
@@ -241,11 +259,11 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             }
           })
         }).on('error', (err) => {
-          console.error(e)
-          sendChannelMessage(channelID, 'An error has occurred, go yell at Derek', 'imgur')
+          console.error(err)
+          sendChannelMessage(channelID, 'An error has occurred, go yell at ' + config.owner.id, 'imgur')
         })
         break
-        // Check OMDb for film and show release date information
+      // Check OMDb for film and show release date information
       case 'releasedate':
         var query = ''
         var year = ''
@@ -270,10 +288,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         }
 
         if (!useYear) {
-          http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&t=' + query, (resp) => {
+          http.get('http://www.omdbapi.com/?apikey=' + config.omdb.key + '&t=' + query, (resp) => {
             let data = ''
             var movieData = ''
-            var searchOutput = ''
 
             resp.on('data', (chunk) => {
               data += chunk
@@ -281,7 +298,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
             resp.on('end', () => {
               movieData = JSON.parse(data)
-              console.log(movieData)
+              console.log("data:", movieData)
 
               if (movieData.Response == 'False') {
                 sendChannelMessage(channelID, 'No movie or show found, please refine your search and consider including a year dimwit', 'releasedate')
@@ -290,13 +307,12 @@ bot.on('message', function (user, userID, channelID, message, evt) {
               }
             })
           }).on('error', (err) => {
-            sendChannelMessage(channelID, 'An error has occurred, go yell at Derek', 'releasedate')
+            sendChannelMessage(channelID, 'An error has occurred, go yell at ' + config.owner.id, 'releasedate')
           })
         } else {
-          http.get('http://www.omdbapi.com/?apikey=' + config.omdbKey + '&t=' + query + '&y=' + year, (resp) => {
+          http.get('http://www.omdbapi.com/?apikey=' + config.omdb.key + '&t=' + query + '&y=' + year, (resp) => {
             let data = ''
             var movieData = ''
-            var searchOutput = ''
 
             resp.on('data', (chunk) => {
               data += chunk
@@ -304,7 +320,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
             resp.on('end', () => {
               movieData = JSON.parse(data)
-              console.log(movieData)
+              console.log("data:", movieData)
 
               if (movieData.Response == 'False') {
                 sendChannelMessage(channelID, 'No movie or show found, please refine your search and consider ' +
@@ -314,11 +330,11 @@ bot.on('message', function (user, userID, channelID, message, evt) {
               }
             })
           }).on('error', (err) => {
-            sendChannelMessage(channelID, 'An error has occurred, go yell at Derek', 'releasedate (year)')
+            sendChannelMessage(channelID, 'An error has occurred, go yell at ' + config.owner.id, 'releasedate (year)')
           })
         }
         break
-        // Check OMDb for film and show information
+      // Check OMDb for film and show information
       case 'omdbsearch':
         var query = ''
         var page = ''
@@ -328,7 +344,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
             usePagination = true
             var fields = args[0].split('p')
             page = fields[1]
-            console.log(page)
+            console.log("page:", page)
           } else {
             query += args[i] + '+'
           }
@@ -338,9 +354,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         console.log('Query: ' + query)
 
         if (usePagination) {
-          var omdbQuery = 'http://www.omdbapi.com/?apikey=' + config.omdbKey + '&s=' + query + '&page=' + page
+          var omdbQuery = 'http://www.omdbapi.com/?apikey=' + config.omdb.key + '&s=' + query + '&page=' + page
         } else {
-          var omdbQuery = 'http://www.omdbapi.com/?apikey=' + config.omdbKey + '&s=' + query
+          var omdbQuery = 'http://www.omdbapi.com/?apikey=' + config.omdb.key + '&s=' + query
         }
 
         http.get(omdbQuery, (resp) => {
@@ -354,7 +370,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 
           resp.on('end', () => {
             movieData = JSON.parse(data)
-            console.log(movieData)
+            console.log("data:", movieData)
 
             if (movieData.Response == 'False') {
               sendChannelMessage(channelID, 'No movie or show found, please refine your search and consider including a year dimwit', 'omdbsearch')
@@ -365,15 +381,15 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 // console.log(movieData.Search[i]);
                 searchOutput += movieData.Search[i].Title + ' (' + movieData.Search[i].Year + ')\n'
               }
-              searchOutput += 'Total Results: ' + movieData.totalResults + ' (' + totalPages(movieData.totalResults) + ' pages)'
+              searchOutput += 'Total Results: ' + movieData.totalResults + ' (' + Math.ceil(movieData.totalResults / 10) + ' pages)'
               sendChannelMessage(channelID, searchOutput, 'omdbsearch')
             }
           })
         }).on('error', (err) => {
-          sendChannelMessage(channelID, 'An error has occurred, go yell at Derek', 'omdbsearch')
+          sendChannelMessage(channelID, 'An error has occurred, go yell at ' + config.owner.id, 'omdbsearch')
         })
         break
-        // Check HowLongToBeat for game completion times
+      // Check HowLongToBeat for game completion times
       case 'hltb':
       case 'howlongtobeat':
         var query = ''
@@ -409,11 +425,10 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           }
         })()
         break
-        // Check IsThereAnyDeal for game deals
+      // Check IsThereAnyDeal for game deals
       case 'itad':
       case 'isthereanydeal':
         var query = ''
-        var itadOutput = ''
         var noResults = true
         var title = ''
         var fieldCount = 0
@@ -428,18 +443,22 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         }
 
         /*
-                const response = await igdb()
-                    .fields(['name', 'movies', 'age']) // fetches only the name, movies, and age fields
-                    .fields('name,movies,age') // same as above
-                    .limit(50) // limit to 50 results
-                    .offset(10) // offset results by 10
-                    .sort('name') // default sort direction is 'asc' (ascending)
-                    .sort('name', 'desc') // sorts by name, descending
-                    .search('mario') // search for a specific name (search implementations can vary)
-                    .where(`first_release_date > ${new Date().getTime() / 1000}`) // filter the results
-                    .request('/games'); // execute the query and return a response object
-                console.log(response.data);
-                */
+        const response = await igdb()
+          .fields(['name', 'movies', 'age']) // fetches only the name, movies, and age fields
+          .fields('name,movies,age') // same as above
+          .limit(50) // limit to 50 results
+          .offset(10) // offset results by 10
+          .sort('name') // default sort direction is 'asc' (ascending)
+          .sort('name', 'desc') // sorts by name, descending
+          .search('mario') // search for a specific name (search implementations can vary)
+          .where(`first_release_date > ${new Date().getTime() / 1000}`) // filter the results
+          .request('/games'); // execute the query and return a response object
+        console.log(response.data);
+
+        async() => {
+          const shops = await itadApi.getShops();
+        };
+        */
 
         sendChannelMessage(channelID, 'Please wait a few moments while the closest result can be found', 'isthereanydeal');
         (async () => {
@@ -450,7 +469,8 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           }, query)
 
           itadOutput.list.sort((a, b) => a.title.localeCompare(b.title, 'en', { ignorePunctuation: true }))
-          // console.log(itadOutput);
+           // console.log(itadOutput);
+           // console.log(itadOutput.list);
 
           if (itadOutput.count >= 1) {
             for (var i = 0; i < itadOutput.count; i++) {
@@ -459,17 +479,18 @@ bot.on('message', function (user, userID, channelID, message, evt) {
               // console.log(itadElement.title);
 
               if (title === '' && !itadElement.title.includes('Offer') && !itadElement.title.includes('Currency') && !itadElement.title.includes('Pass') &&
-                                !itadElement.title.includes('Pack') && itadElement.is_dlc === false && itadElement.image !== null) {
+                                !itadElement.title.includes('Pack') && itadElement.is_dlc === false && itadElement.image !== null && itadElement.achievements === true) {
                 /* if (!query.toLowerCase().includes("complete") && (itadElement.title.includes("Complete") || itadElement.title.includes("Collection"))) {
-                                    console.log(query);
-                                    console.log(itadElement.title)
-                                    break;
-                                }
-                                else if (!query.toLowerCase().includes("goty") && (itadElement.title.includes("Game of the Year") || itadElement.title.includes("GOTY"))) {
-                                    console.log(query);
-                                    console.log(itadElement.title)
-                                    break;
-                                } */
+                  console.log(query);
+                  console.log(itadElement.title)
+                  break;
+                }
+                else if (!query.toLowerCase().includes("goty") && (itadElement.title.includes("Game of the Year") || itadElement.title.includes("GOTY"))) {
+                  console.log(query);
+                  console.log(itadElement.title)
+                  break;
+                }
+                */
 
                 title = itadElement.title
                 gameEmbed.setColor('046EB2')
@@ -481,9 +502,11 @@ bot.on('message', function (user, userID, channelID, message, evt) {
               if (itadElement.shop.name === 'Epic Game Store') {
                 itadElement.shop.name = 'Epic'
               }
+              //title === ""
               if (title === itadElement.title && !itadElement.title.includes('Offer') && !itadElement.title.includes('Currency') &&
                                 !itadElement.title.includes('Pass') && !itadElement.title.includes('Pack') &&
-                                itadElement.is_dlc === false && itadElement.image !== null && fieldCount < 8) {
+                                itadElement.is_dlc === false && itadElement.image !== null && itadElement.achievements === true 
+                                && fieldCount < 8) {
                 gameEmbed.addField('Sale Price (' + itadElement.shop.name + ')', '$' + itadElement.price_new.toString(), true)
                 gameEmbed.addField('List Price (' + itadElement.shop.name + ')', '$' + itadElement.price_old.toString(), true)
                 gameEmbed.addField('Discount', itadElement.price_cut.toString() + '%', true)

@@ -1,9 +1,9 @@
-// TODO: Dynically add memes to aliases array
+// TODO: Dynamically add memes to aliases array
 const memes = require('../data/memes.json')
 
 module.exports = {
   name: 'memes',
-  description: 'Something about memes',
+  description: 'Display a meme',
   args: false,
   usage: '',
   guildOnly: true,
