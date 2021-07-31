@@ -1,4 +1,9 @@
+const config = require('../../.env/config.json')
 const videos = require('../data/youtube_playlist.json')
+const { YouTube } = require('popyt')
+
+// Initialize Popyt Youtube API
+var youtube = new YouTube(config.youtube.key)
 
 module.exports = {
   name: 'playlist',

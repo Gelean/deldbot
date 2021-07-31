@@ -1,4 +1,7 @@
 {
+  "owner": {
+    "id": "OWNER_ID"
+  },
   "discord": {
     "id": "DISCORD_CLIENT_ID",
     "secret": "DISCORD_CLIENT_SECRET",
@@ -23,6 +26,9 @@
   },
   "itad": {
     "key": "ITAD_KEY"
+  },
+  "youtube": {
+    "key": "YOUTUBE_KEY"
   },
   "global": {
     "prefix": "!"
