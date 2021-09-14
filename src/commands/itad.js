@@ -10,8 +10,8 @@ async () => {
 
 module.exports = {
   name: 'itad',
-  description: 'Check ITAD for game deals',
-  args: false,
+  description: 'Searches IsThereAnyDeal for deals on games',
+  args: true,
   usage: '',
   guildOnly: true,
   cooldown: 5,
@@ -29,11 +29,11 @@ module.exports = {
 
     var noResults = true
     var fieldCount = 0
-    var gameEmbed = new Discord.MessageEmbed();
+    var gameEmbed = new Discord.MessageEmbed(); //get rid of semicolon by fixing "TypeError: (intermediate value) is not a function"
     //let Embed = new Discord.MessageEmbed()
     //https://www.codegrepper.com/code-examples/javascript/Discord.Rich+Embed()+discord.js+v12
 
-    (async () => {
+    (async () => { //this might be causing the typescript error
       const itadOutput = await itadApi.getDealsFull({
         shops: ['steam', 'gog', 'origin', 'epic', 'battlenet', 'uplay', 'squenix', 'humblestore'],
         limit: 50,
@@ -41,8 +41,8 @@ module.exports = {
       }, query)
 
       itadOutput.list.sort((a, b) => a.title.localeCompare(b.title, 'en', { ignorePunctuation: true }))
-      //console.log(itadOutput)
-      //console.log(itadOutput.list)
+      // console.log(itadOutput)
+      // console.log(itadOutput.list)
 
       if (itadOutput.count >= 1) {
         for (var i = 0; i < itadOutput.count; i++) {
@@ -74,8 +74,8 @@ module.exports = {
           if (itadElement.shop.name === 'Epic Game Store') {
             itadElement.shop.name = 'Epic'
           }
-          //console.log(title)
-          //console.log(itadElement.title)
+          // console.log(title)
+          // console.log(itadElement.title)
           if (title === itadElement.title && !itadElement.title.includes('Offer') && !itadElement.title.includes('Currency') &&
                             !itadElement.title.includes('Pass') && !itadElement.title.includes('Pack') &&
                             itadElement.is_dlc === false && itadElement.image !== null
@@ -92,7 +92,6 @@ module.exports = {
       if (noResults) {
         message.channel.send("No results found, please refine your search dimwit")
       } else {
-        //sendEmbedMessage(channelID, gameEmbed, 'isthereanydeal')
         message.channel.send(gameEmbed)
       }
     })()

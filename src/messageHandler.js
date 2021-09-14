@@ -389,42 +389,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           sendChannelMessage(channelID, 'An error has occurred, go yell at ' + config.owner.id, 'omdbsearch')
         })
         break
-      // Check HowLongToBeat for game completion times
-      case 'hltb':
-      case 'howlongtobeat':
-        var query = ''
-        var hltbOutput = ''
-        var noResults = true
-
-        if (args.length == 0) {
-          sendChannelMessage(channelID, 'No game specified, please use: !hltb <query> or !howlongtobeat <query> to search for the average completion time for games', 'howlongtobeat')
-          break
-        } else {
-          query = args.join(' ')
-          console.log('Query: ' + query)
-        }
-
-        (async () => {
-          const hltbResponse = hltbService.search(query)
-          const hltbResults = await hltbResponse
-          // console.log(hltbResults);
-
-          if (hltbResults.length >= 1) {
-            hltbOutput += 'Games and Completion Times (Main Story, Main + Extra, Completionist):'
-            for (var i = 0; i < hltbResults.length; i++) {
-              hltbOutput += '\n' + hltbResults[i].name + ' (' + hltbResults[i].gameplayMain + 'h, ' +
-                                hltbResults[i].gameplayMainExtra + 'h, ' + hltbResults[i].gameplayCompletionist + 'h)'
-            }
-            noResults = false
-          }
-
-          if (noResults) {
-            sendChannelMessage(channelID, 'No results found, please refine your search dimwit', 'howlongtobeat')
-          } else {
-            sendChannelMessage(channelID, hltbOutput, 'howlongtobeat')
-          }
-        })()
-        break
       default:
         sendChannelMessage(channelID, 'Type !help for commands', 'default')
         break
