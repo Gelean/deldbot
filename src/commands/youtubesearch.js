@@ -1,5 +1,5 @@
 const config = require('../../.env/config.json')
-const package = require('../../package.json');
+const package = require('../../package.json')
 const { YouTube } = require('popyt')
 
 // Initialize Popyt Youtube API
@@ -20,13 +20,13 @@ module.exports = {
         message.channel.send("No search term specified, please use: !youtubesearch <query> to search for Youtube videos")
         //break;
     } else {
-        query = args.join(' ');
-        console.log("Query: " + query);
+        query = args.join(' ')
+        console.log("Query: " + query)
     }
 
     (async() => {   
       try {
-          var video = await youtube.getVideo(query);
+          var video = await youtube.getVideo(query)
           //console.log(video)
           message.channel.send("https://www.youtube.com/watch?v=" + video.id)
       } catch(UnhandledPromiseRejectionWarning) {

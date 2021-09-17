@@ -28,7 +28,8 @@
     "key": "ITAD_KEY"
   },
   "youtube": {
-    "key": "YOUTUBE_KEY"
+    "key": "YOUTUBE_KEY",
+    "playlist": "YOUTUBE_PLAYLIST"
   },
   "global": {
     "prefix": "!"

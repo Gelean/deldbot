@@ -9,11 +9,11 @@ module.exports = {
   cooldown: 5,
   aliases: [''],
   execute (message, args) {
-    var user = "<@!" + message.author.id + ">";
+    var user = "<@!" + message.author.id + ">"
 
-    item = args.join(' ');
-    console.log("Query: " + query);
+    item = args.join(' ')
+    console.log("Query: " + query)
 
-    message.channel.send(user + " requests " + item + " from " + config.owner.id);
+    message.channel.send(user + " requests " + item + " from " + config.owner.id)
   }
 }
