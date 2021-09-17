@@ -10,7 +10,7 @@ module.exports = {
   cooldown: 5,
   aliases: ['omdb', 'omdb_search'],
   execute (message, args) {
-     //if key is not found in the config - error out - do the same for hltb, itad, and the others
+    //if key is not found in the config - error out - do the same for hltb, itad, and the others
     var query = page = ''
     var usePagination = false
     for (var i = 0; i < args.length; i++) {
