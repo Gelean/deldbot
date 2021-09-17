@@ -9,6 +9,6 @@ module.exports = {
   cooldown: 5,
   aliases: ['ver'],
   execute (message, args) {
-    message.channel.send("Current Version: " + package.version);
+    message.channel.send("Current Version: " + package.version)
   }
 }
