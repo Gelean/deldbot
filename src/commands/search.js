@@ -9,14 +9,18 @@ var plex = new PlexAPI({
   password: config.plex.password,
   token: config.plex.token
 })
+var plexIsDown = false;
 
-// Check Plex Server Information
 plex.query('/').then(function (result) {
   console.log('Sever: %s' + '\n' + 'Plex Version: %s',
     result.MediaContainer.friendlyName,
     result.MediaContainer.version)
-}, function (err) {
-  console.error('The Plex server appears to be down, go yell at ' + config.owner.id, err)
+}).catch(err => {
+  plexIsDown = true;
+  console.error('The Plex server appears to be down')
+  process.on('unhandledRejection', error => {
+    console.error(err)
+  });
 })
 
 module.exports = {
@@ -28,6 +32,10 @@ module.exports = {
   cooldown: 5,
   aliases: ['plex', 'plexsearch'],
   execute (message, args) {
+    if (plexIsDown) {
+      message.channel.send("The Plex server appears to be down, go yell at " + config.owner.id);
+    }
+
     var query = searchOutput = ''
     var noResults = true
 
@@ -40,7 +48,6 @@ module.exports = {
     }
 
     if (query.toLowerCase() === "derek's book") {
-      sendUserMessage(userID, 'Go fuck yourself', 'search')
       message.author.send("Go fuck yourself")
       //break
     }
