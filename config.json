@@ -20,8 +20,8 @@
     "key": "OMDB_KEY"
   },
   "imgur": {
-    "clientId": "IMGUR_CLIENT_ID",
-    "clientSecret": "IMGUR_CLIENT_SECRET",
+    "id": "IMGUR_CLIENT_ID",
+    "secret": "IMGUR_CLIENT_SECRET",
     "album": "IMGUR_ALBUM_URL"
   },
   "itad": {

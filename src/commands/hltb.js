@@ -1,4 +1,3 @@
-const config = require('../../.env/config.json')
 const hltb = require('howlongtobeat')
 
 // Initialize HLTB Service
