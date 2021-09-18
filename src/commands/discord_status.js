@@ -6,7 +6,7 @@ module.exports = {
   args: false,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['discord'],
   execute (message, args) {
     // Initialize Discord API Options

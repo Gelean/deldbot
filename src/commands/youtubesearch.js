@@ -11,7 +11,7 @@ module.exports = {
   args: false,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['youtube', 'ytsearch'],
   execute (message, args) {
     var query = "";

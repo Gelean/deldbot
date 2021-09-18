@@ -4,7 +4,7 @@ module.exports = {
   args: true,
   usage: '[command name]',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['args'],
   execute (message, args) {
     const commandName = args[0].toLowerCase()

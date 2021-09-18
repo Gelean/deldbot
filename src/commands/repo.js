@@ -6,7 +6,7 @@ module.exports = {
   args: false,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['repository'],
   execute (message, args) {
     message.channel.send("Code for this bot resides at: " + package.repository.url);

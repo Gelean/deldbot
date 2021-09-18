@@ -17,7 +17,7 @@ module.exports = {
   args: false,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['ss'],
   execute (message, args) {
     plex.query('/').then(function (result) {

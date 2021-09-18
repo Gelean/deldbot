@@ -6,7 +6,7 @@ module.exports = {
   args: true,
   usage: 'question',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['eightball', 'eight', '8'],
   execute (message, args) {
     message.channel.send(fortunes[Math.floor(Math.random() * fortunes.length)])

@@ -6,7 +6,7 @@ module.exports = {
   args: false,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['ver'],
   execute (message, args) {
     message.channel.send("Current Version: " + package.version)

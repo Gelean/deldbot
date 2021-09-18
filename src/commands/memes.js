@@ -7,7 +7,7 @@ module.exports = {
   args: false,
   usage: '',
   guildOnly: true,
-  cooldown: 0,
+  cooldown: 1,
   aliases: ['mm'],
   execute (message, args) {
     if(args.length === 0) {

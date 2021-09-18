@@ -14,7 +14,7 @@ module.exports = {
   args: true,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['isthereanydeal'],
   execute (message, args) {
     var query = title = ''

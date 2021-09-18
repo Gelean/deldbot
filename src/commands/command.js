@@ -6,7 +6,7 @@ module.exports = {
   args: false,
   usage: '[arguments name]',
   guildOnly: false,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['commands'],
   execute (message, args) {
     const data = []

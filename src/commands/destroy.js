@@ -7,13 +7,12 @@ module.exports = {
   args: false, //true
   usage: '',
   guildOnly: true,
-  cooldown: 0,
+  cooldown: 1,
   aliases: [''],
   execute (message, args) {
     var order = image = index = ''
-    var targetIdentified = false
-    var botId = "<@!" + config.discord.id + ">"
     var userId = "<@!" + message.author.id + ">"
+    var targetIdentified = false
 
     /*
     if (args.length == 0) {
@@ -30,7 +29,7 @@ module.exports = {
           targetIdentified = false
         } else if (!args[i].startsWith("<@") && args[i] !== "@everyone" && args[i] !== "@here") {
           targetIdentified = false
-        } else if (args[i] === botId) {
+        } else if (args[i] === "<@!" + config.discord.id + ">") {
           order = userId + " attempts to destroy " + args[i] + ", but fails"
           image = "https://i.imgur.com/Av8WEet.gifv"
         }  else if (args[i] === userId) {

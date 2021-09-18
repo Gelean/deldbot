@@ -7,7 +7,7 @@ module.exports = {
   args: true,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['omdb', 'omdb_search'],
   execute (message, args) {
     //if key is not found in the config - error out - do the same for hltb, itad, and the others

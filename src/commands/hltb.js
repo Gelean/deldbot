@@ -9,7 +9,7 @@ module.exports = {
   args: true,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: ['howlongtobeat'],
   execute (message, args) {
     var query = hltbOutput = ''

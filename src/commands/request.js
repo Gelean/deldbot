@@ -6,7 +6,7 @@ module.exports = {
   args: true,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: [''],
   execute (message, args) {
     var user = "<@!" + message.author.id + ">"

@@ -4,7 +4,7 @@ module.exports = {
   args: false,
   usage: '',
   guildOnly: true,
-  cooldown: 5,
+  cooldown: 1,
   aliases: [''],
   execute (message, args) {
     message.channel.send(`:ping_pong: Latency is ${Math.round(message.client.ws.ping)}ms`);
