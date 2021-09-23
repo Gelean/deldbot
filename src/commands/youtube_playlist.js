@@ -1,9 +1,9 @@
 const config = require('../../.env/config.json')
 const videos = require('../data/youtube_playlist.json')
-const { YouTube } = require('popyt')
+//const { YouTube } = require('popyt')
 
 // Initialize Popyt Youtube API
-var youtube = new YouTube(config.youtube.key)
+//var youtube = new YouTube(config.youtube.key)
 
 module.exports = {
   name: 'playlist',
@@ -11,31 +11,52 @@ module.exports = {
   args: false,
   usage: '[index]',
   guildOnly: true,
-  cooldown: 5,
-  aliases: ['video'],
+  cooldown: 1,
+  aliases: ['solplaylist'],
   execute (message, args) {
-    switch (args.length) {
-      case 0:
-        message.channel.send(videos[Math.floor(Math.random() * videos.length)])
-        break
-      case 1:
-        let index = parseInt(args[0])
+    (async() => {
+      try {
+        //description: 'Pull a Youtube video from a playlist',
+        //https://github.com/jasonhaxstuff/popyt/issues/456
+        //var playlist = await youtube.getPlaylist(config.youtube.playlist)
+        //console.log(playlist)
+        //var playlistItems = await youtube.getPlaylistItems(config.youtube.playlist, 0)
+        //console.log(playlistItems)
 
-        if (typeof index !== 'number' || isNaN(index)) {
-          message.channel.send('Please specify a number idiot')
-          return
-        }
+        switch (args.length) {
+          case 0:
+            message.channel.send(videos[Math.floor(Math.random() * videos.length)])
+            break
+          case 1:
+            let index = parseInt(args[0])
 
-        if (index >= 0 && index < videos.length) {
-          message.channel.send(videos[index])
-          return
-        } else {
-          message.channel.send(`The index specified is not in range [0,${videos.length}] in the playlist idiot`)
-          return
+            if (typeof index !== 'number' || isNaN(index)) {
+              message.channel.send('Specify a number idiot')
+              return
+            }
+
+            if (index >= 0 && index < videos.length) {
+              message.channel.send(videos[index])
+              //youtubeLink = playlistItems[args - 1];
+              //message.channel.send(youtubeLink.url)
+              return
+            } else {
+              message.channel.send(`The index specified is not in range [0,${videos.length - 1}] in the playlist idiot`)
+              return
+            }
+
+            /*
+            for (var i = 0; i < playlistItems.length; i++) {
+              console.log(playlistItems[i].url);
+            }
+            */
+          default:
+            message.channel.send('Please specify a single index idiot')
+            break
         }
-      default:
-        message.channel.send('Please specify a single index idiot')
-        break
-    }
+      } catch(exception) {
+          message.channel.send("An exception occurred (" + exception + "), go yell at " + config.owner.id)
+      }
+    })();
   }
 }
