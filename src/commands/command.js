@@ -4,7 +4,7 @@ module.exports = {
   name: 'help',
   description: 'Report valid commands',
   args: false,
-  usage: '[arguments name]',
+  usage: '[command name]',
   guildOnly: false,
   cooldown: 1,
   aliases: ['commands'],

@@ -1,47 +1,45 @@
 const config = require('../../.env/config.json')
-const https = require("https");
+const https = require('https')
 
 module.exports = {
   name: 'releasedate',
-  description: 'Checks the release date for a film or show. OMDb only returns one result for a given query, so refine it and optionally specify a year to increase the likelihood of finding the media you want',
+  description: 'Returns the release date for a film or show',
   args: true,
-  usage: '',
+  usage: '[title] [year]',
   guildOnly: true,
   cooldown: 1,
   aliases: [''],
   execute (message, args) {
-    //if key is not found in the config - error out - do the same for hltb, itad, and the others
-    var query = year = ''
-    var useYear = false
-    for (var i = 0; i < args.length; i++) {
+    if (config.omdb.key === 'OMDB_KEY') {
+      message.channel.send('The omdb.key is blank, set it in config.json')
+      return
+    }
+
+    let query = year = omdbQuery = ''
+    let useYear = false
+
+    for (let i = 0; i < args.length; i++) {
       // If the search has more than one term and the last argument is numeric, assume it is the year
-      var argInt = parseInt(args[i], 10)
-      if ((i + 1) == args.length && args.length > 1 && !isNaN(argInt) && argInt > 1888) {
+      let argInt = parseInt(args[i], 10)
+      if ((i + 1) === args.length && args.length > 1 && !isNaN(argInt) && argInt > 1888) {
         year = args[i]
         useYear = true
       } else {
         query += args[i] + '+'
       }
     }
-    // Remove the last + from the query
+
     query = query.substring(0, query.length - 1)
-    console.log('Query: ' + query)
-    
-    //remove
-    if (query == '') {
-      message.channel.send("Supply a movie or show name idiot")
-      //break
-    }
+    console.log(`Query: ${query}`)
 
     if (useYear) {
-      var omdbQuery = 'https://www.omdbapi.com/?apikey=' + config.omdb.key + '&t=' + query + '&y=' + year
+      omdbQuery = `https://www.omdbapi.com/?apikey=${config.omdb.key}&t=${query}&y=${year}`
     } else {
-      var omdbQuery = 'https://www.omdbapi.com/?apikey=' + config.omdb.key + '&t=' + query
+      omdbQuery = `https://www.omdbapi.com/?apikey=${config.omdb.key}&t=${query}`
     }
 
     https.get(omdbQuery, (resp) => {
-      let data = ''
-      var movieData = ''
+      let data = movieData = ''
 
       resp.on('data', (chunk) => {
         data += chunk
@@ -49,16 +47,16 @@ module.exports = {
 
       resp.on('end', () => {
         movieData = JSON.parse(data)
-        console.log("data:", movieData)
+        //console.log(`data: ${movieData}`)
 
-        if (movieData.Response == 'False') {
-          message.channel.send("No movie or show found, please refine your search and consider including a year dimwit")
+        if (movieData.Response === 'False') {
+          message.channel.send('No movie or show found, please refine your search and consider including a year dimwit')
         } else {
-          message.channel.send(movieData.Title + ' (' + movieData.Year + '): ' + movieData.Released)
+          message.channel.send(`${movieData.Title} (${movieData.Year}): ${movieData.Released}`)
         }
       })
     }).on('error', (err) => {
-      message.channel.send("An error has occurred, go yell at " + config.owner.id)
+      message.channel.send(`An error has occurred, go yell at ${config.owner.id}`)
     })
   }
 }

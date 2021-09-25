@@ -24,7 +24,7 @@ client.login(config.discord.token)
 
 client.once('ready', () => {
   console.log('Bot has connected')
-  console.log("Name: " + config.discord.username + "\n" + "ID: " + config.discord.id);
+  console.log(`Name: ${config.discord.username} \nID: ${config.discord.id}`)
 })
 
 client.on('message', message => {

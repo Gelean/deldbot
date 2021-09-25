@@ -2,9 +2,9 @@ const config = require('../../.env/config.json')
 
 module.exports = {
   name: 'uptime',
-  description: 'Bot uptime',
+  description: 'Returns Deldbot\'s uptime',
   args: false,
-  usage: 'question',
+  usage: '',
   guildOnly: true,
   cooldown: 1,
   aliases: ['up'],

@@ -2,9 +2,9 @@ const fortunes = require('../data/8ball.json')
 
 module.exports = {
   name: '8ball',
-  description: 'The Magic 8-Ball',
+  description: 'Ask the Magic 8-Ball your question',
   args: true,
-  usage: 'question',
+  usage: '[question]',
   guildOnly: true,
   cooldown: 1,
   aliases: ['eightball', 'eight', '8'],

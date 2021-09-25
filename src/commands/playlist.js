@@ -1,9 +1,7 @@
 const config = require('../../.env/config.json')
 const videos = require('../data/youtube_playlist.json')
 //const { YouTube } = require('popyt')
-
-// Initialize Popyt Youtube API
-//var youtube = new YouTube(config.youtube.key)
+//const youtube = new YouTube(config.youtube.key)
 
 module.exports = {
   name: 'playlist',
@@ -37,7 +35,7 @@ module.exports = {
 
             if (index >= 0 && index < videos.length) {
               message.channel.send(videos[index])
-              //youtubeLink = playlistItems[args - 1];
+              //youtubeLink = playlistItems[args - 1]
               //message.channel.send(youtubeLink.url)
               return
             } else {
@@ -47,7 +45,7 @@ module.exports = {
 
             /*
             for (var i = 0; i < playlistItems.length; i++) {
-              console.log(playlistItems[i].url);
+              console.log(playlistItems[i].url)
             }
             */
           default:
@@ -55,8 +53,8 @@ module.exports = {
             break
         }
       } catch(exception) {
-          message.channel.send("An exception occurred (" + exception + "), go yell at " + config.owner.id)
+          message.channel.send(`An exception occurred (${exception}), go yell at ${config.owner.id}`)
       }
-    })();
+    })()
   }
 }

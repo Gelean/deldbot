@@ -2,18 +2,20 @@ module.exports = {
   name: 'flip',
   description: 'Flip a coin',
   args: false,
-  usage: 'Optionally specify a number of coins to flip, if left blank one coin will be flipped',
+  usage: '[# of coins]',
   guildOnly: true,
   cooldown: 1,
   aliases: ['toss', 'coin'],
   execute (message, args) {
-    for (var i = 0; i < args[0]; i++) {
+    let i = 0
+    do {
       outcome = (Math.random() < 0.5)
       if (outcome) {
-        message.channel.send("<@!" + message.author.id + ">" + " flipped a coin and it came up heads :coin:")
+        message.channel.send(`<@!${message.author.id}> flipped a coin and it came up heads :coin:`)
       } else {
-        message.channel.send("<@!" + message.author.id + ">" + " flipped a coin and it came up tails :coin:")
+        message.channel.send(`<@!${message.author.id}> flipped a coin and it came up tails :coin:`)
       }
-    }
+      i++
+    } while (i < args[0])
   }
 }
