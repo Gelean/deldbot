@@ -1,5 +1,6 @@
 const config = require('../../.env/config.json')
 const destroy = require('../data/destroy.json')
+const destroyTargets = require('../data/destroy_targets.json')
 
 module.exports = {
   name: 'destroy',
@@ -13,10 +14,11 @@ module.exports = {
     let order = image = index = ''
     let userId = `<@!${message.author.id}>`
     let targetIdentified = false
+    let destroyTargetKeys = Object.keys(destroyTargets)
 
     for (let i = 0; i < args.length; i++) {
         targetIdentified = true
-        //console.log(args[i])
+        // console.log(args[i])
 
         if (args[i].indexOf('><') !== -1) {
           targetIdentified = false
@@ -25,7 +27,7 @@ module.exports = {
         } else if (args[i] === '<@!' + config.discord.id + '>') {
           order = `${userId} attempts to destroy ${args[i]}, but fails`
           image = 'https://i.imgur.com/Av8WEet.gifv'
-        }  else if (args[i] === userId) {
+        } else if (args[i] === userId) {
           index = Math.floor(Math.random() * destroy.sepukkuArray.length)
           order = `${userId} ${destroy.sepukkuArray[index][1]}`
           image = destroy.sepukkuArray[index][0]
@@ -40,6 +42,16 @@ module.exports = {
           index = Math.floor(Math.random() * destroy.everyoneArray.length)
           order = `${userId} ${destroy.everyoneArray[index][1]}`
           image = destroy.everyoneArray[index][0]
+        } else if (args[i].includes('<@&')) {
+          let fields = args[i].split(/<@&|>/)
+          roleId = fields[1]
+          let role = message.guild.roles.cache.find(r => r.id === roleId);
+          if (destroyTargetKeys.includes(role.name)) {
+            order = `${userId} ${destroyTargets[role.name][0][0]} ${args[i]}, ${destroyTargets[role.name][0][2]}`
+            image = destroyTargets[role.name][0][1]
+          } else {
+            targetIdentified = false
+          }
         } else {
           // 90% chance of hitting, 10% chance of a backfire/miss
           let backfirePercent = Math.random()
