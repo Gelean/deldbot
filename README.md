@@ -1,21 +1,23 @@
 # deldbot
 
-Deldbot is a Discord Bot written in Node.js and using the plex-api library and several API endpoints
+Deldbot is a Discord Bot written in Node.js, utilizing Discord.js and several other open source libraries
 
 ## Software, Libraries, and APIs
 
-* [NodeJS 12.16.2+](https://nodejs.org/en/download/)
+* [Node.js 14.16.1+](https://nodejs.org/en/download/)
+* [npm 6.14.12+](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+* [Jest ^27.2.0+](https://jestjs.io/)
+* [discord.js 12.5.3+](https://www.npmjs.com/package/discord.js/)
+* [d20 1.4.1+](https://www.npmjs.com/package/d20)
 * [plex-api 5.3.1+](https://www.npmjs.com/package/plex-api/)
-* [discord.io 2.5.3+](https://izy521.gitbooks.io/discord-io/content/)
-* [discord.io-gateway6 2.5.3+](https://www.npmjs.com/package/discord.io/)
-* [discord.js 12.2.0+](https://www.npmjs.com/package/discord.js/)
-* [howlongtobeat 1.2.1+](https://www.npmjs.com/package/howlongtobeat/)
+* [howlongtobeat 1.5.0+](https://www.npmjs.com/package/howlongtobeat/)
 * [itad-api-client-ts 1.0.4+](https://www.npmjs.com/package/itad-api-client-ts/)
-* [pm2 4.5.6+](https://www.npmjs.com/package/pm2)
-* [popyt 4.2.0+](https://www.npmjs.com/package/popyt)
+* [pm2 5.1.1+](https://www.npmjs.com/package/pm2)
+* [popyt ^5.0.0+](https://www.npmjs.com/package/popyt)
 * [Plex API](https://github.com/Arcanemagus/plex-api/wiki/)
 * [OMDb API](https://www.omdbapi.com/)
 * [Imgur API](https://api.imgur.com/)
+* [IsThereAnyDeal API](https://itad.docs.apiary.io/#)
 * [HowLongToBeat API](https://itad.docs.apiary.io/)
 * [Youtube Data API](https://developers.google.com/youtube/v3)
 
@@ -33,12 +35,10 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 1. Open up the following URL, replacing the CLIENT_ID and permissions with your own values: https://discordapp.com/oauth2/authorize?&client_id=CLIENT_ID&scope=bot&permissions=0
 1. On this GitHub page click on Code -> Download ZIP
 1. Unzip the repository code somewhere on your machine
-1. Open up the windows CMD prompt and run as administrator  (or whatever you use to run code)
-1. Change directory to the directory where the bot's code resides
-1. Optional if you run into cache issues with the following three commands: npm cache clean --force
-1. Run the following: npm install --global pm2
+1. Open up the Windows CMD prompt and run as administrator or open up a Linux terminal
+1. Change directory to where the downloaded code resides
 1. Run the following: npm install
-   1. The above should work with the package.json, but if you want to get it working manually, run: npm install discord.io winston plex-api howlongtobeat itad-api-client-ts discord.js popyt pm2 https://github.com/woor/discord.io/tarball/gateway_v6
+  1. Optional: if you run into cache issues use the following: npm cache clean --force
 1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
 1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
 1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
@@ -46,8 +46,13 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 1. Obtain a Youtube API Key by setting up an account and creating a new application at https://console.developers.google.com/apis/credentials and enable the YouTube Data API v3 at https://console.developers.google.com/apis/api/youtube.googleapis.com/overview
 1. Update config.js with the client id, client secret, discord token, plex id, plex token, username, password, plex token, plex server hostname, plex server port, omdb api key, imgur client id, imgur client secret, the id of the imgur album you wish to use, itad key, and your Youtube API key. Some of these are optional depending on what functionality you want to use.
 1. In Discord, go to User Settings > Appearance, enable Developer Mode, right-click your username, Copy ID, paste that number into USERID in config.js in the ownerId row
-1. Run the following: pm2 start bot.js
+1. Run the following: node start bot.js
+  1. If you wish to use pm2 to run the bot and ensure it restarts automatically from crashes, run the following: pm2 start bot.js
 1. Voila, you can now start to issue commands in your discord server and test out if the bot is working right
+
+## Running Jest Tests
+
+npm run test
 
 ## Webhooks
 
@@ -106,11 +111,10 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 
 ## Links and References
 
-* https://www.themoviedb.org/documentation/api?language=en-US
 * https://discordjs.guide/
+* https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID
 * https://cog-creators.github.io/discord-embed-sandbox/
-* https://github.com/v0idp/Mellow
+* https://www.themoviedb.org/documentation/api?language=en-US
 * https://rapidapi.com/imdb/api/movie-database-imdb-alternative
 * https://izy521.gitbooks.io/discord-io/content/Methods/Handling_audio.html
 * https://gifrun.com
-* https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-
