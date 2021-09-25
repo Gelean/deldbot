@@ -2,7 +2,7 @@ const PlexAPI = require('plex-api')
 const config = require('../../.env/config.json')
 
 // Initialize Plex
-var plex = new PlexAPI({
+let plex = new PlexAPI({
   hostname: config.plex.hostname,
   port: config.plex.port,
   username: config.plex.username,

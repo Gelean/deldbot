@@ -10,7 +10,7 @@ const prefix = config.global.prefix
 const Discord = require('discord.js')
 const fs = require('fs')
 
-var client = new Discord.Client()
+let client = new Discord.Client()
 client.commands = new Discord.Collection()
 const cooldowns = new Discord.Collection()
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'))

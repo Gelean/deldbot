@@ -2,14 +2,14 @@ const PlexAPI = require('plex-api')
 const config = require('../../.env/config.json')
 
 // Initialize Plex Service
-var plex = new PlexAPI({
+let plex = new PlexAPI({
   hostname: config.plex.hostname,
   port: config.plex.port,
   username: config.plex.username,
   password: config.plex.password,
   token: config.plex.token
 })
-var plexIsDown = false
+let plexIsDown = false
 
 plex.query('/').then(function (result) {
   console.log(`Server: %s \nPlex Version: %s`,
@@ -42,8 +42,8 @@ module.exports = {
         message.channel.send(`The Plex server appears to be down, go yell at ${config.owner.id}`)
       }
 
-      var query = searchOutput = ''
-      var noResults = true
+      let query = searchOutput = ''
+      let noResults = true
       query = args.join(' ')
       console.log(`Query: ${query}`)
 
@@ -58,7 +58,7 @@ module.exports = {
 
       if (filmResults.MediaContainer.size >= 1) {
         searchOutput += '**Films:**'
-        for (var i = 0; i < filmResults.MediaContainer.size; i++) {
+        for (let i = 0; i < filmResults.MediaContainer.size; i++) {
           // console.log(filmResults.MediaContainer.Metadata[i])
           searchOutput += '\n' + filmResults.MediaContainer.Metadata[i].title
         }
@@ -70,7 +70,7 @@ module.exports = {
 
       if (showResults.MediaContainer.size >= 1) {
         searchOutput += '\n**Shows:**'
-        for (var i = 0; i < showResults.MediaContainer.size; i++) {
+        for (let i = 0; i < showResults.MediaContainer.size; i++) {
           // console.log(showResults.MediaContainer.Metadata[i])
           searchOutput += '\n' + showResults.MediaContainer.Metadata[i].title
         }
@@ -82,7 +82,7 @@ module.exports = {
 
       if (albumResults.MediaContainer.size >= 1) {
         searchOutput += '\n**Albums:**'
-        for (var i = 0; i < albumResults.MediaContainer.size; i++) {
+        for (let i = 0; i < albumResults.MediaContainer.size; i++) {
           // console.log(albumResults.MediaContainer.Metadata[i])
           searchOutput += '\n' + albumResults.MediaContainer.Metadata[i].title
         }

@@ -1,4 +1,4 @@
-var d20 = require('d20')
+let d20 = require('d20')
 
 module.exports = {
   name: 'roll',
@@ -21,9 +21,9 @@ module.exports = {
 
     for (let i = 0; i < args.length; i++) {
       dice = args[i].split('d')
-      //console.log('total number of dice: ' + args)
-      //console.log('# of dice: ' + dice[0])
-      //console.log('# of sides: ' + dice[1])
+      // console.log('total number of dice: ' + args)
+      // console.log('# of dice: ' + dice[0])
+      // console.log('# of sides: ' + dice[1])
 
       if (dice[0] !== '') {
         length = dice[0]

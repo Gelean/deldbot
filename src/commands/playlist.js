@@ -16,9 +16,9 @@ module.exports = {
       try {
         //description: 'Pull a Youtube video from a playlist',
         //https://github.com/jasonhaxstuff/popyt/issues/456
-        //var playlist = await youtube.getPlaylist(config.youtube.playlist)
+        //let playlist = await youtube.getPlaylist(config.youtube.playlist)
         //console.log(playlist)
-        //var playlistItems = await youtube.getPlaylistItems(config.youtube.playlist, 0)
+        //let playlistItems = await youtube.getPlaylistItems(config.youtube.playlist, 0)
         //console.log(playlistItems)
 
         switch (args.length) {
@@ -44,7 +44,7 @@ module.exports = {
             }
 
             /*
-            for (var i = 0; i < playlistItems.length; i++) {
+            for (let i = 0; i < playlistItems.length; i++) {
               console.log(playlistItems[i].url)
             }
             */
