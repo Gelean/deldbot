@@ -26,7 +26,7 @@ module.exports = {
     try {
       (async() => {
         let video = await youtube.getVideo(query)
-        //console.log(video)
+        // console.log(video)
         message.channel.send(`https://www.youtube.com/watch?v=${video.id}`)
       })()
     } catch(UnhandledPromiseRejectionWarning) {

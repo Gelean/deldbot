@@ -21,7 +21,7 @@
     "itad-api-client-ts": "git+https://git@github.com/Gelean/itad-api-client-ts.git",
     "jest": "^27.2.0",
     "plex-api": "^5.3.1",
-    "pm2": "^5.1.1",
+    "pm2": "^5.1.2",
     "popyt": "^5.0.0",
     "winston": "^3.3.3"
   },
