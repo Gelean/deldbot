@@ -13,7 +13,7 @@ Deldbot is a Discord Bot written in Node.js, utilizing Discord.js and several ot
 * [howlongtobeat 1.5.0+](https://www.npmjs.com/package/howlongtobeat/)
 * [itad-api-client-ts 1.0.4+](https://www.npmjs.com/package/itad-api-client-ts/)
 * [pm2 5.1.2+](https://www.npmjs.com/package/pm2)
-* [popyt ^5.0.0+](https://www.npmjs.com/package/popyt)
+* [popyt 5.0.0+](https://www.npmjs.com/package/popyt)
 * [Plex API](https://github.com/Arcanemagus/plex-api/wiki/)
 * [OMDb API](https://www.omdbapi.com/)
 * [Imgur API](https://api.imgur.com/)
