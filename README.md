@@ -47,7 +47,7 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 1. Copy ./config.json into ./.env/config.json
 1. Update ./.env/config.json with your Discord bot's client id, client secret, discord token, plex id, plex token, username, password, plex token, plex server hostname, plex server port, omdb api key, imgur client id, imgur client secret, the id of the imgur album you wish to use, itad key, and your Youtube API key. Many of these are optional depending on what functionality you would like to use.
 1. In Discord, go to User Settings > Appearance, enable Developer Mode, right-click your username, Copy ID, paste that number into the owner.id key in config.json
-1. Run the following: node start bot.js
+1. Run the following: node bot.js
     1. If you wish to use pm2 to run the bot and ensure it restarts automatically from crashes, run the following: pm2 start bot.js
 1. Voila, you can now start to issue commands in your Discord server and test out if the bot is working right
 
