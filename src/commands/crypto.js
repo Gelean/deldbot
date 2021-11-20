@@ -43,7 +43,7 @@ module.exports = {
               .setTitle(cryptocurrencies[i].toUpperCase())
               .setFooter('Binance', 'https://i.imgur.com/4Rm5H8z.png')
               cryptoEmbed.addField('Date', `${cryptoDate}`, true)
-              if (cryptoData.price > 1) {
+              if (cryptoData.price >= 100) {
                 cryptoEmbed.addField('Price', `$${Math.round(cryptoData.price)}`, true)
               } else {
                 cryptoEmbed.addField('Price', `$${cryptoData.price}`, true)
