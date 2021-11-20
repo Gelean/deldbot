@@ -27,6 +27,9 @@
   "itad": {
     "key": "ITAD_KEY"
   },
+  "marketstack": {
+    "key": "MARKETSTACK_KEY"
+  },
   "youtube": {
     "key": "YOUTUBE_KEY",
     "playlist": "YOUTUBE_PLAYLIST"

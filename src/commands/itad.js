@@ -2,12 +2,6 @@ const config = require('../../.env/config.json')
 const itad = require('itad-api-client-ts')
 const Discord = require('discord.js')
 
-// Initialize ITAD Service
-const itadApi = new itad.IsThereAnyDealApi(config.itad.key)
-async () => {
-  const shops = await itadApi.getShops()
-}
-
 module.exports = {
   name: 'itad',
   description: 'Searches IsThereAnyDeal for deals on games',
@@ -23,13 +17,19 @@ module.exports = {
         return
       }
 
+      // Initialize ITAD Service
+      const itadApi = new itad.IsThereAnyDealApi(config.itad.key)
+      async () => {
+        const shops = await itadApi.getShops()
+      }
+
       let query = title = ''
       let noResults = true
       let fieldCount = 0
       let gameEmbed = new Discord.MessageEmbed()
 
       query = args.join(' ')
-      console.log(`Query: ${query}`)
+      // console.log(`Query: ${query}`)
 
       const itadOutput = await itadApi.getDealsFull({
         shops: ['steam', 'gog', 'origin', 'epic', 'battlenet', 'uplay', 'squenix', 'humblestore'],
