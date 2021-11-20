@@ -46,6 +46,7 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
     1. Obtain an ITAD API Key by setting up an account and creating a new application at https://isthereanydeal.com/dev/app
     1. Obtain a Youtube API Key by setting up an account and creating a new application at https://console.developers.google.com/apis/credentials and enable the YouTube Data API v3 at https://console.developers.google.com/apis/api/youtube.googleapis.com/overview
     1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
+    1. Obtain a Marketstack API key from https://marketstack.com/signup
 1. Update ./.env/config.json with your Discord bot's client id, client secret, token, Plex id, Plex token, Plex username, Plex password, Plex token, Plex server hostname, Plex server port, OMDB api key, Imgur client id, Imgur client secret, Imgur album id you wish to use, ITAD key, and your Youtube API key. Many of these are optional depending on what functionality you would like to use.
 1. In Discord, go to User Settings > Appearance, enable Developer Mode, right-click your username, Copy ID, paste that number into the owner.id key in ./.env/config.json
 1. Run the following: node bot.js
