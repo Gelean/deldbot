@@ -26,9 +26,9 @@ module.exports = {
   
         resp.on('end', () => {
           cryptoData = JSON.parse(data)
-          // console.log(`data: ${cryptoData.toString()}`)
+          console.log(`data: ${data}`)
 
-          if (cryptoData !== null) {
+          if (cryptoData.code == null) {
             const currentDate = new Date()
             let month = (1 + currentDate.getMonth()).toString()
             month = month.length > 1 ? month : '0' + month
@@ -42,21 +42,21 @@ module.exports = {
               .setURL(`https://www.binance.com/en/trade/${cryptocurrencies[i].toUpperCase()}_USDT`)
               .setTitle(cryptocurrencies[i].toUpperCase())
               .setFooter('Binance', 'https://i.imgur.com/4Rm5H8z.png')
-              cryptoEmbed.addField('Date', `${cryptoDate}`, true)
-              if (cryptoData.price >= 100) {
-                cryptoEmbed.addField('Price', `$${Math.round(cryptoData.price)}`, true)
-              } else {
-                cryptoEmbed.addField('Price', `$${cryptoData.price}`, true)
-              }
+            cryptoEmbed.addField('Date', `${cryptoDate}`, true)
+            if (cryptoData.price >= 100) {
+              cryptoEmbed.addField('Price', `$${Math.round(cryptoData.price)}`, true)
+            } else {
+              cryptoEmbed.addField('Price', `$${cryptoData.price}`, true)
+            }
+            
             message.channel.send(cryptoEmbed)
           } else {
-            message.channel.send(`No cryptocurrency found for ${cryptocurrencies[i]} symbol dimwit`)
+            message.channel.send(`No cryptocurrency found for ${cryptocurrencies[i].toUpperCase()} symbol dimwit`)
           }
         })
       }).on('error', (err) => {
         message.channel.send(`An error has occurred, go yell at ${config.owner.id}`)
       })
-      //});
     }
   }
 }

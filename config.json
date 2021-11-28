@@ -27,8 +27,8 @@
   "itad": {
     "key": "ITAD_KEY"
   },
-  "marketstack": {
-    "key": "MARKETSTACK_KEY"
+  "finnhub": {
+    "key": "FINNHUB_KEY"
   },
   "youtube": {
     "key": "YOUTUBE_KEY",
