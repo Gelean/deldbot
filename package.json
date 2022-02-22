@@ -27,6 +27,7 @@
     "winston": "^3.3.3"
   },
   "scripts": {
+    "postinstall": "npm install itad-api-client-ts --save",
     "test": "jest"
   }
 }
