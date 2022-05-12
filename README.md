@@ -51,6 +51,7 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 1. In Discord, go to User Settings > Appearance, enable Developer Mode, right-click your username, Copy ID, paste that number into the owner.id key in ./.env/config.json
 1. Run the following: node bot.js
     1. If you wish to use pm2 to run the bot and ensure it restarts automatically from crashes, run the following: pm2 start bot.js
+    2. You may need to install pm2 with: sudo npm install pm2 -g
 1. Voila, you can now start to issue commands in your Discord server and test out if the bot is working right
 
 ## Running Jest Tests
