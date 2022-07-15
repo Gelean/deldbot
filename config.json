@@ -5,7 +5,7 @@
   "discord": {
     "id": "DISCORD_CLIENT_ID",
     "secret": "DISCORD_CLIENT_SECRET",
-    "useername": "DISCORD_BOT_NAME",
+    "username": "DISCORD_BOT_NAME",
     "token": "DISCORD_TOKEN"
   },
   "plex": {
