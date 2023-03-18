@@ -7,12 +7,12 @@ try {
 }
 
 const prefix = config.global.prefix
-const Discord = require('discord.js')
+const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js')
 const fs = require('fs')
 
-let client = new Discord.Client()
-client.commands = new Discord.Collection()
-const cooldowns = new Discord.Collection()
+let client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent], partials: [Partials.Message, Partials.Channel] })
+client.commands = new Collection()
+const cooldowns = new Collection()
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'))
 
 for (const file of commandFiles) {
@@ -27,7 +27,7 @@ client.once('ready', () => {
   console.log(`Name: ${config.discord.username} \nID: ${config.discord.id}`)
 })
 
-client.on('message', message => {
+client.on('messageCreate', message => {
   if (!message.content.startsWith(prefix) || message.author.bot) return
 
   const args = message.content.slice(prefix.length).split(/ +/)
@@ -37,9 +37,13 @@ client.on('message', message => {
 
   if (!command) return
 
+  console.log(message.channel.type)
+
+  /*
   if (command.guildOnly && message.channel.type !== 'text') {
     return message.reply('I can\'t execute that command inside DMs!')
   }
+  */
 
   if (command.args && !args.length) {
     let reply = `You didn't provide any arguments, ${message.author}!`
@@ -52,7 +56,7 @@ client.on('message', message => {
   }
 
   if (!cooldowns.has(command.name)) {
-    cooldowns.set(command.name, new Discord.Collection())
+    cooldowns.set(command.name, new Collection())
   }
 
   const now = Date.now()

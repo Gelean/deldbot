@@ -1,6 +1,6 @@
 const config = require('../../.env/config.json')
 const finnhub = require('finnhub');
-const Discord = require('discord.js')
+const { EmbedBuilder } = require('discord.js')
 
 module.exports = {
   name: 'stock',
@@ -37,18 +37,20 @@ module.exports = {
           let year = stockDate.getFullYear()
           stockDate = `${year}-${month}-${day}`
 
-          let stockEmbed = new Discord.MessageEmbed()
-          stockEmbed.setColor('#1DB954')
+          let stockEmbed = new EmbedBuilder()
+            .setColor('#1DB954')
             .setTitle(stocks[i].toUpperCase())
             .setURL(`https://www.nasdaq.com/market-activity/stocks/${stocks[i]}`)
-            .setFooter('Finnhub', 'https://i.imgur.com/B65r4Nk.png')
-          stockEmbed.addField('Date', `${stockDate}`, true)
-          stockEmbed.addField('Current Price', `$${stockData.c}`, true)
-          stockEmbed.addField('Previous Close', `$${stockData.pc}`, true)
-          stockEmbed.addField('Open', `$${stockData.o}`, true)
-          stockEmbed.addField('High', `$${stockData.h}`, true)
-          stockEmbed.addField('Low', `$${stockData.l}`, true)
-          message.channel.send(stockEmbed)
+            .setFooter({text: 'Finnhub', iconURL: 'https://i.imgur.com/B65r4Nk.png'})
+            .addFields(
+              {name: 'Date:', value: `${stockDate}`, inline: true},
+              {name: 'Current Price', value: `$${stockData.c}`, inline: true},
+              {name: 'Previous Close', value: `$${stockData.pc}`, inline: true},
+              {name: 'Open', value: `$${stockData.o}`, inline: true},
+              {name: 'High', value: `$${stockData.h}`, inline: true},
+              {name: 'Low', value: `$${stockData.l}`, inline: true}
+            )
+          message.channel.send({ embeds: [stockEmbed] });
         }
       });
     }

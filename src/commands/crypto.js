@@ -1,6 +1,9 @@
+// This command is now broken:
+// https://www.quantconnect.com/forum/discussion/14508/binance-support-just-said-that-they-are-no-longer-working-with-us-based-ips/p1
+
 const config = require('../../.env/config.json')
 const https = require('https')
-const Discord = require('discord.js')
+const { EmbedBuilder } = require('discord.js')
 
 module.exports = {
   name: 'crypto',
@@ -37,19 +40,20 @@ module.exports = {
             let year = currentDate.getFullYear()
             cryptoDate = `${year}-${month}-${day}`
 
-            let cryptoEmbed = new Discord.MessageEmbed()
-            cryptoEmbed.setColor('F0B90B')
+            let cryptoEmbed = new EmbedBuilder()
+              .setColor('F0B90B')
               .setURL(`https://www.binance.com/en/trade/${cryptocurrencies[i].toUpperCase()}_USDT`)
               .setTitle(cryptocurrencies[i].toUpperCase())
-              .setFooter('Binance', 'https://i.imgur.com/4Rm5H8z.png')
+              .setFooter({text: 'Binance', iconURL: 'https://i.imgur.com/4Rm5H8z.png'})
+
             cryptoEmbed.addField('Date', `${cryptoDate}`, true)
             if (cryptoData.price >= 100) {
-              cryptoEmbed.addField('Price', `$${Math.round(cryptoData.price)}`, true)
+              cryptoEmbed.addField({name: 'Price', value: `$${Math.round(cryptoData.price)}`, inline: true})
             } else {
-              cryptoEmbed.addField('Price', `$${cryptoData.price}`, true)
+              cryptoEmbed.addField({name: 'Price', value: `$${cryptoData.price}`, inline: true})
             }
             
-            message.channel.send(cryptoEmbed)
+            message.channel.send({ embeds: [cryptoEmbed] });
           } else {
             message.channel.send(`No cryptocurrency found for ${cryptocurrencies[i].toUpperCase()} symbol dimwit`)
           }

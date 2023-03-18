@@ -9,15 +9,17 @@ module.exports = {
   cooldown: 1,
   aliases: ['commands'],
   execute (message, args) {
-    const data = []
+    let commandString = ""
     const { commands } = message.client
 
-    if (!args.length) {
-      data.push('Here\'s a list of all my commands:')
-      data.push(commands.map(command => command.name).join(', '))
-      data.push(`\nPlease supply a command you wish to learn more about, for example\n\`${prefix}help [command name]\``)
+    console.log(commands)
 
-      return message.author.send(data, { split: true })
+    if (!args.length) {
+      commandString = 'Here\'s a list of all my commands:\n'
+      commandString += commands.map(command => command.name).join(', ')
+      commandString += `\nPlease supply a command you wish to learn more about, for example\n\`${prefix}help [command name]\``
+
+      return message.author.send(commandString, { split: true })
         .then(() => {
           if (message.channel.type === 'dm') return
           message.reply('I\'ve sent you a DM with all my commands!')
@@ -35,14 +37,14 @@ module.exports = {
       return message.reply('That\' not a valid command!')
     }
 
-    data.push(`**Name:** ${command.name}`)
+    commandString += `**Name:** ${command.name}\n`
 
-    if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`)
-    if (command.description) data.push(`**Description:** ${command.description}`)
-    if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`)
+    if (command.aliases) commandString += `**Aliases:** ${command.aliases.join(', ')}\n`
+    if (command.description) commandString += `**Description:** ${command.description}\n`
+    if (command.usage) commandString += `**Usage:** ${prefix}${command.name} ${command.usage}\n`
 
-    data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`)
+    commandString += `**Cooldown:** ${command.cooldown || 3} second(s)\n`
 
-    message.channel.send(data, { split: true })
+    message.channel.send(commandString, { split: true })
   }
 }

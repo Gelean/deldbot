@@ -1,6 +1,6 @@
 const config = require('../../.env/config.json')
 const itad = require('itad-api-client-ts')
-const Discord = require('discord.js')
+const { EmbedBuilder } = require('discord.js')
 
 module.exports = {
   name: 'itad',
@@ -26,7 +26,7 @@ module.exports = {
       let query = title = ''
       let noResults = true
       let fieldCount = 0
-      let gameEmbed = new Discord.MessageEmbed()
+      let gameEmbed = new EmbedBuilder()
 
       query = args.join(' ')
       // console.log(`Query: ${query}`)
@@ -65,7 +65,7 @@ module.exports = {
               .setTitle(title)
               .setURL(itadElement.urls.game)
               .setImage(itadElement.image)
-              .setFooter('IsThereAnyDeal', 'https://i.imgur.com/Y53EOrA.jpg')
+              .setFooter({text: 'IsThereAnyDeal', iconURL: 'https://i.imgur.com/Y53EOrA.jpg'})
           }
           if (itadElement.shop.name === 'Epic Game Store') {
             itadElement.shop.name = 'Epic'
@@ -76,9 +76,11 @@ module.exports = {
               !itadElement.title.includes('Pass') && !itadElement.title.includes('Pack') &&
               itadElement.is_dlc === false && itadElement.image !== null
               && fieldCount < 8) {
-            gameEmbed.addField('Sale Price (' + itadElement.shop.name + ')', '$' + itadElement.price_new.toString(), true)
-            gameEmbed.addField('List Price (' + itadElement.shop.name + ')', '$' + itadElement.price_old.toString(), true)
-            gameEmbed.addField('Discount', itadElement.price_cut.toString() + '%', true)
+            gameEmbed.addFields(
+              {name: 'Sale Price (' + itadElement.shop.name + ')', value: '$' + itadElement.price_new.toString(), inline: true},
+              {name: 'List Price (' + itadElement.shop.name + ')', value: '$' + itadElement.price_old.toString(), inline: true},
+              {name: 'Discount', value: itadElement.price_cut.toString() + '%', inline: true}
+            )
             fieldCount++
             noResults = false
           }
@@ -88,7 +90,7 @@ module.exports = {
       if (noResults) {
         message.channel.send('No results found, please refine your search dimwit')
       } else {
-        message.channel.send(gameEmbed)
+        message.channel.send({ embeds: [gameEmbed] })
       }
     })()
   }
