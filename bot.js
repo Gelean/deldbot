@@ -37,14 +37,6 @@ client.on('messageCreate', message => {
 
   if (!command) return
 
-  console.log(message.channel.type)
-
-  /*
-  if (command.guildOnly && message.channel.type !== 'text') {
-    return message.reply('I can\'t execute that command inside DMs!')
-  }
-  */
-
   if (command.args && !args.length) {
     let reply = `You didn't provide any arguments, ${message.author}!`
 
