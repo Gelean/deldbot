@@ -11,12 +11,13 @@ module.exports = {
   execute (message, args) {
     let roll = dice = length = ''
     if (args.length === 0) {
-      roll = d20.roll(20)
+      roll = d20.roll(6)
       if (roll === 8 || roll === 11 || roll === 18) {
-        message.channel.send(`<@!${message.author.id}> rolled an ${roll} on a d20 :game_die:`)
+        article = "an"
       } else {
-        message.channel.send(`<@!${message.author.id}> rolled a ${roll} on a d20 :game_die:`)
+        article = "a"
       }
+      message.channel.send(`<@!${message.author.id}> rolled ${article} ${roll} on a d6 :game_die:\n`)
     }
 
     for (let i = 0; i < args.length; i++) {
@@ -31,14 +32,18 @@ module.exports = {
         length = 1
       }
 
+      let rollText = article = ""
+
       for (let j = 0; j < length; j++) {
         roll = d20.roll(dice[1])
         if (roll === 8 || roll === 11 || roll === 18) {
-          message.channel.send(`<@!${message.author.id}> rolled an ${roll} on a d${dice[1]} :game_die:`)
+          article = "an"
         } else {
-          message.channel.send(`<@!${message.author.id}> rolled a ${roll} on a d${dice[1]} :game_die:`)
+          article = "a"
         }
+        rollText += `<@!${message.author.id}> rolled ${article} ${roll} on a d${dice[1]} :game_die:\n`
       }
+      message.channel.send(rollText)
     }
   }
 }
