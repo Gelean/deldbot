@@ -49,9 +49,9 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
     1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
 1. Update ./.env/config.json with your Discord bot's client id, client secret, token, Plex id, Plex token, Plex username, Plex password, Plex token, Plex server hostname, Plex server port, OMDB api key, ITAD key, Finnhub api key, Youtube API key, Imgur client id, Imgur client secret, and Imgur album id you wish to use. Many of these are optional depending on what functionality you would like to use.
 1. In Discord, go to User Settings > Appearance, enable Developer Mode, right-click your username, Copy ID, paste that number into the owner.id key in ./.env/config.json
-1. Run the following: node bot.js
-    1. If you wish to use pm2 to run the bot and ensure it restarts automatically from crashes, run the following: pm2 start bot.js
-    2. You may need to install pm2 with: sudo npm install pm2 -g
+1. Run the following: npm run start or node bot.js
+    1. If you wish to use pm2 to run the bot to ensure it restarts automatically from crashes, run the following: pm2 start bot.js
+    1. You may need to install pm2 with: sudo npm install pm2 -g
 1. Voila, you can now start to issue commands in your Discord server and test out if the bot is working right
 
 ## Running Jest Tests

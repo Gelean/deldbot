@@ -32,6 +32,7 @@
   },
   "engineStrict": true,
   "scripts": {
+    "start": "node bot.js",
     "postinstall": "npm install itad-api-client-ts --save",
     "test": "jest"
   }
