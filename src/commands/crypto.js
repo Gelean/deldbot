@@ -31,7 +31,7 @@ module.exports = {
           cryptoData = JSON.parse(data)
           // console.log(`data: ${data}`)
 
-          if (cryptoData.code == null) {
+          if (cryptoData.code === null) {
             const currentDate = new Date()
             let month = (1 + currentDate.getMonth()).toString()
             month = month.length > 1 ? month : '0' + month
