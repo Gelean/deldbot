@@ -13,7 +13,7 @@ module.exports = {
       message.channel.send('Awaiting orders')
     } else if (args.length === 1 && args[0] !== 'destroy') {
       message.channel.send('Incorrect order specified')
-    } else if (args[1] !== '<@' + config.discord.id + '>') {
+    } else if (args[1] === '<@' + config.discord.id + '>') {
       message.channel.send('I cannot comply with that order')
     } else if (args.length > 1 && args[0] === 'destroy' && !args[1].startsWith('<@') && args[1] !== '@everyone' && args[1] !== '@here') {
       message.channel.send('No target specified for Deldbot to destroy')
