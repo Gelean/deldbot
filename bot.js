@@ -7,18 +7,43 @@ try {
 }
 
 const prefix = config.global.prefix
-const { Client, Collection, GatewayIntentBits, Partials } = require('discord.js')
+const { Client, Collection, GatewayIntentBits, Partials, REST, Routes } = require('discord.js')
 const fs = require('fs')
 
-let client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent], partials: [Partials.Message, Partials.Channel] })
+let client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, 
+  GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent], partials: [Partials.Message, Partials.Channel] })
 client.commands = new Collection()
 const cooldowns = new Collection()
+client.slashCommands = new Collection()
+let slashCommandArray = []
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'))
+const slashCommandFiles = fs.readdirSync('./src/slashcommands').filter(file => file.endsWith('.js'))
 
 for (const file of commandFiles) {
   const command = require(`./src/commands/${file}`)
   client.commands.set(command.name, command)
 }
+
+for (const file of slashCommandFiles) {
+  const slashCommand = require(`./src/slashcommands/${file}`)
+  slashCommandArray.push({ name: slashCommand.name, description: slashCommand.description, options: slashCommand.options })
+  client.slashCommands.set(slashCommand.name, slashCommand)
+}
+
+// removing the semicolon here results in the following error: TypeError: (intermediate value).setToken(...) is not a function
+const rest = new REST({ version: '10' }).setToken(config.discord.token);
+
+(async () => {
+  try {
+    console.log('Started refreshing application (/) commands.')
+    const data = await rest.put(Routes.applicationCommands(config.discord.id), {
+      body: slashCommandArray
+    })
+    console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+  } catch (err) {
+    console.log(err)
+  }
+})()
 
 client.login(config.discord.token)
 
@@ -72,5 +97,21 @@ client.on('messageCreate', message => {
   } catch (error) {
     console.error(error)
     message.reply('There was an error trying to execute that command')
+  }
+})
+
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isChatInputCommand()) return
+
+  const slashCommandName = interaction.commandName
+  const slashCommand = client.slashCommands.get(slashCommandName)
+  
+  if (!slashCommand) return
+
+  try {
+    await slashCommand.execute(interaction)
+  } catch (error) {
+    console.error(error)
+    await interaction.reply('There was an error trying to execute that command')
   }
 })
