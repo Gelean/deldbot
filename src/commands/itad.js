@@ -70,6 +70,9 @@ module.exports = {
           if (itadElement.shop.name === 'Epic Game Store') {
             itadElement.shop.name = 'Epic'
           }
+          if (itadElement.shop.name === 'Humble Store') {
+            itadElement.shop.name = 'Humble'
+          }
           // console.log(title)
           // console.log(itadElement.title)
           if (title === itadElement.title && !itadElement.title.includes('Offer') && !itadElement.title.includes('Currency') &&

@@ -29,7 +29,7 @@ module.exports = {
   
         resp.on('end', () => {
           cryptoData = JSON.parse(data)
-          console.log(`data: ${data}`)
+          // console.log(`data: ${data}`)
 
           if (cryptoData.code == null) {
             const currentDate = new Date()

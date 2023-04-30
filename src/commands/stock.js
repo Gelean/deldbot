@@ -24,7 +24,7 @@ module.exports = {
 
     for(let i = 0; i < stocks.length; i++) {
       finnhubClient.quote(stocks[i], (error, stockData, response) => {
-        // console.log(`data: ${stockData}`)
+        // console.log(`data: ${data}`)
 
         if (stockData.d === null) {
           message.channel.send('No stock found for that ticker dimwit')

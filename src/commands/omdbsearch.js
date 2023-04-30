@@ -66,7 +66,7 @@ module.exports = {
             // console.log(movieData.Search[i])
             searchOutput += `${movieData.Search[i].Title} (${movieData.Search[i].Year})\n`
           }
-          searchOutput += `**Total Results:** ${movieData.totalResults} (${Math.ceil(movieData.totalResults / 10)} pages)`
+          searchOutput += `**Total Results:** ${movieData.totalResults} (${Math.ceil(movieData.totalResults / 10)} page(s))`
 
           message.channel.send(searchOutput)
         }

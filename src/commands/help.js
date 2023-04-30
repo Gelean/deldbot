@@ -19,7 +19,7 @@ module.exports = {
       commandString += commands.map(command => command.name).join(', ')
       commandString += `\nPlease supply a command you wish to learn more about, for example\n\`${prefix}help [command name]\``
 
-      return message.author.send(commandString, { split: true })
+      return message.author.send(commandString)
         .then(() => {
           if (message.channel.type === 'dm') return
           message.reply('I\'ve sent you a DM with all my commands!')
