@@ -12,7 +12,7 @@ module.exports = {
   aliases: [''],
   execute (message, args) {
     let order = image = index = ''
-    let userId = `<@!${message.author.id}>`
+    let userId = `<@${message.author.id}>`
     let targetIdentified = false
     let destroyTargetKeys = Object.keys(destroyTargets)
 
@@ -24,15 +24,15 @@ module.exports = {
           targetIdentified = false
         } else if (!args[i].startsWith('<@') && args[i] !== '@everyone' && args[i] !== '@here') {
           targetIdentified = false
-        } else if (args[i] === '<@!' + config.discord.id + '>') {
+        } else if (args[i] === '<@' + config.discord.id + '>') {
           order = `${userId} attempts to destroy ${args[i]}, but fails`
           image = 'https://i.imgur.com/Av8WEet.gifv'
         } else if (args[i] === userId) {
           index = Math.floor(Math.random() * destroy.sepukkuArray.length)
           order = `${userId} ${destroy.sepukkuArray[index][1]}`
           image = destroy.sepukkuArray[index][0]
-        } else if (args[i] === config.owner.id) {
-          order = `${userId}'s gun misfires and kills himself after attempting to shoot ${config.owner.id}`
+        } else if (args[i] === '<@' + config.owner.id + '>') {
+          order = `${userId}'s gun misfires and kills himself after attempting to shoot <@${config.owner.id}>`
           image = 'https://i.imgur.com/exd2yso.gifv'
         } else if (args[i] === '@here') {
           index = Math.floor(Math.random() * destroy.hereArray.length)

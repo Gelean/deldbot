@@ -53,7 +53,7 @@ module.exports = {
             break
         }
       } catch(exception) {
-          message.channel.send(`An exception occurred (${exception}), go yell at ${config.owner.id}`)
+          message.channel.send(`An exception occurred (${exception}), go yell at <@${config.owner.id}>`)
       }
     })()
   }

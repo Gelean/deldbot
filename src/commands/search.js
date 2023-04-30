@@ -40,7 +40,7 @@ module.exports = {
       }
 
       if (plexIsDown) {
-        message.channel.send(`The Plex server appears to be down, go yell at ${config.owner.id}`)
+        message.channel.send(`The Plex server appears to be down, go yell at <@${config.owner.id}>`)
         return
       }
 

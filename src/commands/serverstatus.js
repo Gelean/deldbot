@@ -22,7 +22,7 @@ module.exports = {
     plex.query('/').then(function (result) {
       message.channel.send('The Plex server appears to be up')
     }, function (err) {
-      message.channel.send(`The Plex server appears to be down, go yell at ${config.owner.id}`)
+      message.channel.send(`The Plex server appears to be down, go yell at <@${config.owner.id}>`)
     })
   }
 }

@@ -9,15 +9,13 @@ module.exports = {
   cooldown: 1,
   aliases: [''],
   execute (message, args) {
-    let user = `<@!${message.author.id}>`
-
     query = args.join(' ')
     console.log(`Query: ${query}`)
 
     if (query.length === 0) {
-      message.channel.send(`${user} requests something from ${config.owner.id}`)
+      message.channel.send(`<@${message.author.id}> requests something from <@${config.owner.id}>`)
     } else {
-      message.channel.send(`${user} requests ${query} from ${config.owner.id}`)
+      message.channel.send(`<@${message.author.id}> requests ${query} from <@${config.owner.id}>`)
     }
   }
 }

@@ -11,9 +11,9 @@ module.exports = {
     do {
       outcome = (Math.random() < 0.5)
       if (outcome) {
-        message.channel.send(`<@!${message.author.id}> flipped a coin and it came up heads :coin:`)
+        message.channel.send(`<@${message.author.id}> flipped a coin and it came up heads :coin:`)
       } else {
-        message.channel.send(`<@!${message.author.id}> flipped a coin and it came up tails :coin:`)
+        message.channel.send(`<@${message.author.id}> flipped a coin and it came up tails :coin:`)
       }
       i++
     } while (i < args[0])

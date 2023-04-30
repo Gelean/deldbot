@@ -72,7 +72,7 @@ module.exports = {
         }
       })
     }).on('error', (err) => {
-      message.channel.send(`An error has occurred, go yell at ${config.owner.id}`)
+      message.channel.send(`An error has occurred, go yell at <@${config.owner.id}>`)
     })
   }
 }

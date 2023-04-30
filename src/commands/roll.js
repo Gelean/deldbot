@@ -17,7 +17,7 @@ module.exports = {
       } else {
         article = "a"
       }
-      message.channel.send(`<@!${message.author.id}> rolled ${article} ${roll} on a d6 :game_die:\n`)
+      message.channel.send(`<@${message.author.id}> rolled ${article} ${roll} on a d6 :game_die:\n`)
     }
 
     for (let i = 0; i < args.length; i++) {
@@ -41,7 +41,7 @@ module.exports = {
         } else {
           article = "a"
         }
-        rollText += `<@!${message.author.id}> rolled ${article} ${roll} on a d${dice[1]} :game_die:\n`
+        rollText += `<@${message.author.id}> rolled ${article} ${roll} on a d${dice[1]} :game_die:\n`
       }
       message.channel.send(rollText)
     }
