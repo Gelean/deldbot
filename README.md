@@ -54,6 +54,24 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
     1. You may need to install pm2 with: sudo npm install pm2 -g
 1. Voila, you can now start to issue commands in your Discord server and test out if the bot is working right
 
+## Docker image
+
+### Setup the Docker container
+
+1. cd to the root of the deldbot folder
+1. docker build -t deldbot-image:latest -f docker/Dockerfile .
+1. docker run -it deldbot-image:latest sh
+1. docker ps -a
+
+### Tear down the Docker container
+
+1. docker rm $(docker stop $(docker ps -aq --filter ancestor=deldbot-image --format="{{.ID}}"))
+1. Alternate tear down commands:
+    1. docker ps -aq | xargs -n 1 docker stop
+    1. docker ps -aq | xargs -n 1 docker rm
+1. docker system prune -a
+1. docker images -a
+
 ## Running Jest Tests
 
 npm run test

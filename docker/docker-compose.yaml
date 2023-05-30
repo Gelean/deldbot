@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  deldbot-service:
+    container_name: deldbot
+    image: deldbot-image:latest
+    cpus: 1
+    mem_limit: 1024m
+    ports:
+      - "8080:80"
