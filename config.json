@@ -34,6 +34,9 @@
     "key": "YOUTUBE_KEY",
     "playlist": "YOUTUBE_PLAYLIST"
   },
+  "coinmarketcap": {
+    "key": "COINMARKETCAP_KEY"
+  },
   "global": {
     "prefix": "!"
   }
