@@ -13,18 +13,18 @@ module.exports = {
 
     let meme = interaction.options.getString('meme')
 
-    if(meme === null) {
+    if (meme === null) {
       let memeIndex = Math.floor(Math.random() * memeKeys.length)
       return interaction.reply(memes[memeKeys[memeIndex]])
     }
 
     let filteredKeys = memeKeys.filter(function(item){ return item === meme })
     
-    if(filteredKeys.length !== 0) {
+    if (filteredKeys.length !== 0) {
       interaction.reply(memes[filteredKeys[0]])
     } else {
       let currentMemes = ''
-      for(let i = 0; i < memeKeys.length; i++) {
+      for (let i = 0; i < memeKeys.length; i++) {
         if (i === 0) {
           currentMemes = memeKeys[i]
         } else {

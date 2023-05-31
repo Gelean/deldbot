@@ -38,8 +38,8 @@ module.exports = {
         }
       })
     }).on('error', (err) => {
-        console.error(err)
-        interaction.reply(`An error has occurred, go yell at <@${config.owner.id}>`)
+      console.error(err)
+      interaction.reply(`An error has occurred, go yell at <@${config.owner.id}>`)
     })
   }
 }
