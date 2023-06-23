@@ -1,11 +1,9 @@
 const config = require('../../.env/config.json')
-const videos = require('../data/youtube_playlist.json')
-//const { YouTube } = require('popyt')
-//const youtube = new YouTube(config.youtube.key)
+const { YouTube } = require('popyt')
 
 module.exports = {
   name: 'playlist',
-  description: 'Pull a Youtube link from a seed file (random video or index)',
+  description: 'Pull a Youtube link from a playlist (random video or index)',
   args: false,
   usage: '[index]',
   guildOnly: true,
@@ -14,19 +12,29 @@ module.exports = {
   execute (message, args) {
     (async() => {
       try {
-        //description: 'Pull a Youtube video from a playlist',
-        //https://github.com/jasonhaxstuff/popyt/issues/456
-        //let playlist = await youtube.getPlaylist(config.youtube.playlist)
-        //console.log(playlist)
-        //let playlistItems = await youtube.getPlaylistItems(config.youtube.playlist, 0)
-        //console.log(playlistItems)
+        if (config.youtube.key === 'YOUTUBE_KEY') {
+          message.channel.send('The youtube.key is blank, set it in config.json')
+          return
+        }
+
+        if (config.youtube.playlist === 'YOUTUBE_PLAYLIST') {
+          message.channel.send('The youtube.playlist is blank, set it in config.json')
+          return
+        }
+
+        // Initialize popyt
+        const youtube = new YouTube(config.youtube.key)
+
+        const playlist = await youtube.getPlaylist(config.youtube.playlist)
+        const numPages = Math.round(playlist.length / 50)
+        const videos = await playlist.fetchVideos({ pages: numPages }, [ 'id' ])
 
         switch (args.length) {
           case 0:
-            message.channel.send(videos[Math.floor(Math.random() * videos.length)])
+            message.channel.send(videos[Math.floor(Math.random() * videos.length)].url)
             break
           case 1:
-            let index = parseInt(args[0])
+            const index = parseInt(args[0])
 
             if (typeof index !== 'number' || isNaN(index)) {
               message.channel.send('Specify a number idiot')
@@ -34,26 +42,18 @@ module.exports = {
             }
 
             if (index >= 0 && index < videos.length) {
-              message.channel.send(videos[index])
-              //youtubeLink = playlistItems[args - 1]
-              //message.channel.send(youtubeLink.url)
+              message.channel.send(message.channel.send(videos[index].url))
               return
             } else {
-              message.channel.send(`The index specified is not in range [0,${videos.length - 1}] in the playlist idiot`)
+              message.channel.send(`The index specified is not in the range (0,${videos.length - 1}) of the playlist idiot`)
               return
             }
-
-            /*
-            for (let i = 0; i < playlistItems.length; i++) {
-              console.log(playlistItems[i].url)
-            }
-            */
           default:
-            message.channel.send('Please specify a single index idiot')
+            message.channel.send('Please specify a single index or no index idiot')
             break
         }
       } catch(exception) {
-          message.channel.send(`An exception occurred (${exception}), go yell at <@${config.owner.id}>`)
+        message.channel.send(`An exception occurred (${exception}), go yell at <@${config.owner.id}>`)
       }
     })()
   }

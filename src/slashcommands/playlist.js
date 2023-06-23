@@ -1,12 +1,10 @@
 const config = require('../../.env/config.json')
-const videos = require('../data/youtube_playlist.json')
+const { YouTube } = require('popyt')
 const { ApplicationCommandOptionType } = require('discord.js')
-//const { YouTube } = require('popyt')
-//const youtube = new YouTube(config.youtube.key)
 
 module.exports = {
   name: 'playlist',
-  description: 'Pull a Youtube link from a seed file (random video or index)',
+  description: 'Pull a Youtube link from a playlist (random video or index)',
   args: true,
   options: [{ name: 'index', description: 'The index of a specific video', type: ApplicationCommandOptionType.Number, required: false }],
   usage: '[index]',
@@ -14,27 +12,36 @@ module.exports = {
   execute (interaction) {
     (async() => {
       try {
-        //description: 'Pull a Youtube video from a playlist',
-        //https://github.com/jasonhaxstuff/popyt/issues/456
-        //let playlist = await youtube.getPlaylist(config.youtube.playlist)
-        //console.log(playlist)
-        //let playlistItems = await youtube.getPlaylistItems(config.youtube.playlist, 0)
-        //console.log(playlistItems)
+        if (config.youtube.key === 'YOUTUBE_KEY') {
+          return interaction.reply('The youtube.key is blank, set it in config.json')
+        }
+
+        if (config.youtube.playlist === 'YOUTUBE_PLAYLIST') {
+          return interaction.reply('The youtube.playlist is blank, set it in config.json')
+        }
 
         const index = interaction.options.getNumber('index')
 
+        // Initialize popyt
+        const youtube = new YouTube(config.youtube.key)
+
+        // Defer the reply until popyt has responded
+        await interaction.deferReply()
+
+        const playlist = await youtube.getPlaylist(config.youtube.playlist)
+        const numPages = Math.round(playlist.length / 50)
+        const videos = await playlist.fetchVideos({ pages: numPages }, [ 'id' ])
+
         if (index === null) {
-          interaction.reply(videos[Math.floor(Math.random() * videos.length)])
+          await interaction.editReply(videos[Math.floor(Math.random() * videos.length)].url)
         } else {
           if (isNaN(index)) {
-            interaction.reply('Specify a proper number idiot')
+            await interaction.editReply('Specify a number idiot')
           } else {
             if (index >= 0 && index < videos.length) {
-              interaction.reply(videos[index])
-              //youtubeLink = playlistItems[index - 1]
-              //interaction.reply(youtubeLink.url)
+              await interaction.editReply(videos[index].url)
             } else {
-              interaction.reply(`The index specified is not in range [0,${videos.length - 1}] in the playlist idiot`)
+              await interaction.editReply(`The index specified is not in the range (0,${videos.length - 1}) of the playlist idiot`)
             }
           }
         }
