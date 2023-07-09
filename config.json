@@ -37,6 +37,10 @@
   "coinmarketcap": {
     "key": "COINMARKETCAP_KEY"
   },
+  "chatgpt": {
+    "key": "CHATGPT_KEY",
+    "organization": "CHATGPT_ORG"
+  },
   "global": {
     "prefix": "!"
   }

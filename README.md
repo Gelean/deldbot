@@ -12,6 +12,7 @@ Deldbot is a Discord Bot written in Node.js, utilizing Discord.js and several ot
 * [finnhub](https://www.npmjs.com/package/finnhub/)
 * [howlongtobeat](https://www.npmjs.com/package/howlongtobeat/)
 * [itad-api-client-ts](https://www.npmjs.com/package/itad-api-client-ts/)
+* [openai](https://www.npmjs.com/package/openai)
 * [plex-api](https://www.npmjs.com/package/plex-api/)
 * [pm2](https://www.npmjs.com/package/pm2/)
 * [popyt](https://www.npmjs.com/package/popyt/)
@@ -21,6 +22,9 @@ Deldbot is a Discord Bot written in Node.js, utilizing Discord.js and several ot
 * [IsThereAnyDeal API](https://itad.docs.apiary.io/)
 * [Youtube Data API](https://developers.google.com/youtube/v3/)
 * [Finnhub API](https://finnhub.io/docs/api/)
+* [CoinMarketCap API](https://coinmarketcap.com/api/)
+* [ChatGPT API](https://platform.openai.com/docs/api-reference/)
+
 ## Installation & Configuration
 
 These steps provide a good walkthrough of creating and running a Discord bot: https://www.digitaltrends.com/gaming/how-to-make-a-discord-bot/
@@ -42,12 +46,14 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 1. Copy ./config.json into ./.env/config.json
 1. Go through the following and generate API keys and tokens for the functionality you want
     1. Obtain the Plex token of your server by referencing the following link: https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
-    1. Obtain an OMDb API Key from https://www.omdbapi.com/apikey.aspx
-    1. Obtain an ITAD API Key by setting up an account and creating a new application at https://isthereanydeal.com/dev/app
-    1. Obtain a Youtube API Key by setting up an account and creating a new application at https://console.developers.google.com/apis/credentials and enable the YouTube Data API v3 at https://console.developers.google.com/apis/api/youtube.googleapis.com/overview
+    1. Obtain an OMDb API key from https://www.omdbapi.com/apikey.aspx
+    1. Obtain an ITAD API key by setting up an account and creating a new application at https://isthereanydeal.com/dev/app
+    1. Obtain a Youtube API key by setting up an account and creating a new application at https://console.developers.google.com/apis/credentials and enable the YouTube Data API v3 at https://console.developers.google.com/apis/api/youtube.googleapis.com/overview
     1. Obtain a Finnhub API key from https://finnhub.io/docs/api
     1. Register an application and obtain an Imgur client id and secret from https://api.imgur.com/oauth2/addclient
-1. Update ./.env/config.json with your Discord bot's client id, client secret, token, Plex id, Plex token, Plex username, Plex password, Plex token, Plex server hostname, Plex server port, OMDB api key, ITAD key, Finnhub api key, Youtube API key, Imgur client id, Imgur client secret, and Imgur album id you wish to use. Many of these are optional depending on what functionality you would like to use.
+    1. Obtain a CoinMarketCap API key from https://coinmarketcap.com/api
+    1. Obtain a ChatGPT API key from https://platform.openai.com/account/api-keys
+1. Update ./.env/config.json with your Discord bot's client id, client secret, token, Plex id, Plex token, Plex username, Plex password, Plex token, Plex server hostname, Plex server port, OMDB API key, ITAD API key, Finnhub API key, Youtube API key, Imgur client ID, Imgur client secret, Imgur album ID, CoinMarketCap API key, ChatGPT API key, and ChatGPT organization you wish to use. Many of these are optional depending on what functionality you would like to use.
 1. In Discord, go to User Settings > Appearance, enable Developer Mode, right-click your username, Copy ID, paste that number into the owner.id key in ./.env/config.json
 1. Run the following: npm run start or node bot.js
     1. If you wish to use pm2 to run the bot to ensure it restarts automatically from crashes, run the following: pm2 start bot.js
