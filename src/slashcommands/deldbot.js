@@ -13,7 +13,7 @@ module.exports = {
     const command = interaction.options.getString('command')
     const target = interaction.options.getString('target')
 
-    if (interaction.user.id !== config.owner.Id) {
+    if (interaction.user.id !== config.owner.id) {
       interaction.reply('Deldbot does not recognize your authority')
     } else if (command === null || target === null || command !== 'destroy') {
       interaction.reply('Awaiting orders')
