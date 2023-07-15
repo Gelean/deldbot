@@ -47,18 +47,20 @@ module.exports = {
           // console.log(itadElement)
           // console.log(itadElement.title)
 
-          if (title === '' && !itadElement.title.includes('Offer') && !itadElement.title.includes('Currency') && !itadElement.title.includes('Pass') &&
-              !itadElement.title.includes('Pack') && itadElement.is_dlc === false && itadElement.image !== null) {
-              /* if (!query.toLowerCase().includes('complete') && (itadElement.title.includes('Complete') || itadElement.title.includes('Collection'))) {
-                console.log(query)
-                console.log(itadElement.title)
-                break
-              }
-              else if (!query.toLowerCase().includes('goty') && (itadElement.title.includes('Game of the Year') || itadElement.title.includes('GOTY'))) {
-                console.log(query)
-                console.log(itadElement.title)
-                break
-              } */
+          if (title === '' && itadElement.title.toLowerCase().includes(query.toLowerCase()) && !itadElement.title.includes('Offer') &&
+            !itadElement.title.includes('Currency') && !itadElement.title.includes('Pass') &&
+            !itadElement.title.includes('Pack') && !itadElement.title.includes('Soundtrack') &&
+            !itadElement.title.includes('Artbook') && itadElement.is_dlc === false && itadElement.image !== null) {
+            /* if (!query.toLowerCase().includes('complete') && (itadElement.title.includes('Complete') || itadElement.title.includes('Collection'))) {
+              console.log(query)
+              console.log(itadElement.title)
+              break
+            }
+            else if (!query.toLowerCase().includes('goty') && (itadElement.title.includes('Game of the Year') || itadElement.title.includes('GOTY'))) {
+              console.log(query)
+              console.log(itadElement.title)
+              break
+            } */
 
             title = itadElement.title
             gameEmbed.setColor('046EB2')
@@ -76,9 +78,9 @@ module.exports = {
           // console.log(title)
           // console.log(itadElement.title)
           if (title === itadElement.title && !itadElement.title.includes('Offer') && !itadElement.title.includes('Currency') &&
-              !itadElement.title.includes('Pass') && !itadElement.title.includes('Pack') &&
-              itadElement.is_dlc === false && itadElement.image !== null
-              && fieldCount < 8) {
+            !itadElement.title.includes('Pass') && !itadElement.title.includes('Pack') && !itadElement.title.includes('Soundtrack') &&
+            !itadElement.title.includes('Artbook') && itadElement.is_dlc === false && itadElement.image !== null
+            && fieldCount < 8) {
             gameEmbed.addFields(
               {name: 'Sale Price (' + itadElement.shop.name + ')', value: '$' + itadElement.price_new.toString(), inline: true},
               {name: 'List Price (' + itadElement.shop.name + ')', value: '$' + itadElement.price_old.toString(), inline: true},

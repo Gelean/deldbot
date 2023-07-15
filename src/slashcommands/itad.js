@@ -7,8 +7,8 @@ module.exports = {
   name: 'itad', // isthereanydeal
   description: 'Searches IsThereAnyDeal for deals on games',
   args: true,
-  options: [{ name: 'game', description: 'The game to search for', type: ApplicationCommandOptionType.String, required: true }],
-  // options: choices [{ name: name, value: value }], - restrict just to certain shops ticket
+  options: [{ name: 'game', description: 'The game to search for', type: ApplicationCommandOptionType.String, required: true },
+            { name: 'shop', description: 'Limit search to a particular shop', type: ApplicationCommandOptionType.String, required: false }],
   usage: '[query]',
   guildOnly: true,
   execute (interaction) {
@@ -18,23 +18,33 @@ module.exports = {
       }
 
       const game = interaction.options.getString('game')
+      const shop = interaction.options.getString('shop')
 
       // Initialize ITAD Service
       const itadApi = new itad.IsThereAnyDealApi(config.itad.key)
-      async () => {
-        const shops = await itadApi.getShops()
-      }
 
       let title = ''
       let noResults = true
       let fieldCount = 0
       let gameEmbed = new EmbedBuilder()
+      let shopArray = []
 
       // Defer the reply until ITAD has responded
       await interaction.deferReply()
 
+      if (shop !== null) {
+        shopArray = [shop.toLowerCase()]
+      } else {
+        /*
+        async () => {
+          const shops = await itadApi.getShops()
+        }
+        */
+        shopArray = ['steam', 'gog', 'origin', 'epic', 'battlenet', 'uplay', 'squenix', 'humblestore']
+      }
+
       const itadOutput = await itadApi.getDealsFull({
-        shops: ['steam', 'gog', 'origin', 'epic', 'battlenet', 'uplay', 'squenix', 'humblestore'],
+        shops: shopArray,
         limit: 50,
         sort: 'time'
       }, game)
@@ -49,8 +59,10 @@ module.exports = {
           // console.log(itadElement)
           // console.log(itadElement.title)
 
-          if (title === '' && !itadElement.title.includes('Offer') && !itadElement.title.includes('Currency') && !itadElement.title.includes('Pass') &&
-              !itadElement.title.includes('Pack') && itadElement.is_dlc === false && itadElement.image !== null) {
+          if (title === '' && itadElement.title.toLowerCase().includes(game.toLowerCase()) && !itadElement.title.includes('Offer') &&
+              !itadElement.title.includes('Currency') && !itadElement.title.includes('Pass') &&
+              !itadElement.title.includes('Pack') && !itadElement.title.includes('Soundtrack') &&
+              !itadElement.title.includes('Artbook') && itadElement.is_dlc === false && itadElement.image !== null) {
               /* if (!game.toLowerCase().includes('complete') && (itadElement.title.includes('Complete') || itadElement.title.includes('Collection'))) {
                 console.log(game)
                 console.log(itadElement.title)
@@ -78,8 +90,8 @@ module.exports = {
           // console.log(title)
           // console.log(itadElement.title)
           if (title === itadElement.title && !itadElement.title.includes('Offer') && !itadElement.title.includes('Currency') &&
-              !itadElement.title.includes('Pass') && !itadElement.title.includes('Pack') &&
-              itadElement.is_dlc === false && itadElement.image !== null
+              !itadElement.title.includes('Pass') && !itadElement.title.includes('Pack') && !itadElement.title.includes('Soundtrack') &&
+              !itadElement.title.includes('Artbook') && itadElement.is_dlc === false && itadElement.image !== null
               && fieldCount < 8) {
             gameEmbed.addFields(
               {name: 'Sale Price (' + itadElement.shop.name + ')', value: '$' + itadElement.price_new.toString(), inline: true},
@@ -93,7 +105,7 @@ module.exports = {
       }
 
       if (noResults) {
-        interaction.reply('No results found, please refine your search dimwit')
+        await interaction.editReply('No results found, please refine your search dimwit')
       } else {
         await interaction.editReply({ embeds: [gameEmbed] })
       }
