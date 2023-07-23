@@ -8,7 +8,17 @@ module.exports = {
   description: 'Searches IsThereAnyDeal for deals on games',
   args: true,
   options: [{ name: 'game', description: 'The game to search for', type: ApplicationCommandOptionType.String, required: true },
-            { name: 'shop', description: 'Limit search to a particular shop', type: ApplicationCommandOptionType.String, required: false }],
+            { name: 'shop', description: 'Limit search to a particular shop', 
+            choices: [
+              { name: 'steam', value: 'steam' }, 
+              { name: 'gog', value: 'gog'},
+              { name: 'origin', value: 'origin' },
+              { name: 'epic', value: 'epic' },
+              { name: 'battlenet', value: 'battlenet' },
+              { name: 'uplay', value: 'uplay' },
+              { name: 'squenix', value: 'squenix' },
+              { name: 'humblestore', value: 'humblestore' }
+            ], type: ApplicationCommandOptionType.String, required: false }],
   usage: '[query]',
   guildOnly: true,
   execute (interaction) {
