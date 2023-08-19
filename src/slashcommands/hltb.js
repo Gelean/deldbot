@@ -15,6 +15,9 @@ module.exports = {
     (async() => {
       const game = interaction.options.getString('game')
 
+      // Defer the reply until hltb has responded
+      await interaction.deferReply()
+
       let hltbOutput = ''
       let hltbResponse = hltbService.search(game)
       let hltbResults = await hltbResponse
@@ -26,9 +29,9 @@ module.exports = {
         for (let i = 0; i < hltbResults.length; i++) {
           hltbOutput += `\n${hltbResults[i].name} (${hltbResults[i].gameplayMain}h, ${hltbResults[i].gameplayMainExtra}h, ${hltbResults[i].gameplayCompletionist}h)`
         }
-        interaction.reply(hltbOutput)
+        await interaction.editReply(hltbOutput)
       } else {
-        interaction.reply('No results found, please refine your search dimwit')
+        await interaction.editReply('No results found, please refine your search dimwit')
       }
     })()
   }
