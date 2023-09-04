@@ -39,6 +39,6 @@
     "start": "node bot.js",
     "postinstall": "npm install itad-api-client-ts --save",
     "test": "jest",
-    "update": "git restore . && git pull && npm install"
+    "update": "git checkout . && git pull && npm install"
   }
 }
