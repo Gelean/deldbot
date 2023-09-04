@@ -38,6 +38,7 @@
   "scripts": {
     "start": "node bot.js",
     "postinstall": "npm install itad-api-client-ts --save",
-    "test": "jest"
+    "test": "jest",
+    "update": "git restore . && git pull && npm install"
   }
 }
