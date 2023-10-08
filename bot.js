@@ -11,7 +11,8 @@ const { Client, Collection, GatewayIntentBits, Partials, REST, Routes } = requir
 const fs = require('fs')
 
 let client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, 
-  GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent], partials: [Partials.Message, Partials.Channel] })
+  GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildVoiceStates], 
+  partials: [Partials.Message, Partials.Channel] })
 client.commands = new Collection()
 const cooldowns = new Collection()
 client.slashCommands = new Collection()
