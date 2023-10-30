@@ -48,6 +48,10 @@ module.exports = {
           audioPlayer.play(resource);
     
           interaction.editReply(`Now playing ${soundboardKeys[soundboardIndex]} in your voice channel`);
+
+          audioPlayer.on(AudioPlayerStatus.Idle, () => {
+            connection.destroy();
+          });
         } catch (error) {
           console.error(error);
           await interaction.editReply('An error occurred while playing the soundboard file');
@@ -79,6 +83,10 @@ module.exports = {
           audioPlayer.play(resource);
     
           await interaction.editReply(`Now playing ${filteredKeys[0]} in your voice channel`);
+
+          audioPlayer.on(AudioPlayerStatus.Idle, () => {
+            connection.destroy();
+          });
         } catch (error) {
           console.error(error);
           await interaction.editReply('An error occurred while playing the soundboard file');

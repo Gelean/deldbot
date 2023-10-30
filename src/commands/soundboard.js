@@ -42,6 +42,10 @@ module.exports = {
         audioPlayer.play(resource);
   
         message.channel.send(`Now playing ${soundboardKeys[soundboardIndex]} in your voice channel`);
+
+        audioPlayer.on(AudioPlayerStatus.Idle, () => {
+          connection.destroy();
+        });
       } catch (error) {
         console.error(error);
         message.channel.send('An error occurred while playing the soundboard file');
@@ -72,6 +76,10 @@ module.exports = {
         audioPlayer.play(resource);
   
         message.channel.send(`Now playing ${filteredKeys[0]} in your voice channel`);
+
+        audioPlayer.on(AudioPlayerStatus.Idle, () => {
+          connection.destroy();
+        });
       } catch (error) {
         console.error(error);
         message.channel.send('An error occurred while playing the soundboard file');
