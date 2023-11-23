@@ -1,4 +1,4 @@
-# deldbot
+# Deldbot
 
 Deldbot is a Discord Bot written in Node.js, utilizing Discord.js and several other open source libraries
 
