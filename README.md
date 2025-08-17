@@ -68,7 +68,7 @@ These steps provide a good walkthrough of creating and running a Discord bot: ht
 1. docker build -t deldbot-image:latest -f docker/Dockerfile .
 1. Run the Dockerfile or run docker-compose:
     1. docker run --name deldbot -it deldbot-image:latest
-    1. docker compose up -d
+    1. docker compose -f docker/docker-compose.yaml up -d
 1. docker ps -a
 
 ### Tear down the Docker container
