@@ -16,6 +16,15 @@
     "password": "PLEX_PASSWORD",
     "token": "PLEX_TOKEN"
   },
+  "jellyfin": {
+    "hostname": "JELLYFIN_IP",
+    "port": "JELLYFIN_PORT",
+    "username": "JELLYFIN_USERNAME",
+    "password": "JELLYFIN_PASSWORD"
+  },
+  "serverList" : [
+    { "name": "SERVER_NAME", "owner": "OWNER_NAME", "ownerId": "DISCORD_USER_ID" }
+  ],
   "omdb": {
     "key": "OMDB_KEY"
   },
